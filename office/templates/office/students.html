@@ -1,0 +1,304 @@
+<?php 
+
+include "header.php"; 
+
+if (isset($_GET['action'])) {
+	$action = $_GET['action'];
+}
+?>
+
+<title>Generate Students List</title>
+<?php include "sidenav.php"; ?>
+<?php switch ($action) { case 'view': ?>
+<div class="col-md-9">
+	<div class="card card-cascade narrower">
+		<!-- Card header -->
+		<div class="view view-cascade gradient-card-header success-color">
+		<!-- Title -->
+			<h3 class="card-header-title"><i class="fas fa-list"></i> Student list</h3>
+		</div>
+		<div class="card-body card-body-cascade">
+			<div class="form-group" align="center">
+				<p class="alert alert-success" id="errorshow"></p>
+			</div>
+			<div class="md-form form-group">
+		   		<span class='mr-3 fas fa-pen-alt prefix'></span>
+		    	<select class="ml-5 mdb-select dropdown-default darken-4 colorful-select initialized md-form" name="session" id="session" required="">
+					<option disabled selected>--Select Session--</option>
+					<?php for($i = date('Y') - 3; $i <= date('Y') +5 ; $i++): ?>
+					<option value="<?php echo $i; ?>/<?php echo $i + 1; ?>"><?php echo $i; ?>/<?php echo $i + 1; ?> </option>
+					<?php endfor; ?>
+				</select>
+		   	</div>
+		   	<div class="md-form form-group form-inline-lg">
+				<span class='mr-3 fas fa-cubes prefix'></span>
+				<select style="width: 85%;" class="ml-5 mdb-select dropdown-success darken-4 colorful-select initialized md-form" name="level" id="level" required="">
+					<option disabled selected>--Level--</option>
+					<option value="ND I">ND I</option>
+					<option value="ND II">ND II</option>
+					<option value="HND I">HND I</option>
+					<option value="HND II">HND II</option>
+				</select>
+			</div>		   	
+			<div class="md-form form-group form-inline-lg">
+				<span class='mr-3 fas fa-cubes prefix'></span>
+				<select style="width: 85%;" class="ml-5 mdb-select dropdown-success darken-4 colorful-select initialized md-form" name="programme" id="programme" required="">
+					<option disabled selected>--Programme--</option>
+					<option value="MORNING">MORNING</option>
+					<option value="EVENING">EVENING</option>
+					<option value="WEEKEND">WEEKEND</option>
+				</select>
+			</div>
+           	<center><div class="text-center align-items-center justify-content-center col-md-4 mb-3">
+               	<button type="button" id="btnGenerate" name="btnGenerate" class="btn btn-md btn-block peach-gradient btn-rounded z-depth-1a">View Students</button>
+           	</div></center>
+        </div>
+	</div>
+</div>
+	<!-- Second Colomn End -->
+		</div>
+	</div>
+</main>
+
+
+<?php include "footer.php"; ?>
+ <script>
+	$(document).ready(function() {
+		$('.mdb-select').materialSelect();
+	});
+
+	$(document).ready(function(){
+    	$("#errorshow").hide();
+    });
+
+	function getStudents(){
+		var session = document.getElementById("session").value;
+		var level = document.getElementById("level").value;
+		var programme = document.getElementById("programme").value;
+
+		$("#errorshow").show();
+		$("#errorshow").html("Generating Students List <span class='fas fa-1x fa-cog fa-spin'></span>");
+		console.log(setTimeout(' window.location.href = "./viewstudents.php?level=' + level + '&session=' + session + '&programme=' + programme + '"; ', 4000));
+	}
+
+
+	$('#btnGenerate').click(function(){
+	    getStudents();
+	});
+</script>
+
+<?php break; ?>
+
+<?php case 'edit': ?>
+<div class="col-md-9">
+	<div class="card card-cascade narrower">
+		<!-- Card header -->
+		<div class="view view-cascade gradient-card-header success-color">
+		<!-- Title -->
+			<h3 class="card-header-title"><i class="fas fa-list"></i> Student list</h3>
+		</div>
+		<div class="card-body card-body-cascade">
+			<div class="form-group" align="center">
+				<p class="alert alert-success" id="errorshow"></p>
+			</div>
+			<div class="md-form form-group">
+		   		<span class='mr-3 fas fa-pen-alt prefix'></span>
+		    	<select class="ml-5 mdb-select dropdown-default darken-4 colorful-select initialized md-form" name="session" id="session" required="">
+					<option disabled selected>--Select Session--</option>
+					<?php for($i = date('Y') - 3; $i <= date('Y') +5 ; $i++): ?>
+					<option value="<?php echo $i; ?>/<?php echo $i + 1; ?>"><?php echo $i; ?>/<?php echo $i + 1; ?> </option>
+					<?php endfor; ?>
+				</select>
+		   	</div>
+		   	<div class="md-form form-group form-inline-lg">
+				<span class='mr-3 fas fa-cubes prefix'></span>
+				<select style="width: 85%;" class="ml-5 mdb-select dropdown-success darken-4 colorful-select initialized md-form" name="level" id="level" required="">
+					<option disabled selected>--Level--</option>
+					<option value="nd1">ND I</option>
+					<option value="nd2">ND II</option>
+					<option value="hnd1">HND I</option>
+					<option value="hnd2">HND II</option>
+				</select>
+			</div>
+           	<center><div class="text-center align-items-center justify-content-center col-md-4 mb-3">
+               	<button type="button" id="btnGenerate" name="btnGenerate" class="btn btn-md btn-block peach-gradient btn-rounded z-depth-1a">View Students</button>
+           	</div></center>
+        </div>
+	</div>
+</div>
+	<!-- Second Colomn End -->
+		</div>
+	</div>
+</main>
+
+
+<?php include "footer.php"; ?>
+ <script>
+	$(document).ready(function() {
+		$('.mdb-select').materialSelect();
+	});
+
+	$(document).ready(function(){
+    	$("#errorshow").hide();
+    });
+
+	function getStudents(){
+		var session = document.getElementById("session").value;
+		var level = document.getElementById("level").value;
+
+		$("#errorshow").show();
+		$("#errorshow").html("Generating Students List <span class='fas fa-1x fa-cog fa-spin'></span>");
+		console.log(setTimeout(' window.location.href = "./editstudents.php?level=' + level + '&session=' + session + '"; ', 4000));
+	}
+
+
+	$('#btnGenerate').click(function(){
+	    getStudents();
+	});
+</script>
+
+<?php break; ?>
+
+<?php case 'delete': ?>
+<div class="col-md-9">
+	<div class="card card-cascade narrower">
+		<!-- Card header -->
+		<div class="view view-cascade gradient-card-header success-color">
+		<!-- Title -->
+			<h3 class="card-header-title"><i class="fas fa-list"></i> Student list</h3>
+		</div>
+		<div class="card-body card-body-cascade">
+			<div class="form-group" align="center">
+				<p class="alert alert-success" id="errorshow"></p>
+			</div>
+			<div class="md-form form-group">
+		   		<span class='mr-3 fas fa-pen-alt prefix'></span>
+		    	<select class="ml-5 mdb-select dropdown-default darken-4 colorful-select initialized md-form" name="session" id="session" required="">
+					<option disabled selected>--Select Session--</option>
+					<?php for($i = date('Y') - 3; $i <= date('Y') +5 ; $i++): ?>
+					<option value="<?php echo $i; ?>/<?php echo $i + 1; ?>"><?php echo $i; ?>/<?php echo $i + 1; ?> </option>
+					<?php endfor; ?>
+				</select>
+		   	</div>
+		   	<div class="md-form form-group form-inline-lg">
+				<span class='mr-3 fas fa-cubes prefix'></span>
+				<select style="width: 85%;" class="ml-5 mdb-select dropdown-success darken-4 colorful-select initialized md-form" name="level" id="level" required="">
+					<option disabled selected>--Level--</option>
+					<option value="nd1">ND I</option>
+					<option value="nd2">ND II</option>
+					<option value="hnd1">HND I</option>
+					<option value="hnd2">HND II</option>
+				</select>
+			</div>
+           	<center><div class="text-center align-items-center justify-content-center col-md-4 mb-3">
+               	<button type="button" id="btnGenerate" name="btnGenerate" class="btn btn-md btn-block peach-gradient btn-rounded z-depth-1a">View Students</button>
+           	</div></center>
+        </div>
+	</div>
+</div>
+	<!-- Second Colomn End -->
+		</div>
+	</div>
+</main>
+
+
+<?php include "footer.php"; ?>
+ <script>
+	$(document).ready(function() {
+		$('.mdb-select').materialSelect();
+	});
+
+	$(document).ready(function(){
+    	$("#errorshow").hide();
+    });
+
+	function getStudents(){
+		var session = document.getElementById("session").value;
+		var level = document.getElementById("level").value;
+
+		$("#errorshow").show();
+		$("#errorshow").html("Generating Students List <span class='fas fa-1x fa-cog fa-spin'></span>");
+		console.log(setTimeout(' window.location.href = "./delstudents.php?level=' + level + '&session=' + session + '"; ', 4000));
+	}
+
+
+	$('#btnGenerate').click(function(){
+	    getStudents();
+	});
+</script>
+
+<?php break; ?>
+
+<?php case 'payments': ?>
+<div class="col-md-9">
+	<div class="card card-cascade narrower">
+		<!-- Card header -->
+		<div class="view view-cascade gradient-card-header success-color">
+		<!-- Title -->
+			<h3 class="card-header-title"><i class="fas fa-list"></i> Student list</h3>
+		</div>
+		<div class="card-body card-body-cascade">
+			<div class="form-group" align="center">
+				<p class="alert alert-success" id="errorshow"></p>
+			</div>
+			<div class="md-form form-group">
+		   		<span class='mr-3 fas fa-pen-alt prefix'></span>
+		    	<select class="ml-5 mdb-select dropdown-default darken-4 colorful-select initialized md-form" name="session" id="session" required="">
+					<option disabled selected>--Select Session--</option>
+					<?php for($i = date('Y') - 3; $i <= date('Y') +5 ; $i++): ?>
+					<option value="<?php echo $i; ?>/<?php echo $i + 1; ?>"><?php echo $i; ?>/<?php echo $i + 1; ?> </option>
+					<?php endfor; ?>
+				</select>
+		   	</div>
+		   	<div class="md-form form-group form-inline-lg">
+				<span class='mr-3 fas fa-cubes prefix'></span>
+				<select style="width: 85%;" class="ml-5 mdb-select dropdown-success darken-4 colorful-select initialized md-form" name="level" id="level" required="">
+					<option disabled selected>--Level--</option>
+					<option value="ND I">ND I</option>
+					<option value="ND II">ND II</option>
+					<option value="HND I">HND I</option>
+					<option value="HND II">HND II</option>
+				</select>
+			</div>
+           	<center><div class="text-center align-items-center justify-content-center col-md-4 mb-3">
+               	<button type="button" id="btnGenerate" name="btnGenerate" class="btn btn-md btn-block peach-gradient btn-rounded z-depth-1a">View Students</button>
+           	</div></center>
+        </div>
+	</div>
+</div>
+	<!-- Second Colomn End -->
+		</div>
+	</div>
+</main>
+
+
+<?php include "footer.php"; ?>
+ <script>
+	$(document).ready(function() {
+		$('.mdb-select').materialSelect();
+	});
+
+	$(document).ready(function(){
+    	$("#errorshow").hide();
+    });
+
+	function getStudents(){
+		var session = document.getElementById("session").value;
+		var level = document.getElementById("level").value;
+
+		$("#errorshow").show();
+		$("#errorshow").html("Generating Students List <span class='fas fa-1x fa-cog fa-spin'></span>");
+		console.log(setTimeout(' window.location.href = "./payments.php?level=' + level + '&session=' + session + '"; ', 4000));
+	}
+
+
+	$('#btnGenerate').click(function(){
+	    getStudents();
+	});
+</script>
+
+<?php break; ?>
+
+<?php default: header("Location: ./home") ?>
+	
+<?php break; } ?>

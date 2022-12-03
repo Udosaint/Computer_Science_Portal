@@ -1,0 +1,95 @@
+{% extends 'office/main.html' %}
+{% load static %}
+
+{% block content %}
+<title>Admin Login - Nacos FPNO</title>
+<main class="my-4">
+	<section>
+		<div class="container col-md-7">
+			<div class="my-5">
+				<div class="card card-cascade narrower">
+					<!-- Card header -->
+					<div class="view view-cascade gradient-card-header success-color">
+						<!-- Title -->
+						<h3 class="card-header-title"><i class="fas fa-user"></i> Admin Login</h3>
+					</div>
+					<div class="card-body card-body-cascade">
+						<form class="container md-form" method="POST" enctype="multipart/form-data">
+
+							<div class="md-form">
+								<i class="fas fa-user prefix"></i>
+					            <input type="text" id="username" name="username" class="form-control">
+					            <label for="username">Your Username</label>
+					        </div>
+					        <div class="md-form pb-3">
+					        	<i class="fas fa-lock prefix"></i>
+					            <input type="password" id="password" name="password" class="form-control">
+					            <label for="password">Your password</label>
+					            <p class="text-left mt-2 pt-2"><span style="cursor: pointer;" id="passText">Show Password <span class= 'fa fa-eye'></span></span></p>
+					            <p class="font-small orange-text text-right">Forgot <a href="#" data-toggle="modal" data-target="#modalResetForm" class="dark-grey-text ml-1"> <b>Password?</b></a></p>
+					        </div>
+					        <center><div class="text-center align-items-center justify-content-center col-md-6 mb-3">
+					            <button type="submit" name="Admin_login" class="btn btn-md btn-block peach-gradient btn-rounded z-depth-1a">Sign in</button>
+					        </div></center>
+						</form>
+					</div>
+				</div>
+				
+			</div>
+		</div>
+	</section>
+</main>
+
+<!-- Modal -->
+<div class="modal fade" id="modalResetForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-notify modal-success" role="document">
+        <div class="modal-content">
+            <div class="modal-header modal-notify text-center rgba-green-light">
+                <h3 class="modal-title w-100" style="color: #FFF; font-weight: bold;">Forgot Password</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true" style="color: #FFF; font-weight: bold;">&times;</span>
+                </button>
+            </div>
+            <!-- Error Pane -->
+            <div class="form-group" align="center">
+            	<p class="alert alert-success" id="errorshow2"></p>
+            </div>
+            <!-- End Error Pane -->
+            <div class="modal-body bg-deep dark mx-3">
+                <div class="md-form mb-5">
+                    <div class="form-group">
+                    	<i class="fa fa-envelope prefix"></i> 
+		                <input type="email" id="useremail" name="useremail" class="form-control validate">
+		                <label for="useremail">Your registered email address</label>
+		            </div>
+                </div>
+            </div>
+            <div class="modal-footer justify-content-center">
+                 <button type="submit" style="cursor: pointer;" class="btn btn-rounded peach-gradient btn-md" id="emailPassword"><span class='fa fa-send-o'></span> Reset Password</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal ends -->
+
+<?php include "footer.php"; ?>
+  <script>
+  	function viewPassword(){
+        var password = document.getElementById('password');
+        if (password.type == 'password') {
+            password.type = 'text';
+            $('#passText').html("Hide Password <span class= 'fa fa-eye'></span>");
+        }else{
+        	password.type = 'password';
+            $('#passText').html("Show Password <span class= 'fa fa-eye-slash'></span>");
+        }
+    }
+
+    $('#passText').click(function(){
+        viewPassword();
+    });
+        	
+
+	//End Reset password
+  </script>
+  {% endblock content %}

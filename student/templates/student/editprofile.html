@@ -1,0 +1,121 @@
+<?php include "header.php"; 
+$student = new Student();
+$student_details = $student->getStudent($_SESSION['app_no'], $_SESSION['mat_no']);
+
+$update_Matno = $student->update_MatNo($_SESSION['app_no'],$_SESSION['mat_no']);
+
+$level_session = $student->StudentSession($_SESSION['app_no']);
+?>
+<title><?php echo $student_details['surname'].' '. $student_details['firstname']; ?> || Edit Profile</title>
+<style>
+	#edit .fas {
+		font-size: 1.2rem;
+	}
+</style>
+<div class="introCard mb-4" style="background-image: url(../images/background3.jpg); background-repeat: no-repeat; background-size: cover; background-position: center center; z-index: 0;">
+	<div class="mask rgba-black-strong d-flex justify-content-center align-items-center h-45">
+        <div class="container" style="padding-top: 10%; padding-bottom: 10%;">
+        	<div class="col-md-12 mb-4 white-text text-center">
+              <h1 class="display-5 title mt-md-5 mt-lg-0 font-weight-bold wow fadeIn" data-wow-delay="0.3s" style="visibility: visible; animation-name: fadeIn; animation-delay: 0.3s;">
+                  <strong><?php echo $student_details['surname'].' '. $student_details['firstname'].' '.$student_details['othername']; ?> - EDIT PROFILE</strong>
+                </h1>
+              <hr class="hr-light my-4 wow fadeInDown" data-wow-delay="0.4s" style="visibility: visible; animation-name: fadeInDown; animation-delay: 0.4s;">
+              <h5 class="text-uppercase mb-4 white-text wow fadeInDown" data-wow-delay="0.4s" style="visibility: visible; animation-name: fadeInDown; animation-delay: 0.4s;"><strong class="font-weight-bold"><i>Towards Advanced Computing</i></strong></h5>
+            </div>
+        </div>
+    </div>
+</div>
+</header>
+<main class="my-4">
+	<section>
+		<div class="container col-md-7">
+			<div class="my-5">
+				<div class="card card-cascade narrower">
+					<!-- Card header -->
+					<div class="view view-cascade gradient-card-header success-color">
+						<!-- Title -->
+						<h3 class="card-header-title"><i class="fas fa-edit"></i> Edit User Profile</h3>
+					</div>
+					<div class="card-body card-body-cascade">
+						<form class="container" method="POST">
+							<div class="md-form">
+								<i class="fas fa-user-plus prefix"></i>
+					            <input type="text" id="surname" value="<?php echo $_SESSION['app_no']; ?>" disabled name="surname" class="form-control">
+					            <label for="surname">Appication Number</label>
+					        </div>							
+					      <div class="md-form">
+								<i class="fas fa-user-plus prefix"></i>
+					            <input type="text" id="mat_no" value="<?php echo $_SESSION['mat_no']; ?>" name="mat_no" class="form-control">
+					            <label for="mat_no">Matriculation Number</label>
+					        </div>							
+					        <div class="md-form">
+								<i class="fas fa-user-plus prefix"></i>
+					            <input type="text" id="surname" value="<?php echo $student_details['surname']; ?>" name="surname" class="form-control">
+					            <label for="surname">Surname</label>
+					        </div>
+					        <div class="md-form">
+								<i class="fas fa-user-plus prefix"></i>
+					            <input type="text" id="surname" value="<?php echo $student_details['firstname']; ?>" name="surname" disabled class="form-control">
+					            <label for="surname">Firstname</label>
+					        </div>
+					        <div class="md-form">
+								<i class="fas fa-user-plus prefix"></i>
+					            <input type="text" id="lastname" value="<?php echo $student_details['othername']; ?>" name="lastname" disabled class="form-control">
+					            <label for="lastname">Other names</label>
+					        </div>
+					        <div class="md-form">
+					        	<i class="fas fa-envelope prefix"></i>
+					            <input type="email" id="email" value="<?php echo $student_details['email']; ?>" name="email" disabled class="form-control">
+					            <label for="email">Email Address</label>
+					        </div>
+					        <div class="md-form form-group form-inline-lg">
+		    					<span class='mr-3 fas fa-cubes prefix'></span>
+		    					<select style="width: 85%;" class="ml-5 mdb-select dropdown-success darken-4 colorful-select initialized md-form" name="level" id="level" required="">
+									<option disabled selected><?= $level_session['level'] ?></option>
+									<option value="ND I">ND I</option>
+									<option value="ND II">ND II</option>
+									<option value="HND I">HND I</option>
+									<option value="HND II">HND II</option>
+								</select>
+		    				</div>
+					        <div class="md-form form-group form-inline-lg">
+			    				<span class='mr-3 fas fa-pen-alt prefix'></span>
+			    				<select class="ml-5 mdb-select dropdown-default darken-4 colorful-select initialized md-form" name="regular" id="regular" required="">
+									<option disabled selected><?= $student_details['programme'] ?></option>
+									<option value="MORNING">MORNING</option>
+									<option value="EVENING">EVENING</option>
+									<option value="WEEKEND">WEEKEND</option>
+								</select>
+			    			</div>
+		    				<div class="md-form form-group form-inline-lg">
+		    					<span class='mr-3 fas fa-users prefix'></span>
+		    					<select style="width: 85%;" class="ml-5 mdb-select dropdown-success darken-4 colorful-select initialized md-form" name="gender" id="gender" required="">
+									<option disabled selected><?= $student_details['gender'] ?> </option>
+								</select>
+		    				</div>
+		    				<div class="md-form">
+		    					<i class="fas fa-phone prefix"></i>
+					            <input type="text" disabled id="phone" value="<?php echo $student_details['phone']; ?>" name="phone" class="form-control">
+					            <label for="phone">Phone Number</label>
+					        </div>
+					        <center><div class="text-center align-items-center justify-content-center col-md-6 mb-3">
+					            <button type="submit" name="update_mat_no" class="btn btn-md btn-block peach-gradient btn-rounded z-depth-1a">Save Edit <i class="far fa-edit"></i></button>
+					        </div></center>
+						</form>
+					</div>
+				</div>
+				
+			</div>
+		</div>
+	</section>
+</main>
+
+
+<?php include "footer.php"; ?>
+  <script>
+
+	$(document).ready(function() {
+		$('.mdb-select').materialSelect();
+	});
+
+  </script>

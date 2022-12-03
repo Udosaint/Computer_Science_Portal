@@ -1,0 +1,168 @@
+{% extends 'student/main.html' %}
+{% load static %}
+
+{% block content %}
+<title>{{student}} || Pay Nacos Due</title>
+
+
+{% if page == "Payment Mode" %}
+
+<main class="my-5">
+    <section class="container col-md-7">
+        <div class="card card-cascade narrower">
+            <!-- Card header -->
+            <div class="view view-cascade gradient-card-header success-color">
+                <!-- Title -->
+                <h3 class="card-header-title"><i class="fas fa-file"></i> PAY NACOS DUES</h3>
+            </div>
+            <div class="card-body card-body-cascade">
+                
+                <form class="container" method="POST" action="">
+
+                    {% csrf_token %}
+
+                    {% comment %} <div class="col-md-12">
+                        <div class="md-form">
+                            <i class="fas fa-graduation-cap prefix text-left"></i>
+                            <input type="text" id="app_no"
+                             name="app_no" value="{{student.app_no}}" class="form-control">
+                            <label for="mat_no">Application number</label>
+                        </div>
+                    </div>  {% endcomment %}
+
+                    <div class="col-md-12">
+                        <div class="md-form form-group form-inline-lg">
+                            <span class='mr-3 fas fa-money-bill prefix'></span>
+                            {{form.payment_type}}
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <div class="md-form">
+                            <i class="fas fa-graduation-cap prefix text-left"></i>
+                            {{form.payment_amount}}
+                            <label for="amount">Amount</label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <div class="md-form form-group form-inline-lg">
+                            <span class='mr-3 fas fa-cubes prefix'></span>
+                            {{form.level}}
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <div class="md-form form-group form-inline-lg">
+                            <span class='mr-3 fas fa-pen-alt prefix'></span>
+                            {{form.session}}
+                        </div>
+                    </div>               
+                    <center>
+                        <div class="text-center align-items-center justify-content-center col-md-4 mt-4 mb-3">
+                            <button type="submit" id="" name="payment" class="btn btn-md btn-block peach-gradient btn-rounded z-depth-2">Proceed</button>
+                        </div>
+                    </center>
+                </form>
+            </div>
+        </div>
+    </section>
+</main>
+
+{% elif  page == "Proceed payment"%}
+
+<main class="my-5">
+    <section class="container col-md-7">
+        <div class="card card-cascade narrower">
+            <!-- Card header -->
+            <div class="view view-cascade gradient-card-header success-color">
+                <!-- Title -->
+                <h3 class="card-header-title"><i class="fas fa-file"></i> CONFIRM PAYMENT</h3>
+            </div>
+            <div class="card-body card-body-cascade">
+
+                    <div class="col-md-12">
+                        <h3 class="text-center">You have initiated a payment</h3>
+                        <hr>
+                        <p class="text-center">You are about to make payment for {{transaction.payment_type}}  @{{transaction.payment_amount}}<br> </p>
+                    </div>
+
+                    <div class="form-group btn-group col-md-12 text-center align-items-center justify-content-center">
+                        <div class="text-center align-items-center justify-content-center col-md-4 mt-4 mb-3">
+                            <a href="{% url 'cancel-payment' transaction.payment_ref %}" class="btn btn-md btn-block peach-gradient btn-rounded z-depth-2">Cancel</a>
+                        </div>
+                        <div class="text-center align-items-center justify-content-center col-md-4 mt-4 mb-3">
+                            <button  onclick="payWithPaystack()"  class="btn btn-md btn-block peach-gradient btn-rounded z-depth-2">Pay Now</button>
+                        </div>
+                    </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<script>
+
+    function payWithPaystack() {
+
+        var handler = PaystackPop.setup({
+          key: '{{paystack_public_key}}', // Replace with your public key
+          email: '{{request.user.email}}',
+          amount: {{transaction.payment_amount}} * 100, // the amount value is multiplied by 100 to convert to the lowest currency unit
+          currency: 'NGN', // Use GHS for Ghana Cedis or USD for US Dollars
+          ref: '{{transaction.payment_ref}}', // Replace with a reference you generated
+          callback: function(response) {
+            //this happens after the payment is completed successfully
+            window.location = "{% url 'verify-payment' transaction.payment_ref %}";
+            // Make an AJAX call to your server with the reference to verify the transaction
+          },
+          onClose: function() {
+            alert('Transaction was not completed, window closed.');
+          },
+        });
+        handler.openIframe();
+    }
+
+</script>
+
+
+{% endif %}
+
+
+
+<script>
+    $(document).ready(function() {
+        $('.mdb-select').materialSelect();
+    });
+
+    $(document).ready(function(){
+        $("#errorshow").hide();
+        $("#bank_pay").show();
+
+        $('#payment_type').change(function() {
+            
+            
+            amount = $("#payment_type").val()
+
+            $.ajax({
+                type:'GET',
+                url:'{% url 'payments' %}',
+                data:{'amount':amount},
+
+                success:function(data){
+                    $("#amount").val(data)
+                }
+
+
+            })
+            
+        });        
+    });
+
+
+
+
+</script>
+
+<script src="https://js.paystack.co/v1/inline.js"></script>
+
+{% endblock content %}

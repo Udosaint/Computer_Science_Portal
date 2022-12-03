@@ -1,0 +1,268 @@
+<?php include "header.php"; 
+$student = new Student();
+$student_detail = $student->getStudent($_SESSION['app_no'], $_SESSION['mat_no']);
+
+$payments = new Payment();
+$payment_history = $payments->myPayments($_SESSION['app_no']);
+
+// get the current session
+$admin = new Admin();
+$current_session = $admin->current_Session();
+?>
+
+<title><?php echo $student_detail['surname'].' '. $student_detail['firstname']; ?> || View Nacos Receipt</title>
+
+<style>
+	.avatar-upload{
+		position:relative;
+		max-width:205px;
+		margin:50px auto;
+	}
+	.avatar-upload .avatar-edit{
+		position:absolute;
+		right:12px;
+		z-index:1;
+		top:10px;
+	}
+	.avatar-upload .avatar-edit input{
+		display:none;
+	}.avatar-upload .avatar-edit input+label{
+		display:inline-block;
+		width:34px;
+		height:34px;
+		margin-bottom:0;
+		border-radius:100%;
+		background:#FFF;
+		border:1px solid transparent;
+		box-shadow:0 2px 4px 0 rgba(0,0,0,.12);
+		cursor:pointer;
+		font-weight:400;
+		transition:all .2s ease-in-out;
+	}
+	.avatar-upload .avatar-edit input+label:hover{
+		background:#f1f1f1;
+		border-color:#d6d6d6;
+	}
+	.avatar-upload .avatar-edit input+label:after{
+		content:"\f041";
+		font-family:FontAwesome;
+		color:#757575;
+		position:absolute;
+		top:10px;
+		left:0;
+		right:0;
+		text-align:center;
+		margin:auto;
+	}
+	.avatar-upload .avatar-preview{
+		width:170px;
+		height:180px;
+		position:relative;
+		border-radius:8%;
+		border:6px solid #cdcdcd;
+		box-shadow:0 2px 4px 0 rgba(0,0,0,.1);
+	}
+	.avatar-upload .avatar-preview>div{
+		width:100%;
+		height:100%;
+		border-radius:8%;
+		background-size:cover;
+		background-repeat:no-repeat;
+		background-position:center;
+		background-color: #f7f5ef;
+	}
+/* -- //Responsive code -- */
+</style>
+<div class="introCard mb-4" style="background-image: url(../images/background3.jpg); background-repeat: no-repeat; background-size: cover; background-position: center center; z-index: 0;">
+	<div class="mask rgba-black-strong d-flex justify-content-center align-items-center h-45">
+        <div class="container" style="padding-top: 10%; padding-bottom: 10%;">
+        	<div class="col-md-12 mb-4 white-text text-center">
+              <h1 class="display-5 title mt-md-5 mt-lg-0 font-weight-bold wow fadeIn" data-wow-delay="0.3s" style="visibility: visible; animation-name: fadeIn; animation-delay: 0.3s;">
+                  <strong><?php echo $student_detail['surname'].' '. $student_detail['firstname'].' '. $student_detail['othername']; ?> - APPLY FOR ELECTION CANDIDATE</strong>
+                </h1>
+              <hr class="hr-light my-4 wow fadeInDown" data-wow-delay="0.4s" style="visibility: visible; animation-name: fadeInDown; animation-delay: 0.4s;">
+              <h5 class="text-uppercase mb-4 white-text wow fadeInDown" data-wow-delay="0.4s" style="visibility: visible; animation-name: fadeInDown; animation-delay: 0.4s;"><strong class="font-weight-bold"><i>Towards Advanced Computing</i></strong></h5>
+              <?php if ($current_session == true): ?>
+								<h4 class="text-center"><span class="font-weight-bold">Session:</span> <span class="small-text"><?php echo implode($current_session); ?></span></h4>						
+							<?php else: ?>					
+							<h4 class="text-center text-danger"><span class="font-weight-bold">Session Not Set</span></h4>
+							<?php endif ?>
+            </div>
+        </div>
+    </div>
+</div>
+</header>
+
+<main class="my-5">
+	<div class="col-md-9 mx-auto">
+	<title>Add New Candidate</title>
+	<div class="card card-cascade narrower">
+		<!-- Card header -->
+		<div class="view view-cascade gradient-card-header success-color">
+		<!-- Title -->
+			<h3 class="card-header-title"><i class="fas fa-list"></i> New Candidate</h3>
+		</div>
+		<div class="card-body card-body-cascade">
+			<div class="container">
+				<form class="container md-form" id="newcandidate" enctype="multipart/form-data">
+					<div class="avatar-upload">
+						<div class="avatar-edit">
+	                      	<input type='file' id="passport" name="passport" accept=".png, .jpg, .jpeg" />
+	                      	<label for="passport"></label>
+	                  	</div>
+	                  	<div class="avatar-preview">
+	                      	<div id="imagePreview" style="background-image: url(../images/user-male.png);">
+	                      	</div>
+	                  	</div>
+	              	</div>
+					<div class="md-form">
+						<i class="fas fa-user prefix"></i>
+						<input type="hidden" name="session" value="<?php echo implode($current_session); ?>" id="session">
+						<input type="hidden" name="app_no" value="<?= $student_detail['app_no'] ?>" id="app_no">
+						<input type="text" id="fullname"  value="<?= $student_detail['surname'].' '. $student_detail['firstname'].' '. $student_detail['othername']; ?>" name="fullname" class="form-control">
+						<label for="fullname">Candidate's Fullname</label>
+					</div>
+					<div class="md-form">
+						<i class="fas fa-user prefix"></i>
+						<input type="text" id="mat_no"  value="<?= $student_detail['mat_no'] ?>" name="mat_no" class="form-control">
+						<label for="mat_no">Matric Number</label>
+					</div>
+					<div class="md-form form-group form-inline-lg">
+						<span class='mr-3 fas fa-cubes prefix'></span>
+						<select style="width: 85%;" class="ml-5 mdb-select dropdown-success darken-4 colorful-select initialized md-form" name="level" id="level" required="">
+							<option disabled selected>--Level--</option>
+							<option value="ND II">ND II</option>
+							<option value="HND II">HND II</option>
+						</select>
+					</div>
+					<div class="md-form">
+						<i class="fas fa-user prefix"></i>
+						<input type="text" id="hobby" name="hobby" class="form-control">
+						<label for="hobby">Hobbies</label>
+					</div>
+					<div class="md-form form-group form-inline-lg">
+			    		<span class='mr-3 fas fa-cubes prefix'></span>
+			    		<select style="width: 85%;" class="ml-5 mdb-select dropdown-success darken-4 colorful-select initialized md-form" name="position" id="position" required>
+							<option disabled selected>--Select Position--</option>
+						    <option value="President">President</option>
+						    <option value="Vice President">Vice President</option>
+						    <option value="Secretary General">Secretary General</option>
+						    <option value="Financial Secretary">Financial Secretary</option>
+						    <option value="Treasurer">Treasurer</option>
+						    <option value="Provost">Provost</option>
+						    <option value="P.R.O">P.R.O</option>
+						    <option value="Welfare Director">Welfare Director</option>
+						    <option value="Social Director">Social Director</option>
+						    <option value="Sports Director">Sports Director</option>
+						</select>
+			    	</div>
+          <div class="md-form form-group form-inline-lg">
+              <span class='mr-3 fas fa-money-bill prefix'></span>
+              <select style="width: 85%;" class="ml-5 mdb-select dropdown-success darken-4 colorful-select initialized md-form" name="payment_method" id="payment_method" required="">
+                  <option disabled selected>--Payment Method--</option>
+                  <option value="BANK-DEPOSIT">BANK-DEPOSIT</option>
+                  <option value="ONLINE">ONLINE</option>
+              </select>
+          </div>
+          <div class="file-field" id="bank_pay">
+              <div class="btn btn-primary btn-sm float-left">
+                  <span>Choose file</span>
+                  <input type="file" name="deposit_proof" id="deposit_proof" >
+              </div>
+              <div class="file-path-wrapper">
+                  <input class="file-path validate" type="text" placeholder="Upload your deposit slip here">
+              </div>
+          </div>
+					<div class="form-group" align="center">
+						<p class="alert alert-success" id="errorshow"></p>
+					</div>
+			    	<center>
+			    		<div class="text-center align-items-center justify-content-center col-md-5 mb-3">
+						    <button type="submit" id="btnSave" class="btn btn-md btn-block peach-gradient btn-rounded z-depth-1a">Save Candidate and Make Payment</button>
+						</div>
+					</center>
+				</form>
+			</div>
+        </div>
+	</div>
+</div>
+</main>
+
+
+<?php include "footer.php"; ?>
+
+<script>
+	$(document).ready(function() {
+		$('.mdb-select').materialSelect();
+	});
+
+    $(document).ready(function(){
+        $("#errorshow").hide();
+        $("#bank_pay").hide();
+
+        $('#payment_method').change(function() {
+            if ($("#payment_method").val() == "BANK-DEPOSIT") {
+                $("#bank_pay").show();
+            }else{
+                $("#bank_pay").hide();
+            }
+        });        
+    });
+
+
+	$(document).ready(function(){
+    	$("#errorshow").hide();
+    });
+
+
+    function readURL(input) {
+	    if (input.files && input.files[0]) {
+	        var reader = new FileReader();
+	        reader.onload = function(e) {
+	            $('#imagePreview').css('background-image', 'url('+e.target.result +')');
+	            $('#imagePreview').hide();
+	            $('#imagePreview').fadeIn(650);
+	        }
+	        reader.readAsDataURL(input.files[0]);
+	    }
+		}
+
+	$("#passport").change(function() {
+	    readURL(this);
+	});
+
+	$("form#newcandidate").submit(function(e) {
+	    e.preventDefault();    
+	    var formData = new FormData(this);
+	    $.ajax({
+		    url: '../ajax_auth/newcandidate.php',
+		    type: 'POST',
+		    data: formData,
+		    beforeSend:function(){
+				$('#btnSave').html("Adding Candidate <span class='fas fa-1x fa-cog fa-spin'></span>");
+			},
+			success: function (data) {
+				if (data == "done") {
+				    $("#errorshow").show();
+				    $("#errorshow").html("New Candidate Added Successfully <br> Please wait. <span class='fas fa-1x fa-cog fa-spin'></span>");
+				    $('#btnSave').html("Done!!");
+				    setTimeout(' window.location.href = "candidatestatus.php"; ', 3000);
+				}else{
+					$("#errorshow").show();
+					$("#errorshow").html(data);
+				    $('#btnSave').html("Save Candidate");
+				}   
+			},
+			cache: false,
+			error:function(){
+			  	$("#errorshow").show();
+				$('#errorshow').html("An error has occured!!");
+				$('#btnSave').html("Save Candidate");
+			},
+			contentType: false,
+			processData: false
+		});
+	});
+
+
+</script>

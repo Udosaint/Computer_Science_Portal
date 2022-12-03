@@ -1,0 +1,119 @@
+{% extends 'student/main.html' %}
+{% load static %}
+{% block content %}
+<title>{{ student }} || Dashboard</title>
+
+
+<main class="my-4">
+	<div class="container col-md-9">
+
+		<div class="container-fluid card mt-4 mb-4">
+			<div class="row ">
+			  <div class="border border-2 border-primary col-md-4 pt-2 pb-2">
+				<p>Name: <br> <strong>{{ student}}</strong></p>
+				<p>App No: <br>  <strong>{{ request.user.app_no }}</strong></p>
+			  </div>
+			  <div class="border border-2 border-secondary col-md-4 pt-2 pb-2">
+				<p>Email: <br> <strong>{{ request.user.email }}</strong></p>
+				{% if semester  %}
+					{% for sem in semester %}
+					<p>Current Semester: <br> <strong>{{ sem.semester}}</strong></p>
+					{% endfor %}
+				{% else %}
+					<p>Current Semester: <br> <strong>Note Assign</strong></p>
+				{% endif %}
+			  </div>
+			  <div class="border border-2 border-success col-md-4 pt-2 pb-2 ">
+				{% if level  %}
+					{% for l in level %}
+					<p>Current Level: <br> <strong>{{ l.level}}</strong></p>
+					{% endfor %}
+				{% else %}
+					<p>Current Level: <br> <strong>{{ student.level}}</strong></p>
+				{% endif %}
+				{% comment %} FOR SESSION {% endcomment %}
+				{% if session  %}
+					{% for s in session %}
+					<p>Current Session: <br> <strong>{{ s.session}}</strong></p>
+					{% endfor %}
+				{% else %}
+					<p>Current Session: <br> <strong>{{ student.session}}</strong></p>
+				{% endif %}
+			  </div>
+			  
+			</div>
+		
+		  </div>
+
+		<div class="card col-md-9 mx-auto pl-5 pr-5">
+			
+
+				<h3 class="text-center font-weight-bold mt-4">Student Details</h3>
+				<hr class="text-center mx-auto w-50 unique-color font-weight-bold mb-4">
+
+			<form method="POST" enctype="multipart/form-data" action="">
+				{% csrf_token %}
+				<div class="avatar-upload">
+					<div class="avatar-edit">
+						{% comment %} <input type='file' id="passport" name="passport" accept=".png, .jpg, .jpeg" /> {% endcomment %}
+						{{ form.avatar }}
+						<label for="passport"></label>
+					</div>
+					<div class="avatar-preview">
+						<div id="imagePreview" style="background-image: url({{ request.user.avatar.url }});">
+						</div>
+					</div>
+					<button class="btn btn-sm btn-rounded btn-outline-success" name="profile_pic" type="submit" style="margin-left: 35px;">Upload</button>
+				</div>
+			</form>
+			<div class="">
+				<h5 class="my-2"><b><span class="fas fa-user-plus"></span> Full Name:</b> {{student}}</h5>
+
+				<div class="col-md-12 pl-0"><hr class="text-left unique-color  font-weight-bold mb-4"></div>
+				<h5 class="my-2"><b><span class="fas fa-graduation-cap"></span> Application Number:</b> {{ student.app_no }}</h5>				
+				<div class="col-md-12 pl-0"><hr class="text-left unique-color  font-weight-bold mb-4"></div>
+				<h5 class="my-2"><b><span class="fas fa-graduation-cap"></span> Matric Number:</b> {{ student.reg_no }}</h5>
+				<div class="col-md-12 pl-0"><hr class="text-left unique-color font-weight-bold mb-4"></div>
+				<h5 class="my-2"><b><span class="fas fa-cubes"></span> 
+				Level:</b> {{ student.level }}</h5>
+				<div class="col-md-12 pl-0"><hr class="text-left unique-color font-weight-bold mb-4"></div>
+				<h5 class="my-2"><b><span class="fas fa-cubes"></span> Programme:</b> {{ student.programme }}</h5>
+				<div class="col-md-12 pl-0"><hr class="text-left unique-color font-weight-bold mb-4"></div>
+				<h5 class="my-2"><b><span class="fas fa-cubes"></span> Session:</b> {{ student.session }}</h5>
+				<div class="col-md-12 pl-0"><hr class="text-left unique-color font-weight-bold mb-4"></div>
+				<h5 class="my-2"><b><span class="fas fa-envelope"></span> Email Address:</b> {{ request.user.email }}</h5>
+				<div class="col-md-12 pl-0"><hr class="text-left unique-color font-weight-bold mb-4"></div>
+				<h5 class="my-2"><b><span class="fas fa-users"></span> Gender:</b> {{ student.sex }}</h5>				<div class="col-md-9 pl-0"><hr class="text-left unique-color font-weight-bold mb-4"></div>
+				<h5 class="my-2"><b><span class="fas fa-contact"></span> Address:</b> {{ student.address }}</h5>
+				<div class="col-md-12 pl-0"><hr class="text-left unique-color font-weight-bold mb-4"></div>
+				<h5 class="mt-2 mb-5"><b><span class="fas fa-phone-square"></span> Phone Number:</b> {{ student.phone }}</h5>				
+
+				<center>
+					{% if student.reg_no is None %}
+					<a href="{% url 'update-regno' %}" class="mt-2 mb-5 btn btn-rounded btn-success btn-md">Update Matriculation Number <span class="fas fa-edit"></span></a>
+					{% endif %}
+				</center>
+			</div>
+		</div>
+	</div>
+</main>
+
+
+<script>
+	function readURL(input) {
+	    if (input.files && input.files[0]) {
+	        var reader = new FileReader();
+	        reader.onload = function(e) {
+	            $('#imagePreview').css('background-image', 'url('+e.target.result +')');
+	            $('#imagePreview').hide();
+	            $('#imagePreview').fadeIn(650);
+	        }
+	        reader.readAsDataURL(input.files[0]);
+	    }
+	}
+	$("#passport").change(function() {
+	    readURL(this);
+	});
+</script>
+
+{% endblock content %}

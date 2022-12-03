@@ -1,0 +1,526 @@
+<?php 
+
+include "header.php"; 
+
+if (isset($_GET['action'])) {
+	$action = $_GET['action'];
+}
+
+$database = new Db();
+$db = $database->db();
+?>
+
+<?php include "sidenav.php"; ?>
+<?php switch ($action) { case 'view': ?>
+<title>View Staff List</title>
+<div class="col-md-9">
+	<div class="card card-cascade narrower">
+		<!-- Card header -->
+		<div class="view view-cascade gradient-card-header success-color">
+		<!-- Title -->
+			<h3 class="card-header-title"><i class="fas fa-list"></i> Staff list</h3>
+		</div>
+		<div class="card-body card-body-cascade">
+			<div class="table-wrapper table-responsive">
+				<table class="table align-middle table-responsive-lg text-nowrap table-striped table-hover" id="cand">
+					<thead class="table-dark">
+						<tr>
+							<th scope="col">S/N</th>
+							<th scope="col">Full Name</th>
+							<th scope="col">Staff ID</th>
+							<th scope="col">Role</th>
+							<th scope="col">Phone</th>
+							<th scope="col">Actions</th>
+						</tr>
+					</thead>
+					<?php
+			            $sql = $db->prepare("SELECT * FROM staff");
+			            $sql->execute();
+				        $b = 1;
+			        ?>
+					<tbody>
+						<div class="text-center" align="center"><?php if ($sql->rowCount() < 1) { echo "<td class='text-center'>No data available</td>"; }else{
+								while ($row = $sql->fetch(PDO::FETCH_ASSOC)): ?></div>
+						<tr>
+							<td class="text-left"><?php echo $b; ?></td>
+							<td class="text-left"><?php echo $row['fullname']; ?></td>
+			                <td class="text-left"><?php echo $row['staff_id']; ?></td>
+			                <td class="text-left"><?php echo $row['role']; ?></td>
+			                <td class="text-left"><?php echo $row['phone']; ?></td>
+			                <td class="text-left"><a class='btn btn-primary btn-rounded btn-sm' href='staff.php?action=details&staff_id=<?php echo $row["staff_id"]; ?>'> View</a></td>
+							<?php  $b++; endwhile; } ?>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+        </div>
+	</div>
+</div>
+	<!-- Second Colomn End -->
+		</div>
+	</div>
+</main>
+
+
+<?php include "footer.php"; ?>
+ <script>
+	$(document).ready(function () {
+      $('#cand').DataTable({
+        "pagingType": 'simple_numbers',
+          "lengthChange": true,
+          "lengthMenu": [[10, 25, 50, -1],[10, 15, 25, "All"]],
+          dom: 'Bfrtip',
+          buttons: [
+              {
+                  extend: 'csv',
+                  className: 'btn btn-rounded btn-success btn-sm',
+                  text: 'Save to CSV',
+                  title: 'Candidate List'
+              },
+              {
+                  extend: 'excel',
+                  className: 'btn btn-rounded btn-elegant btn-sm',
+                  text: 'Save to Excel',
+                  title: 'Candidate List'
+              },
+              {
+                  extend: 'print',
+                  className: 'btn btn-rounded btn-info btn-sm',
+                  text: 'Print Table',
+                  title: 'Candidate List'
+              },
+              {
+                  extend: 'pdf',
+                  className: 'btn btn-rounded btn-primary btn-sm',
+                  text: 'Save to PDF',
+                  orientation: 'landscape',
+                  pageSize: 'A4',
+                  title: 'Candidate List'
+              }
+          ]
+      });
+
+      $('#cand_wrapper').find('label').each(function () {
+          $(this).parent().append($(this).children());
+      });
+
+      $('#cand_wrapper .dataTables_filter').find('input').each(function () {
+          $('input').attr("placeholder", "Search");
+          $('input').removeClass('form-control-sm');
+          $('input').addClass('form-control');
+      });
+
+      $('#cand_wrapper .students_length').addClass('d-flex flex-row');
+    	$('#cand_wrapper .dataTables_filter').addClass('md-form');
+      $('#cand_wrapper .dataTables_filter').find('label').remove();
+  });
+</script>
+
+<?php break; ?>
+
+<?php case 'add': ?>
+<style>
+	.avatar-upload{
+		position:relative;
+		max-width:205px;
+		margin:50px auto;
+	}
+	.avatar-upload .avatar-edit{
+		position:absolute;
+		right:12px;
+		z-index:1;
+		top:10px;
+	}
+	.avatar-upload .avatar-edit input{
+		display:none;
+	}.avatar-upload .avatar-edit input+label{
+		display:inline-block;
+		width:34px;
+		height:34px;
+		margin-bottom:0;
+		border-radius:100%;
+		background:#FFF;
+		border:1px solid transparent;
+		box-shadow:0 2px 4px 0 rgba(0,0,0,.12);
+		cursor:pointer;
+		font-weight:400;
+		transition:all .2s ease-in-out;
+	}
+	.avatar-upload .avatar-edit input+label:hover{
+		background:#f1f1f1;
+		border-color:#d6d6d6;
+	}
+	.avatar-upload .avatar-edit input+label:after{
+		content:"\f041";
+		font-family:FontAwesome;
+		color:#757575;
+		position:absolute;
+		top:10px;
+		left:0;
+		right:0;
+		text-align:center;
+		margin:auto;
+	}
+	.avatar-upload .avatar-preview{
+		width:170px;
+		height:180px;
+		position:relative;
+		border-radius:8%;
+		border:6px solid #cdcdcd;
+		box-shadow:0 2px 4px 0 rgba(0,0,0,.1);
+	}
+	.avatar-upload .avatar-preview>div{
+		width:100%;
+		height:100%;
+		border-radius:8%;
+		background-size:cover;
+		background-repeat:no-repeat;
+		background-position:center;
+		background-color: #f7f5ef;
+	}
+/* -- //Responsive code -- */
+</style>
+<div class="col-md-9">
+	<title>Add New Staff</title>
+	<div class="card card-cascade narrower">
+		<!-- Card header -->
+		<div class="view view-cascade gradient-card-header success-color">
+		<!-- Title -->
+			<h3 class="card-header-title"><i class="fas fa-list"></i> Add New Staff</h3>
+		</div>
+		<div class="card-body card-body-cascade">
+			<div class="container">
+				<form class="container md-form" id="newcandidate" enctype="multipart/form-data">
+					<div class="avatar-upload">
+						<div class="avatar-edit">
+	                      	<input type='file' id="passport" name="passport" accept=".png, .jpg, .jpeg" />
+	                      	<label for="passport"></label>
+	                  	</div>
+	                  	<div class="avatar-preview">
+	                      	<div id="imagePreview" style="background-image: url(../images/user-male.png);">
+	                      	</div>
+	                  	</div>
+	              	</div>
+
+
+					<div class="md-form">
+						<i class="fas fa-user prefix"></i>
+						<input type="hidden" name="session" value="<?php echo implode($current_session); ?>" id="session">
+						<input type="text" id="fullname" name="fullname" class="form-control">
+						<label for="fullname">Staff's Fullname</label>
+					</div>
+					<div class="md-form">
+						<i class="fas fa-user prefix"></i>
+						<input type="text" id="staff_id" name="staff_id" class="form-control">
+						<label for="staff_id">Staff ID</label>
+					</div>					
+					<div class="md-form">
+						<i class="fas fa-user prefix"></i>
+						<input type="text" id="phone" name="phone" class="form-control">
+						<label for="phone">Phone Number</label>
+					</div>
+					<div class="md-form form-group form-inline-lg">
+						<span class='mr-3 fas fa-cubes prefix'></span>
+						<select style="width: 85%;" class="ml-5 mdb-select dropdown-success darken-4 colorful-select initialized md-form" name="role" id="role" required="">
+							<option disabled selected>--Role--</option>
+							<option value="Lecturer">Lecturer</option>
+							<option value="Secretary">Secretary</option>
+							<option value="HOD">HOD</option>
+						</select>
+					</div>
+					<div class="md-form">
+						<i class="fas fa-user prefix"></i>
+						<input type="text" id="password" name="password" class="form-control">
+						<label for="password">Password</label>
+					</div>
+					<div class="form-group" align="center">
+						<p class="alert alert-success" id="errorshow"></p>
+					</div>
+			    	<center>
+			    		<div class="text-center align-items-center justify-content-center col-md-5 mb-3">
+						    <button type="submit" id="btnSave" class="btn btn-md btn-block peach-gradient btn-rounded z-depth-1a">Save Staff</button>
+						</div>
+					</center>
+				</form>
+			</div>
+        </div>
+	</div>
+</div>
+	<!-- Second Colomn End -->
+		</div>
+	</div>
+</main>
+
+
+<?php include "footer.php"; ?>
+ <script>
+	$(document).ready(function() {
+		$('.mdb-select').materialSelect();
+	});
+
+
+	$(document).ready(function(){
+    	$("#errorshow").hide();
+    });
+
+
+    function readURL(input) {
+	    if (input.files && input.files[0]) {
+	        var reader = new FileReader();
+	        reader.onload = function(e) {
+	            $('#imagePreview').css('background-image', 'url('+e.target.result +')');
+	            $('#imagePreview').hide();
+	            $('#imagePreview').fadeIn(650);
+	        }
+	        reader.readAsDataURL(input.files[0]);
+	    }
+	}
+
+	$("#passport").change(function() {
+	    readURL(this);
+	});
+
+	$("form#newcandidate").submit(function(e) {
+	    e.preventDefault();    
+	    var formData = new FormData(this);
+	    $.ajax({
+		    url: '../ajax_auth/newstaff.php',
+		    type: 'POST',
+		    data: formData,
+		    beforeSend:function(){
+				$('#btnSave').html("Adding Staff <span class='fas fa-1x fa-cog fa-spin'></span>");
+			},
+			success: function (data) {
+				if (data == "done") {
+				    $("#errorshow").show();
+				    $("#errorshow").html("New Staff Added Successfully <br> Please wait. <span class='fas fa-1x fa-cog fa-spin'></span>");
+				    $('#btnSave').html("Done!!");
+				    setTimeout(' window.location.href = "./staff.php?action=view"; ', 3000);
+				}else{
+					$("#errorshow").show();
+					$("#errorshow").html(data);
+				    $('#btnSave').html("Save Staff");
+				}   
+			},
+			cache: false,
+			error:function(){
+			  	$("#errorshow").show();
+				$('#errorshow').html("An error has occured!!");
+				$('#btnSave').html("Save Staff");
+			},
+			contentType: false,
+			processData: false
+		});
+	});
+</script>
+
+<?php break; ?>
+
+
+<?php case 'details': ?>
+<style>
+	.avatar-upload{
+		position:relative;
+		max-width:205px;
+		margin:50px auto;
+	}
+	.avatar-upload .avatar-edit{
+		position:absolute;
+		right:12px;
+		z-index:1;
+		top:10px;
+	}
+	.avatar-upload .avatar-edit input{
+		display:none;
+	}.avatar-upload .avatar-edit input+label{
+		display:inline-block;
+		width:34px;
+		height:34px;
+		margin-bottom:0;
+		border-radius:100%;
+		background:#FFF;
+		border:1px solid transparent;
+		box-shadow:0 2px 4px 0 rgba(0,0,0,.12);
+		cursor:pointer;
+		font-weight:400;
+		transition:all .2s ease-in-out;
+	}
+	.avatar-upload .avatar-edit input+label:hover{
+		background:#f1f1f1;
+		border-color:#d6d6d6;
+	}
+	.avatar-upload .avatar-edit input+label:after{
+		content:"\f041";
+		font-family:FontAwesome;
+		color:#757575;
+		position:absolute;
+		top:10px;
+		left:0;
+		right:0;
+		text-align:center;
+		margin:auto;
+	}
+	.avatar-upload .avatar-preview{
+		width:170px;
+		height:180px;
+		position:relative;
+		border-radius:8%;
+		border:6px solid #cdcdcd;
+		box-shadow:0 2px 4px 0 rgba(0,0,0,.1);
+	}
+	.avatar-upload .avatar-preview>div{
+		width:100%;
+		height:100%;
+		border-radius:8%;
+		background-size:cover;
+		background-repeat:no-repeat;
+		background-position:center;
+		background-color: #f7f5ef;
+	}
+/* -- //Responsive code -- */
+</style>
+<div class="col-md-9">
+	<title>Staff Details</title>
+	<div class="card card-cascade narrower">
+		<!-- Card header -->
+		<div class="view view-cascade gradient-card-header success-color">
+		<!-- Title -->
+			<h3 class="card-header-title"><i class="fas fa-list"></i> View Staff Details </h3>
+		</div>
+		<div class="card-body card-body-cascade">
+			<div class="container">
+				<form class="container md-form" id="newcandidate" enctype="multipart/form-data">
+					<div class="avatar-upload">
+							<?php
+								$staff_id = $_GET['staff_id'];
+			          $sql = $db->prepare("SELECT * FROM staff WHERE staff_id = ?");
+			          $sql->execute([$staff_id]);
+			          $row = $sql->fetch();
+			        ?>
+						<div class="avatar-edit">
+	                      	<input type='file' id="passport" name="passport" accept=".png, .jpg, .jpeg" />
+	                      	<label for="passport"></label>
+	                  	</div>
+	                  	<div class="avatar-preview">
+	                      	<div id="imagePreview" style="background-image: url(../images/staff/<?= $row['profile'] ?>);">
+	                      	</div>
+	                  	</div>
+	              	</div>
+
+
+					<div class="md-form">
+						<i class="fas fa-user prefix"></i>
+						<input type="text" id="fullname" name="fullname" value="<?= $row['fullname'] ?>" class="form-control">
+						<label for="fullname">Staff's Fullname</label>
+					</div>
+					<div class="md-form">
+						<i class="fas fa-user prefix"></i>
+						<input type="text" id="staff_id" name="staff_id" value="<?= $row['staff_id'] ?>" class="form-control">
+						<label for="staff_id">Staff ID</label>
+					</div>					
+					<div class="md-form">
+						<i class="fas fa-user prefix"></i>
+						<input type="text" id="phone" name="phone" value="<?= $row['phone'] ?>" class="form-control">
+						<label for="phone">Phone Number</label>
+					</div>
+					<div class="md-form form-group form-inline-lg">
+						<span class='mr-3 fas fa-cubes prefix'></span>
+						<select style="width: 85%;" class="ml-5 mdb-select dropdown-success darken-4 colorful-select initialized md-form" name="role" id="role" value="<?= $row['fullname'] ?>" required="">
+							<option disabled selected>--<?= $row['role'] ?>--</option>
+							<option value="Lecturer">Lecturer</option>
+							<option value="Secretary">Secretary</option>
+							<option value="HOD">HOD</option>
+						</select>
+					</div>
+					<div class="md-form">
+						<i class="fas fa-user prefix"></i>
+						<input type="text" id="password" name="password" value="<?= $row['password'] ?>" class="form-control">
+						<label for="password">Password</label>
+					</div>
+					<div class="form-group" align="center">
+						<p class="alert alert-success" id="errorshow"></p>
+					</div>
+			    	<center>
+			    		<div class="text-center align-items-center justify-content-center col-md-5 mb-3">
+						    <button type="submit" id="btnSave" class="btn btn-md btn-block peach-gradient btn-rounded z-depth-1a">Update Staff Details</button>
+						</div>
+					</center>
+				</form>
+			</div>
+        </div>
+	</div>
+</div>
+	<!-- Second Colomn End -->
+		</div>
+	</div>
+</main>
+
+
+<?php include "footer.php"; ?>
+ <script>
+	$(document).ready(function() {
+		$('.mdb-select').materialSelect();
+	});
+
+
+	$(document).ready(function(){
+    	$("#errorshow").hide();
+    });
+
+
+    function readURL(input) {
+	    if (input.files && input.files[0]) {
+	        var reader = new FileReader();
+	        reader.onload = function(e) {
+	            $('#imagePreview').css('background-image', 'url('+e.target.result +')');
+	            $('#imagePreview').hide();
+	            $('#imagePreview').fadeIn(650);
+	        }
+	        reader.readAsDataURL(input.files[0]);
+	    }
+	}
+
+	$("#passport").change(function() {
+	    readURL(this);
+	});
+
+	$("form#newcandidate").submit(function(e) {
+	    e.preventDefault();    
+	    var formData = new FormData(this);
+	    $.ajax({
+		    url: '../ajax_auth/editstaff.php',
+		    type: 'POST',
+		    data: formData,
+		    beforeSend:function(){
+				$('#btnSave').html("Adding Staff <span class='fas fa-1x fa-cog fa-spin'></span>");
+			},
+			success: function (data) {
+				if (data == "done") {
+				    $("#errorshow").show();
+				    $("#errorshow").html("New Staff Added Successfully <br> Please wait. <span class='fas fa-1x fa-cog fa-spin'></span>");
+				    $('#btnSave').html("Done!!");
+				    setTimeout(' window.location.href = "./staff.php?action=view"; ', 3000);
+				}else{
+					$("#errorshow").show();
+					$("#errorshow").html(data);
+				    $('#btnSave').html("Save Staff");
+				}   
+			},
+			cache: false,
+			error:function(){
+			  	$("#errorshow").show();
+				$('#errorshow').html("An error has occured!!");
+				$('#btnSave').html("Save Staff");
+			},
+			contentType: false,
+			processData: false
+		});
+	});
+</script>
+
+<?php break; ?>
+
+
+<?php default: header("Location: ./home") ?>
+	
+<?php break; } ?>

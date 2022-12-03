@@ -1,0 +1,298 @@
+{% extends 'main.html' %}
+
+{% block content %}
+<title>Create Profile - Nacos FPNO</title>
+
+{% if page == "VALIDATE" %}
+
+<main id="" class="my-4">
+	<section>
+		<div class="container col-md-7">
+
+			{% if message %}
+			<div class="alert alert-warning"  data-mdb-position="top-right">
+				<p>{{ message }} <b>{{app_no}}</b></p>
+			</div>
+			{% endif %}
+
+			<div class="my-5">
+
+				
+
+				<div class="card card-cascade narrower">
+					<!-- Card header -->
+					<div class="view view-cascade gradient-card-header success-color">
+						
+						<!-- Title -->
+						<h3 class="card-header-title"><i class="fas fa-users"></i> Validate Application Number</h3>
+					</div>
+					<div class="card-body card-body-cascade">
+						
+						<form class="container" method="POST" action="">
+							{% csrf_token %}
+							<div class="md-form">
+								<i class="fas fa-hashtag prefix"></i>
+								<input type="text" id="app_no" name="app_no" required class="form-control">
+								<label for="app_no">Application Number</label>
+							</div>							
+							<div class="form-group" align="center">
+								<p class="alert alert-success fa fa-exclamation" id="errorshow"></p>
+							</div>					      
+							<center>
+								<div class="text-center align-items-center justify-content-center col-md-6 mb-3">
+									<button id="" type="submit"  class="btn btn-block btn-success btn-rounded z-depth-1a"> <i class="fas fa-sign-in-alt fa-md">  Validate</i>
+									</button>
+								</div>
+							</center>
+					</form>					  
+				</div>
+			</div>
+			
+		</div>
+	</div>
+</section>
+</main>
+
+{% elif page == "REGISTER" %}
+
+<main id="" class="my-4">
+	<section>
+		<div class="container col-md-7">
+
+			{% if message %}
+			<div class="alert alert-warning"  data-mdb-position="top-right">
+				<p>{{ message }}</p>
+			</div>
+			{% endif %}
+
+			<div class="my-5">
+				<div class="card card-cascade narrower">
+					<!-- Card header -->
+					<div class="view view-cascade gradient-card-header success-color">
+						
+						<!-- Title -->
+						<h3 class="card-header-title"><i class="fas fa-users"></i> Create Student Profile</h3>
+					</div>
+					<div class="card-body card-body-cascade">
+						
+						<form class="container" method="POST" action="{% url 'create-student' %}">
+
+							{% csrf_token %}
+
+							<div class="md-form">
+								<i class="fas fa-hashtag prefix"></i>
+								{{ form.app_no }}
+								{% comment %} <input type="text" id="app_no2" name="app_no2" required class="form-control"> {% endcomment %}
+								<label for="app_no2">Application Number</label>
+							</div>
+
+							{% if form.app_no.errors %}
+							{% for error in form.app_no.errors %}
+								<div class="alert alert-warning"> <strong>{{error|escape}}</strong>
+								</div>
+							{% endfor %}
+							{% endif %}
+
+							<div class="md-form">
+								<i class="fas fa-users prefix"></i>
+								{{ form.username }}
+								{% comment %} <input type="email" id="username" name="username" required class="form-control"> {% endcomment %}
+								<label for="email">Username</label>
+							</div>
+
+							{% if form.username.errors %}
+							{% for error in form.username.errors %}
+								<div class="alert alert-warning"> <strong>{{error|escape}}</strong>
+								</div>
+							{% endfor %}
+							{% endif %}
+
+							<div class="md-form">
+								<i class="fas fa-envelope prefix"></i>
+								{{ form.email }}
+								{% comment %} <input type="email" id="email" name="email" required class="form-control"> {% endcomment %}
+								<label for="email">Email Address</label>
+							</div>
+
+							{% if form.email.errors %}
+							{% for error in form.email.errors %}
+								<div class="alert alert-warning"> <strong>{{error|escape}}</strong>
+								</div>
+							{% endfor %}
+							{% endif %}
+								
+							<div class="md-form">
+								<i class="fas fa-key prefix"></i>
+								{{ form.password1 }}
+								{% comment %} <input type="password" id="password" name="password" required class="form-control"> {% endcomment %}
+								<label for="password1">Password</label>
+							</div>
+
+							{% if form.password1.errors %}
+							{% for error in form.password1.errors %}
+								<div class="alert alert-warning"> <strong>{{error|escape}}</strong>
+								</div>
+							{% endfor %}
+							{% endif %}	
+
+							<div class="md-form">
+								<i class="fas fa-key prefix"></i>
+								{{ form.password2 }}
+								{% comment %} <input type="password" id="confirm_password" name="conpassword" required class="form-control"> {% endcomment %}
+								<label class="mb-3 pb-3" for="password2">Confirm password</label>
+								<span id="message"></span>
+								<p class="text-left mt-2 pt-2"><span style="cursor: pointer;" id="passText">Show Password <span class= 'fa fa-eye'></span></span></p>
+							</div>
+
+							{% if form.password2.errors %}
+							{% for error in form.password2.errors %}
+								<div class="alert alert-warning"> 
+									<strong>{{error|escape}}</strong> 
+								</div>
+							{% endfor %}
+							{% endif %}
+								
+								
+								<center>
+									<div class="text-center align-items-center justify-content-center col-md-6 mb-3">
+										<button type="submit" name="register_student"  class="btn btn-block btn-success btn-rounded z-depth-1a"> <i class="fas fa-sign-in-alt fa-md">  Register</i>
+										</button>
+									</div>
+								</center>
+							</div>								
+							<div class="form-group" align="center">
+								<p class="alert alert-success fa fa-exclamation" id="errorshow"></p>
+							</div>					      
+						</form>					  
+						
+						<!--Footer-->
+						<div class="modal-footer mx-5 pt-3 mb-1">
+							<p class="font-small grey-text d-flex justify-content-end">Already registered? <a href="{% url 'login' %}" class="blue-text ml-1"> Login Now</a></p>
+						</div>
+					</div>
+				</div>
+				
+			</div>
+		</div>
+	</section>
+</main>
+
+{% else %}
+
+<main id="" class="my-4">
+	<section>
+		<div class="container col-md-7">
+			<div class="my-5">
+				<div class="card card-cascade narrower">
+					<div class="card-body card-body-cascade">
+
+						<div class="alert alert-success text-center"  data-mdb-position="top-right">
+							<p>You Have Created you Account Successfully</p>
+						</div>
+						<!--Footer-->
+						<div class="modal-footer mx-5 pt-3 mb-1 text-center">
+							<p class="font-small grey-text d-flex justify-content-end">Click Here to Login <a href="{% url 'login' %}" class="blue-text ml-1"> Login Now</a></p>
+						</div>
+					</div>
+				</div>
+				
+			</div>
+		</div>
+	</section>
+</main>
+
+{% endif %}
+<script>
+	
+	$(document).ready(function() {
+		$('.mdb-select').materialSelect();
+		
+		$('#register-page').hide();
+
+		
+		$('#validate_student').click(function() {
+			var app_no = $('#app_no').val();
+			if (app_no == "") {
+				//alert("application Numbercation Cannot be Empty");
+			}else{
+				
+				$.ajax({
+					url: 'ajax_auth/validate_student.php',
+					type: 'POST',
+					data: {'app_no': app_no},
+					beforeSend:function(){
+						$('#validate_student').html("Validating... <span class='fas fa-1x fa-cog fa-spin'></span>");
+					},
+					success: function (data) {
+						//$("#fill_it").show();
+						var datas = JSON.parse(data);
+						if (datas['done'] == 1) {
+							$("#errorshow").hide();
+							$("#validate_student").hide();
+							$("#fill_it").show();
+							
+							$("#mat_no").val(datas['mat_no']);
+							$("#firstname").val(datas['firstname']);
+							$("#surname").val(datas['surname']);
+							$("#othername").val(datas['othername']);
+							$("#email").val(datas['email']);
+							$("#gender").val(datas['gender']);
+							$("#phone").val(datas['phone']);
+							$("#address").val(datas['address']);
+							$("#session").val(datas['session']);
+							$("#programme").val(datas['programme']);
+							$("#level").val(datas['level']);
+							
+						}else{
+							
+							$("#errorshow").show();
+							$('#errorshow').html(" Student with App No: "+app_no+" does not exist");
+							$('#validate_student').html("<span class='fas fa-sign-in-alt fa-md'></span> Validate Student");
+						}
+						
+					},
+					error:function(){
+						$("#errorshow").show();
+						$('#errorshow').html("An error has occured!!");
+						$('#btnSave').html("Save Candidate");
+					},
+				});
+			}
+		})
+	});
+	
+	function viewPassword(){
+		var password = document.getElementById('id_password1');
+		var conPass = document.getElementById('id_password2');
+		if (password.type == 'password') {
+			password.type = 'text';
+			conPass.type = 'text';
+			$('#passText').html("Hide Password <i class= 'fa fa-eye' aria-hidden='true'></i>");
+		}else{
+			password.type = 'password';
+			conPass.type = 'password';
+			$('#passText').html("Show Password <i class= 'fa fa-eye-slash' aria-hidden='true'></i>");
+		}
+	}
+	
+	$('#passText').click(function(){
+		viewPassword();
+	});
+	
+	$(document).ready(function(){
+		$("#errorshow").hide();
+	});
+	
+	
+	// password matching function
+	$('#confirm_password').on('keyup', function(){
+		
+		if ($('#confirm_password').val() == $('#password').val()) {
+			$('#message').html('Pasword Match').css('color','green');
+		} else {
+			$('#message').html('Pasword not Match').css('color','red');
+		}
+	});
+	
+</script>
+{% endblock content %}

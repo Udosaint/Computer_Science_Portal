@@ -1,0 +1,148 @@
+<?php include "header.php"; 
+
+if (!$_SESSION['admin']) {
+	header("Location: ./home");
+	exit();
+}
+
+$student_id = $_GET['app_no'];
+
+	$admin = new Student();
+	$row = $admin->Student($student_id);
+?>
+
+<title> Student Info (<?php echo $student_id; ?>) - NACOS FPNO</title>
+<style>
+.fas .fab .far {
+    font-size: 0.8rem;
+}
+
+h4{
+	font-size: 1.2rem;
+}
+</style>
+
+<?php include "sidenav.php"; ?>
+		<div class=" col-md-9">
+			<div class="container">
+				<div class="card card-cascade narrower">
+					<!-- Card header -->
+					<div class="view view-cascade gradient-card-header success-color">
+						<!-- Title -->
+						<h3 class="card-header-title"><i class="fas fa-edit"></i>Student Info</h3>
+					</div>
+					<div class="card-body card-body-cascade">
+						<form class="container" id="edit" enctype="multipart/form-data">
+							<div class="md-form">
+								<i class="fas fa-user-plus prefix"></i>
+					            <input type="text" id="surname" disabled value="<?php echo $row['surname']; ?>" name="surname" class="form-control">
+					            <label for="surname">Surname</label>
+					        </div>
+					        <div class="md-form">
+								<i class="fas fa-user-plus prefix"></i>
+					            <input type="text" id="firstname" value="<?php echo $row['firstname']; ?>" name="firstname" disabled class="form-control">
+					            <label for="lastname">Firstname</label>
+					        </div>					        
+					        <div class="md-form">
+								<i class="fas fa-user-plus prefix"></i>
+					            <input type="text" id="othername" value="<?php echo $row['othername']; ?>" name="othername" disabled class="form-control">
+					            <label for="othername">Other names</label>
+					        </div>
+					        <div class="md-form">
+					        	<i class="fas fa-envelope prefix"></i>
+					            <input type="email" id="email" value="<?php echo $row['email']; ?>" disabled name="email" class="form-control">
+					            <label for="email">Email Address</label>
+					        </div>
+					        <div class="md-form form-group form-inline-lg">
+		    					<span class='mr-3 fas fa-cubes prefix'></span>
+		    					<select style="width: 85%;" class="ml-5 mdb-select dropdown-success darken-4 colorful-select initialized md-form" name="level" id="level" required="">
+									<option disabled selected><?= $row['level'] ?></option>
+								</select>
+		    				</div>
+					        <div class="md-form">
+					        	<i class="fas fa-graduation-cap prefix"></i>
+					            <input type="text" id="mat_no" value="<?php echo $row['app_no']; ?>" disabled name="mat_no" class="form-control">
+					            <label for="mat_no">Application Number</label>
+					        </div>					        
+					        <div class="md-form">
+					        	<i class="fas fa-graduation-cap prefix"></i>
+					            <input type="text" id="mat_no" value="<?php echo $row['mat_no']; ?>" disabled name="mat_no" class="form-control">
+					            <label for="mat_no">Matriculation Number</label>
+					        </div>
+					        <div class="md-form form-group form-inline-lg">
+			    				<span class='mr-3 fas fa-pen-alt prefix'></span>
+			    				<select class="ml-5 mdb-select dropdown-default darken-4 colorful-select initialized md-form" name="regular" id="regular" required="">
+									<option disabled selected> <?= $row['programme'] ?></option>
+
+								</select>
+			    			</div>
+		    				<div class="md-form form-group form-inline-lg">
+		    					<span class='mr-3 fas fa-users prefix'></span>
+		    					<select style="width: 85%;" class="ml-5 mdb-select dropdown-success darken-4 colorful-select initialized md-form" name="gender" id="gender" required="">
+									<option disabled selected> <?= $row['gender'] ?></option>
+								</select>
+		    				</div>
+		    				<div class="md-form">
+		    					<i class="fas fa-phone prefix"></i>
+					            <input type="text" id="phone" value="<?php echo $row['phone']; ?>" name="phone" class="form-control">
+					            <label for="phone">Phone Number</label>
+					        </div>
+		    				<div class="md-form">
+		    					<i class="fas fa-phone prefix"></i>
+					            <input type="text" id="phone" value="<?php echo $row['address']; ?>" name="phone" class="form-control">
+					            <label for="phone">Address</label>
+					        </div>
+						</form>
+					</div>
+				</div>
+				
+			</div>
+		</div>
+	</section>
+</main>
+
+
+<?php include "footer.php"; ?>
+  <script>
+
+	$(document).ready(function() {
+		$('.mdb-select').materialSelect();
+	});
+
+    $(document).ready(function(){
+    	$("#errorshow").hide();
+    });
+        	
+	$("form#edit").submit(function(e) {
+	    e.preventDefault();    
+	    var formData = new FormData(this);
+	    $.ajax({
+		    url: '../auth/editinfoauth',
+		    type: 'POST',
+		    data: formData,
+		    beforeSend:function(){
+				$('#btnEdit').html("Editing profile <span class='fa fa-1x fa-cog fa-spin'></span>");
+			},
+			success: function (data) {
+				if (data == "edited") {
+				    $('#btnEdit').html("Successful!!");
+				    $("#errorshow").show();
+				    $("#errorshow").html("Profile edited! Refreshing. <span class='fa fa-1x fa-cog fa-spin'></span>");
+				    setTimeout(' window.location.href = "<?php echo $_SERVER['HTTP_REFERER']; ?>"; ', 3000);
+				}else{
+					$("#errorshow").show();
+					$("#errorshow").html(data);
+				    $('#btnEdit').html("Sign up");
+				}   
+			},
+			cache: false,
+			error:function(){
+			  	$("#errorshow").show();
+				$('#errorshow').html("An error has occured!!");
+				$('#btnEdit').html("Sign up");
+			},
+			contentType: false,
+			processData: false
+		});
+	});
+  </script>

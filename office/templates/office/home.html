@@ -1,0 +1,45 @@
+{% extends 'office/main.html' %}
+{% load static %}
+
+{% block content %}
+<title>Admin Dashboard</title>
+
+		<div class="col-md-9">
+			<div class="card card-cascade narrower">
+				<!-- Card header -->
+				<div class="view view-cascade gradient-card-header success-color">
+					<!-- Title -->
+					<h3 class="card-header-title"><i class="fas fa-globe"></i> Site Overview</h3>
+				</div>
+				<div class="card-body card-body-cascade">
+					<?php if ($current_session == true): ?>
+					<h4 class="text-center"><span class="font-weight-bold">Session:</span> <span class="small-text"><?php echo implode($current_session); ?> Session</span></h4>						
+					<?php else: ?>					
+					<h4 class="text-center text-danger"><span class="font-weight-bold">Session Not Set</span></h4>
+					<?php endif ?>
+					<div class="row container">
+						<div class="col-md-4 z-index-2 card card-body card-body-cascade unique-color">
+							<h5 class="text-center py-4 px-1 white-text">NUMBER OF REGISTERED STUDENTS</h5>
+							<center><h3 class="btn mb-4 pb-3 col-md-4 white indigo-text font-weight-bold"><?php echo $total_student; ?></h3></center>
+							<a class="mask rgba-black-slight"></a>
+						</div>
+						<div class="col-md-4 z-index-2 card card-body card-body-cascade primary-color">
+							<h5 class="text-center py-4 px-1 white-text">NACOS ID CARD Submitted</h5>
+							<center><h3 class="btn mb-4 pb-3 col-md-4 white indigo-text font-weight-bold"><?php echo $total_Id; ?></h3></center>
+							<a class="mask rgba-black-slight"></a>
+						</div>
+						<div class="col-md-4 z-index-2 card card-body card-body-cascade default-color">
+							<h5 class="text-center py-4 px-1 white-text">TOTAL BLOG POSTS</h5>
+							<center><h3 class="btn mb-4 pb-3 col-md-4 white indigo-text font-weight-bold"><?php echo $total_blog; ?></h3></center>
+							<a class="mask rgba-black-slight"></a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Second Colomn End -->
+		</div>
+	</div>
+</main>
+
+{% endblock content %}

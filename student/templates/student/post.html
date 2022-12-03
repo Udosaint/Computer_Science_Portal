@@ -1,0 +1,338 @@
+<?php
+include ('header.php');
+$database = new Db();
+$db = $database->db();
+if (!isset($_GET['post_id'])) {
+	header("Location: ./news.php");
+	exit();
+}else{
+	$post_id = filter_var(htmlentities($_GET['post_id']),FILTER_SANITIZE_STRING);
+	
+	$fetchpost = $db->prepare("SELECT * FROM blog_posts WHERE post_id = ?");
+	$fetchpost->execute([$post_id]);
+	$posts = $fetchpost->fetch();
+
+	$post_id = $posts['post_id'];
+	$title = $posts['title'];
+	$post_img = $posts['post_img'];
+	$category = $posts['category'];
+	$post_date = $posts['date'];
+
+/*	$sql  = $db->prepare("UPDATE blog_posts SET views = views + 1 WHERE post_id = ?");
+	$sql->execute([$post_id]);*/
+}
+
+if (!isset($_SESSION['visits']))
+	$_SESSION['visits'] = 0;
+$_SESSION['visits'] = $_SESSION['visits'] + 1;
+if ($_SESSION['visits'] > 1) {
+	//echo "<script>alert('".$_SESSION['visits']."');</script>";
+}else{
+	$sql  = $db->prepare("UPDATE blog_posts SET views = views + 1 WHERE post_id = ?");
+	$sql->execute([$post_id]);
+}
+
+
+if (is_file('post.php')){
+	$path = "./";
+}elseif (is_file('../post.php')){
+	$path =  "../";
+}elseif (is_file('../../post.php')){
+	$path =  "../../";
+}
+?>
+<style>
+	h5 {
+		letter-spacing: 1px;
+	}
+	h1 {
+		letter-spacing: 1px;
+	}
+</style>
+<title><?php echo str_replace('-', ' ', $title); ?> - NACOS DSPZ</title>
+<div class="introCard mb-4" style="background-image: url(../images/background2.jpg); background-repeat: no-repeat; background-size: cover; background-position: center center; z-index: 0;">
+	<div class="mask rgba-black-strong d-flex justify-content-center align-items-center h-45">
+		<div class="container" style="padding-top: 10%; padding-bottom: 10%;">
+			<div class="col-md-12 mb-4 white-text text-center">
+				<h1 class="display-7 title mt-md-5 mt-lg-0 font-weight-bold wow fadeIn" data-wow-delay="0.3s" style="visibility: visible; animation-name: fadeIn; animation-delay: 0.3s;">
+					<strong><?php echo str_replace('-', ' ', $title); ?> - NACOS DSPZ</strong>
+				</h1>
+				<hr class="hr-light my-4 wow fadeInDown" data-wow-delay="0.4s" style="visibility: visible; animation-name: fadeInDown; animation-delay: 0.4s;">
+				<h5 class="text-uppercase mb-4 white-text wow fadeInDown" data-wow-delay="0.4s" style="visibility: visible; animation-name: fadeInDown; animation-delay: 0.4s;"><strong class="font-weight-bold"><i>Towards Advanced Computing</i></strong></h5>
+			</div>
+		</div>
+	</div>
+</div>
+</header>
+
+<main class="container mr-5">
+	<div class="row mt-4 mb-4">
+		<div class="col-md-10">
+			<div class="card card-cascade narrower">
+				<div class="view view-cascade py-4 mx-4 mb-3 narrower unique-color justify-content-between align-items-center">
+					<h3 class="white-text font-weight-bold text-center"><span class="far fa-newspaper"></span> <?php echo str_replace('-', ' ', $title); ?></h3>
+				</div>
+				<div align="center" class="mt-0 mb-0">
+					<div class="view img-responsive overlay view-cascade w-75 text-center mt-3">
+						<img class="wow bounceIn card-img-top" style="width: 100%; height: 100%;" src="../images/post_images/<?php echo $post_img; ?>" alt="<?php echo str_replace('-', ' ', $title); ?>">
+						<a href="#">
+							<div class="mask rgba-white-slight"></div>
+
+						</a>
+					</div>
+				</div>
+				<div align="center">
+					<div class="card-body-cascade card-body text-center narrower">
+						<h4 class="font-weight-bold"><a><?php echo str_replace('-', ' ', $title); ?></a></h4>
+						<p>Written by <a><strong><?php echo $posts['author'];?></strong></a>, <?php echo $posts['date'];?></p>
+						<div class="social-counters">
+							<a class="btn btn-sm btn-rounded btn-fb">
+								<i class="fab fa-facebook pr-2"></i>
+								<span class="clearfix d-none d-md-inline-block">Facebook</span>
+							</a>
+							<span class="counter">0</span>
+							<a class="btn btn-sm btn-rounded btn-tw">
+								<i class="fab fa-twitter pr-2"></i>
+								<span class="clearfix d-none d-md-inline-block">Twitter</span>
+							</a>
+							<span class="counter">0</span>
+							<a class="btn btn-sm btn-rounded btn-gplus">
+								<i class="fab fa-google-plus pr-2"></i>
+								<span class="clearfix d-none d-md-inline-block">Google+</span>
+							</a>
+							<span class="counter">0</span>
+							<a class="btn btn-sm btn-rounded btn-default">
+								<i class="fas fa-comments pr-2"></i>
+								<span class="clearfix d-none d-md-inline-block">Comments</span>
+								</a><?php
+								$fetchcomment = $db->prepare("SELECT * FROM post_comments WHERE c_post_id = :post_id ORDER BY c_date DESC");
+								$fetchcomment->bindParam(":post_id", $post_id, PDO::PARAM_STR);
+								$fetchcomment->execute();
+								?>
+								<span class="counter"><?php echo $fetchcomment->rowCount(); ?></span>
+								<a class="btn btn-sm btn-rounded btn-elegant">
+									<i class="fas fa-eye pr-2"></i>
+									<span class="clearfix d-none d-md-inline-block">Views</span>
+								</a>
+								<span class="counter"><?php echo $posts['views'];?></span>
+							</div>
+						</div>
+					</div>
+					<div class="container">
+						<div class="card-text text-justify dark-grey-text mt-2 mb-4 pt-2 pb-3">
+							<p style=" overflow: auto;">
+							<?php echo $posts['body']; ?>
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row mb-3">
+			<div class="col-md-10">
+				<div class="card card-cascade narrower">
+					<div class="view view-cascade py-2 mx-4 mb-1 narrower unique-color justify-content-between align-items-center">
+						<h2 class="white-text text-center font-weight-bold"><span class="fas fa-comment"></span> Comment</h2>
+					</div>
+					<div class="card-body">
+						<div class="row">
+							<div class="col-md-6">
+								<div class="md-form">
+									<i class="fas fa-user-plus prefix"></i>
+									<input type="text" required="" name="author" id="author" class="form-control" placeholder="">
+									<label for="author">Name</label>
+									<input type="hidden" id="empty" value="<?php echo $posts['post_id']; ?>" style="display: none;" name="empty">
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="md-form">
+									<i class="fas fa-envelope prefix"></i>
+									<input type="email" name="email" id="email" class="form-control" placeholder="">
+									<label for="email">Email</label>
+								</div>
+							</div>
+						</div>
+						<div class="md-form form-group form-inline-lg">
+							<span class='mr-3 fas fa-edit prefix'></span>
+							<textarea class="form-control md-textarea" name="comment"  rows="6" id="comment"></textarea>
+							<label for="comment">Comment....</label>
+						</div>
+						<center><div class="form-group md-form col-md-5">
+							<span id="result" class="mt-2 mb-2"></span>
+							<button class="btn btn-rounded btn-block peach-gradient" id="submitcomment"><i class="fas fa-edit"></i> Comment</button></div>
+						</center>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row mb-3">
+			<div class="col-md-10">
+				<div class="card card-cascade narrower">
+					<div class="view view-cascade py-2 mx-4 mb-1 narrower unique-color justify-content-between align-items-center">
+						<h3 class="white-text text-center"><span class="fas fa-comments-o"></span> Comments<span class="ml-1 counter"><?php echo $fetchcomment->rowCount(); ?></span></h3>
+					</div>
+					<div class="card-body card-body-cascade view-cascade">
+						<div class="container">
+							<?php foreach ($fetchcomment as $comment): $comment_id = $comment['comment_id']; ?>
+								<div class="row mt-4 z-depth-2 py-4" style="border-radius: 8px;">
+									<div class="col" align="center">
+										<img src="../images/user-male.png" class="rounded-circle z-depth-2" width="55" height="55">
+										<p class="card-text"><font size="4"><?php echo '<span class="font-weight-bold">'.$comment['c_author'].'</span>';?></font><br>
+											<?php // if (!empty($comment['email'])){ echo $comment['email'].'<br>'; } ?>
+											<?php echo $comment['c_date'];?></p>
+										</div>
+										<div class="col-md-9">
+											<div class="col py-2 px-2 card-text">
+												<font size="3"><?php echo $comment['comment'];?></font></div>
+												<button id="reply_tab_<?php echo $comment_id; ?>" class="btn w-25 mb-3 btn-sm btn-rounded btn-info waves-effect">reply</button>
+												<div id="reply-box_<?php echo $comment_id; ?>" class="mt-3">
+													<div class="col-md-10 card card-cascade narrower">
+														<div class="view view-cascade py-1 pt-2 narrower info-color justify-content-between align-items-center">
+															<h4 class="title white-text text-center"><i class="fas fa-comment"></i> Reply </h4>
+														</div>
+														<div class="card-body card-body-cascade view-cascade">
+															<div class="container">
+																<div class="row">
+																	<div class="col-md-6">
+																		<div class="md-form">
+																			<i class="fas fa-user-plus prefix"></i>
+																			<input type="text" required="" name="r_author_<?php echo $comment_id; ?>" id="r_author_<?php echo $comment_id; ?>" class="form-control" placeholder="">
+																			<label for="r_author_<?php echo $comment_id; ?>">Name</label>
+																			<input type="hidden" id="c_id_<?php echo $comment['comment_id']; ?>" value="<?php echo $comment['comment_id']; ?>" style="display: none;" name="c_id_<?php echo $comment['comment_id']; ?>">
+																		</div>
+																	</div>
+																	<div class="col-md-6">
+																		<div class="md-form">
+																			<i class="fas fa-envelope prefix"></i>
+																			<input type="email" name="r_email_<?php echo $comment_id; ?>" id="r_email_<?php echo $comment_id; ?>" class="form-control" placeholder="">
+																			<label for="r_email_<?php echo $comment_id; ?>">Email</label>
+																		</div>
+																	</div>
+																</div>
+																<div class="md-form form-group form-inline-lg">										<i class="fas fa-edit prefix"></i>
+																	<textarea class="form-control md-textarea" rows="4" name="r_reply_<?php echo $comment_id; ?>" id="r_reply_<?php echo $comment_id; ?>"></textarea>
+																	<label for="r_reply_<?php echo $comment_id; ?>"> Enter Reply</label>
+																	<span  id="replying_<?php echo $comment_id; ?>" style="width: 100%;height: 80px;margin: 0px;display: none;"></span>	
+																</div>
+																<div class="form-group">
+																	<span id="r_result_<?php echo $comment_id; ?>" class="mt-2 mb-2"></span>
+																	<button class="btn btn-rounded btn-block btn-info" id="submitreply_<?php echo $comment_id; ?>"><i class="fas fa-edit"></i> Reply</button>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+
+									<?php 
+									$fetchreply = $db->prepare("SELECT * FROM reply WHERE r_comment_id = :comment_id ORDER BY r_date DESC");
+									$fetchreply->bindParam(":comment_id", $comment_id, PDO::PARAM_INT);
+									$fetchreply->execute();
+									?>
+									<?php if($fetchreply->rowCount() > 0){ echo "<p class='card-text mt-3'> <font size='4'>Replies <span class='ml-1 counter'>".$fetchreply->rowCount()."</span></font></p><hr class='blue-gradient'>"; } ?>
+									<?php foreach ($fetchreply as $reply): ?>
+										<div class="row mt-4">
+											<div class="col-md-3" align="center">
+												<img src="../images/user-male.png" class="rounded-circle z-depth-2" width="40" height="40">
+												<p class="card-text"><font size="4"><?php echo '<span class="font-weight-bold">'.$reply['r_author'].'</span>';?></font><br>
+													<?php // if (!empty($reply['r_email'])){ echo $reply['r_email'].'<br>'; } ?>
+													<?php echo $reply['r_date']; ?></p>
+												</div>
+												<div class="col">
+													<p class="col-md-11 py-2 px-2 card-text">
+														<font size="3"><?php echo $reply['reply'];?></font></p>
+													</div>
+												</div><hr>
+											<?php endforeach; ?>
+										</div>
+									</div><hr>
+								<?php endforeach; ?>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section></main>
+	</body>
+	<?php include 'footer.php'; ?>
+
+	<script>
+		function addComment(){
+			var author = document.getElementById("author").value;
+			var email = document.getElementById("email").value;
+			var comment = document.getElementById("comment").value;
+			var empty = document.getElementById("empty").value;
+			$.ajax({
+				type:'POST',
+				url:'../ajax_auth/add_comment.php',
+				data:{'author':author,'email':email,'comment':comment,'empty':empty},
+				beforeSend:function(){
+					$('#submitcomment').hide();
+					$('#commenting').show();
+				},
+				success:function(data){
+					$('#result').html(data);
+					if (data == "success") {
+						$('#result').html("<p class='alert alert-success'>Comment successuful</p>");
+						window.location.reload();
+					}else{
+						$('#submitcomment').show();
+					}
+					$('#submitcomment').show();
+					$('#commenting').hide();
+				},
+				error:function(err){
+					alert(err);
+				}
+			});
+		}
+		$('#submitcomment').click(function(){
+			addComment();
+		});
+		new WOW().init();
+	</script>
+
+<script>
+	//hide reply tab
+	$(document).ready(function(){
+		$('#reply-box_<?php echo $comment_id; ?>').hide();
+	});
+	//Toggle reply tab when clicked
+	$('#reply_tab_<?php echo $comment_id; ?>').click(function(e){
+		e.preventDefault();
+		$('#reply-box_<?php echo $comment_id; ?>').toggle();
+	});
+	function addReply_<?php echo $comment_id; ?>(){
+		var r_author = document.getElementById('r_author_<?php echo $comment_id; ?>').value;
+		var r_email = document.getElementById('r_email_<?php echo $comment_id; ?>').value;
+		var r_reply = document.getElementById('r_reply_<?php echo $comment_id; ?>').value;
+		var c_id = document.getElementById('c_id_<?php echo $comment_id; ?>').value;
+		$.ajax({
+			type:'POST',
+			url:'../ajax_auth/add_reply.php',
+			data:{'r_author':r_author,'r_email':r_email,'r_reply':r_reply,'c_id':c_id},
+			beforeSend:function(){
+				$('#submitreply_<?php echo $comment_id; ?>').hide();
+				$('#replying_<?php echo $comment_id; ?>').show();
+			},
+			success:function(data){
+				$('#r_result_<?php echo $comment_id; ?>').html(data);
+				if (data == "replied") {
+					$('#r_result_<?php echo $comment_id; ?>').html("<p class='alert alert-success'>Reply successuful</p>");
+					window.location.reload();
+				}else{
+					$('#submitreply_<?php echo $comment_id; ?>').show();
+				}
+				$('#submitreply_<?php echo $comment_id; ?>').show();
+				$('#replying_<?php echo $comment_id; ?>').hide();
+			},
+			error:function(err){
+				$('#replying_<?php echo $comment_id; ?>').show();
+				$('#replying_<?php echo $comment_id; ?>').html(err);
+			}
+		});
+	}
+	//submit a reply
+	$('#submitreply_<?php echo $comment_id; ?>').click(function(e){
+		addReply_<?php echo $comment_id; ?>();
+	});
+</script>

@@ -1,0 +1,167 @@
+<style>
+.widget-nav-menu ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: inline-block;
+}
+
+.fas .fab .far {
+       font-size: 0.8rem;
+}
+
+.collapsible a{
+       font-size: 1rem;
+       line-height: 2;
+}
+
+.collapsible li{
+       border-bottom: 1px solid #c9c9c9;
+}
+
+.collapsible-body a{
+       font-size: 0.9rem;
+       line-height: 1.7;
+       margin-left: 30px;
+       color: #000002;
+}
+
+</style>
+
+<main class="mt-5 mb-5">
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-md-3">
+				<div class="card card-cascade narrower mb-3">
+					<!-- Card header -->
+					<div class="view view-cascade gradient-card-header success-color">
+						<!-- Title -->
+						<h3 class="card-header-title"><i class="fas fa-link"></i> Quick Links</h3>
+					</div>
+					<div class="card-body card-body-cascade sn-bg-4 mdb-sidenav fixed">
+						<ul class="custom-scrollbar list-unstyled ps ps--active-y">
+                            <li>
+                            	<ul class="collapsible collapsible-accordion list-unstyled">
+                            		<li class="menu-item menu-item-type-custom menu-item-object-custom active">
+                            			<a class="collapsible-header waves-effect" href="./home.php"><i class="fas fa-tachometer-alt pr-2 pl-2"></i> Dashboard</a>
+                            		</li>
+                            		<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children">
+                            			<a class="collapsible-header waves-effect arrow-r"><i class="fas fa-user-graduate pr-2 pl-2"></i> Students <i class="fa fa-angle-down rotate-icon"></i>
+                            			</a>
+                            			<div class="collapsible-body">
+                            				<ul class="sub-menu list-unstyled">
+                            					<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home"><a class="collapsible-header waves-effect" href="students.php?action=view"><i class="fas fa-eye pr-1"></i> View Students</a>
+                            					</li>
+
+                                                <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home"><a class="collapsible-header waves-effect" href="nacosid.php"><i class="fas fa-money-check pr-1"></i> Nacos ID cards</a>
+                                                </li>
+                            				</ul>
+                            			</div>
+                            		</li>
+                            		<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children">
+                            			<a class="collapsible-header waves-effect arrow-r"><i class="fas fa-money-check pr-2 pl-2"></i> Payments <i class="fa fa-angle-down rotate-icon"></i>
+                            			</a>
+                            			<div class="collapsible-body">
+                            				<ul class="sub-menu list-unstyled">
+                            					<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home"><a class="collapsible-header waves-effect" href="students.php?action=payments"><i class="fas fa-check pr-1"></i> Confirmed Payments</a>
+                            					</li>
+                            					<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home"><a class="collapsible-header waves-effect" href="queryreference.php"><i class="fab fa-amazon-pay pr-1"></i> Query Reference</a>
+                            					</li>
+                            					<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home"><a class="collapsible-header waves-effect" href="updatepayment.php"><i class="fas fa-bullseye pr-1"></i> Update Payment Status</a>
+                            					</li>
+                            				</ul>
+                            			</div>
+                            		</li>
+
+                                    <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children">
+                                        <a class="collapsible-header waves-effect arrow-r"><i class="fas fa-user pr-2 pl-2"></i>CS Staff <i class="fa fa-angle-down rotate-icon"></i>
+                                        </a>
+                                        <div class="collapsible-body">
+                                            <ul class="sub-menu list-unstyled">
+                                                <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home"><a class="collapsible-header waves-effect" href="staff.php?action=add"><i class="fas fa-user-plus pr-1"></i> Add Staff</a>
+                                                </li>             
+
+                                                <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home"><a class="collapsible-header waves-effect" href="staff.php?action=view"><i class="fas fa-list pr-1"></i> View Staff</a>
+                                                </li>
+
+                                            </ul>
+                                        </div>
+                                    </li>
+
+                                    <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children">
+                                        <a class="collapsible-header waves-effect arrow-r"><i class="fas fa-vote-yea pr-2 pl-2"></i> Nacos Election <i class="fa fa-angle-down rotate-icon"></i>
+                                        </a>
+                                        <div class="collapsible-body">
+                                            <ul class="sub-menu list-unstyled">
+                                                <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home"><a class="collapsible-header waves-effect" href="candidate.php?action=add_election_session"><i class="fas fa-user pr-1"></i> Activate Election</a>
+                                                </li>                                                 
+                                                <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home"><a class="collapsible-header waves-effect" href="candidate.php?action=viewelections"><i class="fas fa-list pr-1"></i> View Election Sessions</a>
+                                                </li>                                                <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home"><a class="collapsible-header waves-effect" href="candidate.php?action=add"><i class="fas fa-user-plus pr-1"></i> Add Candidates</a>
+                                                </li>             
+
+                                                <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home"><a class="collapsible-header waves-effect" href="candidate.php?action=viewCandidate"><i class="fas fa-list pr-1"></i> View Candidates</a>
+                                                </li>
+
+                                            </ul>
+                                        </div>
+                                    </li>
+
+                            		<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children">
+                            			<a class="collapsible-header waves-effect arrow-r"><i class="fas fa-bullhorn pr-2 pl-2"></i> Announcement <i class="fa fa-angle-down rotate-icon"></i>
+                            			</a>
+                            			<div class="collapsible-body">
+                            				<ul class="sub-menu list-unstyled">
+                            					<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home"><a class="collapsible-header waves-effect" href="newpost.php"><i class="fas fa-edit pr-1"></i> New Post</a>
+                            					</li>
+                                                <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home"><a class="collapsible-header waves-effect" href="newcategory.php"><i class="fas fa-cube pr-1"></i> New Category</a>
+                                                </li>
+                            					<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home"><a class="collapsible-header waves-effect" href="viewposts.php"><i class="fas fa-newspaper pr-1"></i> View Posts</a>
+                            					</li>
+                            				</ul>
+                            			</div>
+                            		</li>
+                            		<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children">
+                            			<a class="collapsible-header waves-effect arrow-r"><i class="fas fa-shield-alt pr-2 pl-2"></i> Admin options <i class="fa fa-angle-down rotate-icon"></i>
+                            			</a>
+                            			<div class="collapsible-body">
+                            				<ul class="sub-menu list-unstyled">
+                            					<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home"><a class="collapsible-header waves-effect" href="createadmin.php"><i class="fas fa-user-plus pr-1"></i> Create New Admin</a>
+                            					</li>
+                            					<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home"><a class="collapsible-header waves-effect" href="viewadmin.php"><i class="fas fa-list pr-1"></i> View Admin List</a>
+                            					</li>
+                            				</ul>
+                            			</div>
+                            		</li>
+                                    <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children">
+                                        <a class="collapsible-header waves-effect arrow-r"><i class="fas fa-money-bill-wave pr-2 pl-2"></i> Session Payment List <i class="fa fa-angle-down rotate-icon"></i>
+                                        </a>
+                                        <div class="collapsible-body">
+                                            <ul class="sub-menu list-unstyled">
+                                                <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home"><a class="collapsible-header waves-effect" href="paymentlist.php?level=ND I"><i class="fas fa-hand-point-right pr-1"></i> ND I</a>
+                                                </li>
+                                                <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home"><a class="collapsible-header waves-effect" href="paymentlist.php?level=ND II"><i class="fas fa-hand-point-right pr-1"></i> ND II</a>
+                                                </li>
+                                                <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home"><a class="collapsible-header waves-effect" href="paymentlist.php?level=HND I"><i class="fas fa-hand-point-right pr-1"></i> HND I</a>
+                                                </li>
+                                                <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home"><a class="collapsible-header waves-effect" href="paymentlist.php?level=HND II"> <i class="fas fa-hand-point-right pr-1"></i> HND II</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                            		<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children">
+                            			<a class="collapsible-header waves-effect arrow-r"><i class="fas fa-cogs pr-2 pl-2"></i> Options <i class="fa fa-angle-down rotate-icon"></i>
+                            			</a>
+                            			<div class="collapsible-body">
+                            				<ul class="sub-menu list-unstyled">
+                                                <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home"><a class="collapsible-header waves-effect" href="updatesession.php"><i class="fas fa-paper-plane pr-1"></i> Update Session</a>
+                                                </li>
+                            				</ul>
+                            			</div>
+                            		</li>
+                            	</ul>
+                            </li>
+                        </ul>
+                    </div>
+				</div>
+			</div>
+			<!-- First Colomn End -->

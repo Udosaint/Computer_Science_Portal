@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+
+{% load static %}
+<!-- saved from url=(0087) -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+   <link href="./favicon.ico" rel="icon">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="{% static 'stylesheet/all.css' %}">
+  <!-- Bootstrap core CSS -->
+  <!-- <link href="./stylesheet/bootstrap.min.css" rel="stylesheet"> -->
+  <!-- Material Design Bootstrap -->
+  <link href="{% static 'stylesheet/compiled-4.8.0.min.css' %}" rel="stylesheet">
+  <script src="{% static 'scripts/sweetalert2.all.min.js' %}"></script>
+  <script src="{% static 'scripts/jquery-3.4.0.min.js' %}"></script>
+  <style>
+    /* Required for full background image */
+
+  html,
+  body,
+  header {
+    height: 100%;
+  }
+  nav a{
+  	color: #FFF;
+  	font-size: 18px;
+    font-weight: 550;
+  }
+
+  @media (max-width: 740px) {
+    html,
+    body {
+      height: 100vh;
+    }
+  }
+
+  .top-nav-collapse {
+    background-color: rgba(76, 175, 80, 0.7) !important;
+    color: #FFF;
+  }
+
+  .navbar:not(.top-nav-collapse) {
+    background: transparent !important;
+  }
+
+  @media (max-width: 991px) {
+    .navbar:not(.top-nav-collapse) {
+      background: rgba(76, 175, 80, 0.7) !important;
+      color: #FFF;
+    }
+      nav a{
+	  	color: #FFF;
+	  	font-size: 15px;
+	  }
+  }
+
+  h1 {
+    letter-spacing: 8px;
+  }
+
+  h5 {
+    letter-spacing: 3px;
+  }
+
+  .hr-light {
+    border-top: 3px solid #fff;
+    width: 100px;
+  }
+
+	#logo_body{
+	  width: 18%;
+	  height: 18%;
+	}
+  @media (min-width: 320px and max-width: 1024px) {
+	#logo_body{
+	  width: auto;
+	  height: auto;
+	}
+  }
+
+  </style>
+</head>
+
+<body class="lightgrey">
+
+  <!-- Navigation & Intro -->
+  <header>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg success-color navbar-dark fixed-top scrolling-navbar top-nav-collapse">
+        <a class="navbar-brand font-weight-bold title white-text" href="/"><img src="{% static 'images/logo.png' %}" style="height: 60px;" class="img-fluid img-responsive"> </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#toggler" aria-controls="toggler" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="toggler">
+          <ul class="navbar-nav mr-auto smooth-scroll">
+            <li class="nav-item">
+              <a class="nav-link title waves-effect waves-light" href="{% url 'home' %}"><i class="fas fa-home"></i> Home
+                <span class="sr-only">(current)</span>
+              </a>
+            </li>
+            <li class="nav-item">
+            	<a class="nav-link title waves-effect waves-light" href="{% url 'about' %}"><i class="fas fa-book"></i> About</a>
+            </li>
+            <li class="nav-item">
+             	<a class="nav-link title waves-effect waves-light" href="{% url 'contact' %}"><i class="fas fa-envelope"></i> Contact</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link title waves-effect waves-light" href="{% url 'news' %}"><i class="fas fa-bullhorn"></i> Announcements</a>
+            </li>
+
+          </ul>
+          <ul class="navbar-nav ml-auto nav-flex-icons"> 
+            <li class="nav-item">
+            	<a class="nav-link title waves-effect waves-light" href="{% url 'login' %}"><i class="fas fa-sign-in-alt"></i> Login</a>
+            </li>
+            <li class="nav-item">
+            	<a class="nav-link title waves-effect waves-light" href="{% url 'register' %}"><i class="fas fa-users"></i> Register</a>
+            </li>
+          </ul>
+        </div>
+    </nav>
+
+    <!-- Full Page Intro -->
+    <div class="view jarallax" data-jarallax="{'speed': 0.2}" style="background-image: url({% static 'images/background.jpg' %}); background-repeat: no-repeat; background-size: cover; background-position: center center; z-index: 0;" data-jarallax-original-styles="background-image: url({% static 'images/background.jpg' %}); background-repeat: no-repeat; background-size: cover; background-position: center center;">
+        <!-- Mask & flexbox options-->
+        <div class="mask rgba-black-strong d-flex justify-content-center align-items-center">
+          <!-- Content -->
+          <div class="container">
+            <!--Grid row-->
+            <div class="row">
+              <!--Grid column-->
+              <div class="col-md-12 mb-4 mt-5 white-text text-center">
+                <center><img src="{% static 'images/NNL.png' %}" id="logo_body" class="img-fluid mt-3"></center>
+                <h1 class="display-4 title mt-md-5 mt-3 font-weight-bold wow fadeIn" data-wow-delay="0.3s" style="visibility: visible; animation-name: fadeIn; animation-delay: 0.3s;">
+                    {% if page == "Home" %}
+                    <strong>NACOS FPNO</strong>
+                    {% else %}
+                    <strong>{{page}} - NACOS FPNO</strong>
+                    {% endif %}
+                  </h1>
+                <hr class="hr-light my-4 wow fadeInDown" data-wow-delay="0.4s" style="visibility: visible; animation-name: fadeInDown; animation-delay: 0.4s;">
+                <h5 class="text-uppercase mb-4 white-text wow fadeInDown" data-wow-delay="0.4s" style="visibility: visible; animation-name: fadeInDown; animation-delay: 0.4s;"><strong class="font-weight-bold"><i>Towards Advanced Computing</i></strong></h5>
+              </div>
+              <!--Grid column-->
+            </div>
+            <!--Grid row-->
+          </div>
+          <!-- Content -->
+        </div>
+        <br>
+        <!-- Mask & flexbox options-->
+            <!--     <div id="jarallax-container-0" style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; overflow: hidden; pointer-events: none; z-index: -100;"><div style="background-position: 50% 50%; background-size: cover; background-repeat: no-repeat; background-image: url(./images/background.jpg); position: fixed; top: 0px; left: 0px; width: 1349px; height: 608px; overflow: hidden; pointer-events: none; margin-top: 0px; transform: translate3d(0px, -47.6px, 0px);"></div></div></div> -->
+      <!-- Full Page Intro -->
+    </div>
+    </header>
+{% block content %}
+
+
+
+{% endblock content %}
+
+  <!--Footer-->
+  <footer class="page-footer text-center text-md-left success-color-dark pt-0">
+
+    <div class="top-footer-color">
+      <div class="container">
+
+        <!--Grid row-->
+        <div class="row py-4 d-flex align-items-center">
+
+          <!--Grid column-->
+          <div class="col-md-6 col-lg-5 text-center text-md-left mb-md-1" id="foot">
+            <img src="{% static 'images/logo.png' %}" width="140" class="img-fluid img-responsive mb-1">
+            <h6 class="mb-0 white-text">Get connected with us on social networks!</h6>
+          </div>
+          <!--Grid column-->
+
+          <!--Grid column-->
+          <div class="col-md-6 col-lg-7 text-center text-md-right">
+            <!--Facebook-->
+            <a class="p-2 m-2 fa-lg fb-ic ml-0">
+              <i class="fab fa-facebook-f white-text mr-lg-4"> </i>
+            </a>
+            <!--Twitter-->
+            <a class="p-2 m-2 fa-lg tw-ic">
+              <i class="fab fa-twitter white-text mr-lg-4"> </i>
+            </a>
+            <!--Google +-->
+            <a class="p-2 m-2 fa-lg gplus-ic">
+              <i class="fab fa-google-plus-g white-text mr-lg-4"> </i>
+            </a>
+            <!--Linkedin-->
+            <a class="p-2 m-2 fa-lg li-ic">
+              <i class="fab fa-linkedin-in white-text mr-lg-4"> </i>
+            </a>
+            <!--Instagram-->
+            <a class="p-2 m-2 fa-lg ins-ic">
+              <i class="fab fa-instagram white-text mr-lg-4"> </i>
+            </a>
+          </div>
+          <!--Grid column-->
+
+        </div>
+        <!--Grid row-->
+      </div>
+    </div>
+
+    <!-- Copyright -->
+    <div class="footer-copyright py-3 text-center wow fadeIn" data-wow-delay="0.3s" style="visibility: visible; animation-name: fadeIn; animation-delay: 0.3s;">
+      <div class="container-fluid">
+        ©2022 Copyright: <a href="."> NACOS FPNO </a>
+      </div>
+    </div>
+    <!-- Copyright -->
+
+  </footer>
+  <!--/.Footer-->
+
+  <!-- JQuery -->
+  <script src="{% static 'scripts/jquery-3.4.0.min.js' %}"></script>
+  <!-- Bootstrap tooltips -->
+  <!-- <script src="./scripts/popper.min.js"></script> -->
+  <!-- Bootstrap core JavaScript -->
+  <!-- <script src="./scripts/bootstrap.min.js"></script> -->
+  <!-- MDB core JavaScript -->
+  <script src="{% static 'scripts/compiled.0.min.js' %}"></script>
+<!--   <script src="scripts/sweetalert2.all.min.js"></script> -->
+
+</body>
+</html>

@@ -1,0 +1,143 @@
+<?php 
+
+include "header.php"; 
+
+if (!isset($_GET['level'])) {
+	header("Location: ./home.php");
+	exit();
+}else{
+
+
+	$admin = new Admin();
+
+	$database = new Admin();
+	$db = $database->db();
+	// get the current session
+	$session = implode($admin->current_Session());
+	$level = $_GET['level'];
+
+}
+?>
+
+<title><?php echo $level; ?> Payment List</title>
+
+<?php include "sidenav.php"; ?>
+		<div class="col-md-9">
+			<div class="card card-cascade narrower">
+				<!-- Card header -->
+				<div class="view view-cascade gradient-card-header success-color">
+					<!-- Title -->
+					<h3 class="card-header-title"><i class="fas fa-list"></i> <?php echo $level; ?> Payment list</h3>
+				</div>
+				<div class="card-body card-body-cascade">
+					<div class="table-wrapper table-responsive">
+						<table class="table align-middle table-responsive-lg text-nowrap table-striped table-hover" id="students">
+							<thead class="table-dark">
+								<tr>
+									<th scope="col">S/N</th>
+									<th scope="col">Application No.</th>
+									<th scope="col">Matric No.</th>
+									<th scope="col">Full Name</th>
+									<th scope="col">Gender</th>
+									<th scope="col">Session</th>
+									<th scope="col">References</th>
+									<th scope="col">Payment Type</th>
+									<th scope="col">Payment Method</th>
+									<th scope="col">Amount</th>
+									<th scope="col">Programme</th>
+									<th scope="col">Date</th>
+								</tr>
+							</thead>
+							<?php
+				                $status = 1;
+			                    $sql = $db->prepare("SELECT * FROM payments INNER JOIN students ON students.app_no = payments.app_no WHERE payments.status = :status AND (payments.level = :level AND payments.session = :session) ORDER BY payments.date DESC");
+			                    $sql->bindParam(':status', $status, PDO::PARAM_STR);
+			                    $sql->bindParam(':level', $level, PDO::PARAM_STR);
+			                    $sql->bindParam(':session', $session, PDO::PARAM_STR);
+			                    $sql->execute();
+				                $b = 1;
+			                ?>
+							<tbody>
+								<div class="text-center" align="center"><?php if ($sql->rowCount() < 1) { echo "<td class='text-center'>No data available</td>"; }else{
+									while ($row = $sql->fetch(PDO::FETCH_ASSOC)): ?></div>
+								<tr>
+									<td class="text-left"><?php echo $b; ?></td>
+									<td class="text-left"><?php echo $row['app_no']; ?></td>
+									<td class="text-left"><?php echo $row['mat_no']; ?></td>
+									<td class="text-left"><?php echo $row['surname']." ".$row['firstname'].' '.$row['othername']; ?></td>
+			                        <td class="text-left"><?php echo $row['gender']; ?></td>
+			                        <td class="text-left"><?php echo $row['session']; ?></td>
+			                        <td class="text-left"><?php echo $row['trx_ref']; ?></td>
+			                        <td class="text-left"><?php echo $row['payment_type']; ?></td>
+			                        <td class="text-left"><?php echo $row['payment_method']; ?></td>
+			                        <td class="text-left"><?php echo $row['amount']; ?></td>
+			                        <td class="text-left"><?php echo $row['programme']; ?></td>
+			                        <td class="text-left"><?php echo $row['date']; ?></td>
+									<?php  $b++; endwhile; } ?>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Second Colomn End -->
+		</div>
+	</div>
+</main>
+
+<?php include "footer.php"; ?>
+ <script>
+  $(document).ready(function () {
+      $('#students').DataTable({
+        "pagingType": 'simple_numbers',
+          "lengthChange": true,
+          "lengthMenu": [[10, 25, 50, -1],[10, 15, 25, "All"]],
+          dom: 'Bfrtip',
+          buttons: [
+              {
+                  extend: 'csv',
+                  className: 'btn btn-rounded btn-success btn-sm',
+                  text: 'Save to CSV',
+                  title: '<?php echo $level; ?> Payment List'
+              },
+              {
+                  extend: 'excel',
+                  className: 'btn btn-rounded btn-elegant btn-sm',
+                  text: 'Save to Excel',
+                  title: '<?php echo $level; ?> Payment List'
+              },
+              {
+                  extend: 'print',
+                  className: 'btn btn-rounded btn-info btn-sm',
+                  text: 'Print Table',
+                  title: '<?php echo $level; ?> Payment List'
+              },
+              {
+                  extend: 'pdf',
+                  className: 'btn btn-rounded btn-primary btn-sm',
+                  text: 'Save to PDF',
+                  orientation: 'landscape',
+                  pageSize: 'A4',
+                  title: '<?php echo $level; ?> Payment List'
+              }
+          ]
+      });
+
+      $('#students_wrapper').find('label').each(function () {
+          $(this).parent().append($(this).children());
+      });
+
+      $('#students_wrapper .dataTables_filter').find('input').each(function () {
+          $('input').attr("placeholder", "Search");
+          $('input').removeClass('form-control-sm');
+          $('input').addClass('form-control');
+      });
+
+      $('#students_wrapper .students_length').addClass('d-flex flex-row');
+    	$('#students_wrapper .dataTables_filter').addClass('md-form');
+      $('#students_wrapper .dataTables_filter').find('label').remove();
+  });
+
+</script>
+

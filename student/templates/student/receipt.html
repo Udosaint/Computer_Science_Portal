@@ -1,0 +1,165 @@
+<?php
+
+include '../auth/dbfile.php';
+
+if ($_SERVER['REQUEST_METHOD'] != "GET") {
+  header("Location: ./");
+  exit();
+}
+
+?>
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>NACOS PAYMENT RECEIPT</title>
+  <link rel="stylesheet" type="text/css" href="../stylesheet/receipt.css">
+  <link href="../favicon.ico" rel="icon">
+    <style>
+        @media print{
+            div#imagePreview {
+               content:url(../images/passports/<?php echo $rows['passport']; ?>);
+                -webkit-print-color-adjust: exact !important;
+                color-adjust: exact !important;
+            }
+            img#watermark{
+                margin-left:26%;
+            }@page {
+              /* size: A4; 8/ /* DIN A4 standard, Europe */
+              margin:0;
+            }
+            
+            body {
+                padding:10mm 7mm 10mm 7mm;
+            }
+        }
+        /* style sheet for "A4" printing */
+        @media print and (width: 21cm) and (height: 27.2 cm) {
+             @page {
+                size: A4
+                margin: 3cm 3cm 3cm 3cm;
+             }
+             div#imagePreview{
+                -webkit-print-color-adjust: exact !important;
+                color-adjust: exact !important;
+                width:100%;
+                height:100%;
+                border-radius:8%;
+                background-size:cover;
+                background-repeat:no-repeat;
+                background-position:center;
+                background-color: #f7f5ef;
+                background-image: url(../images/passports/<?php echo $rows['passport']; ?>);
+             }
+        }
+        
+        /* A4 Landscape*/
+        @page {
+            size: A4 landscape;
+            margin: 5%;
+        }
+    </style>
+</head>
+<body>
+<?php
+    if ($_SERVER['REQUEST_METHOD'] == "GET") {
+      $user_id = filter_var(htmlentities($_GET['user_id']),FILTER_SANITIZE_STRING);
+      $reference = filter_var(htmlentities($_GET['reference']),FILTER_SANITIZE_STRING);
+      $level = filter_var(htmlentities($_GET['level']),FILTER_SANITIZE_STRING);
+      $status = 1;
+
+
+      $getRef = $db_conn->prepare("SELECT reference FROM payments WHERE user_id = :user_id AND (status = :status AND p_level = :level)");
+      $getRef->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+      $getRef->bindParam(':status', $status, PDO::PARAM_INT);
+      $getRef->bindParam(':level', $level, PDO::PARAM_STR);
+      $getRef->execute();
+      $use = $getRef->fetch(PDO::FETCH_ASSOC);
+      if ($getRef->rowCount() < 1) {
+        header("Location: ./?message=Invalid Reference Number!");
+        exit();
+      }else{
+        $reference = $use['reference'];
+        $getUser = $db_conn->prepare("SELECT * FROM payments, students WHERE (payments.user_id = students.main_id AND payments.reference = :reference) AND (payments.status = :status AND payments.p_level = :level)");
+        $getUser->bindParam(':reference', $reference, PDO::PARAM_INT);
+        $getUser->bindParam(':status', $status, PDO::PARAM_INT);
+        $getUser->bindParam(':level', $level, PDO::PARAM_STR);
+        $getUser->execute();
+        $row = $getUser->fetch(PDO::FETCH_ASSOC);
+        $getImg = $db_conn->prepare("SELECT passport FROM nacosid WHERE user_id = :user_id");
+        $getImg->bindParam(':user_id', $user_id, PDO::PARAM_STR);
+        $getImg->execute();
+        $rows = $getImg->fetch(PDO::FETCH_ASSOC);
+      }
+    }
+?>
+  <div id="cover">
+    <div id="header">
+      <img src="../images/logo2.png" width="96" height="96" style="float: left; position: relative; z-index: 4;">
+      <h3 class="heading" style="font-size: 25px;">NIGERIA ASSOCIATION OF COMPUTING STUDENTS</h3>
+      <h4 class="heading" style="font-size: 17px;">NACOS (DSPZ CHAPTER)</h4>
+      <h5 class="heading" style="font-size: 14px;">Payment Receipt</h5>
+    </div>
+    <style>
+    img#watermark{
+        position:absolute;
+        background-size:cover;
+        margin-top:14%;
+        margin-left:27%;
+        background-repeat:no-repeat;
+        background-position:center;
+        opacity:0.2;
+        top:56px;
+    }
+      
+      div#imagePreview{
+        width:100%;
+        height:100%;
+        border-radius:8%;
+        background-size:cover;
+        background-repeat:no-repeat;
+        background-position:center;
+        background-color: #f7f5ef;
+        background-image: url(../images/passports/<?php echo $rows['passport']; ?>);
+      }
+    </style>
+    <div class="watermark"><img alt="watermark" src="../images/logo2.png"></div>
+    <div id="body">
+    <div><img id="watermark" src="../images/logo-email.png"></div>
+      <div id="left">
+        <p class="small-text"><span style="float: left;"><b>Ref No: </b><?php echo $row['reference']; ?> </span><span style="float: right;"><b>Session:</b> <?php echo $row['session']; ?> </span></p><br>
+        <p class="title"><span class="title_text">Fullname: </span><span class="details" style=""><span class="invisible">..</span><?php echo $row['surname']." ".$row['lastname']; ?><span class="invisible">...............................</span></span></p>
+        <p class="title"><span class="title_text">Matric Number: </span><span class="details"><span class="invisible">..</span><?php echo $row['mat_no']; ?><span class="invisible">...................</span></span></p>
+        <p class="title"><span class="title_text">Level: </span><span class="details"><span class="invisible">..</span><?php echo $row['p_level']; ?><span class="invisible">.................</span></span> <span class="title_text">Regular: </span><span class="details"><span class="invisible">..</span><?php echo $row['regular']; ?><span class="invisible">.....................</span></span></p>
+        <p class="title"><span class="title_text">Amount Paid: </span><span class="details"><span class="invisible">..</span><span style=" text-decoration: line-through; text-decoration-style: double;">N</span><?php echo $row['amount']; ?><span class="invisible">.....................</span></span> <span class="title_text">(K): </span><span class="details"><span class="invisible">..</span>0.00<span class="invisible">..............</span></span></p>
+        <p class="title"><span class="title_text">Payment Date: </span><span class="details"><span class="invisible">..</span><?php echo $row['pay_date']; ?><span class="invisible">..........................................</span></span></p>
+      </div>
+      <div id="right" style="">
+        <div id="imageWrapper" style=""><div id="imagePreview"></div></div>
+      </div>
+      <div style="margin-top: 15px;">
+        <img id="sign" src="../images/president.png" style="width: 200px; position: absolute; margin-left: 400px;left: 330px;">
+        <p style="margin-bottom: 3px;"><span style="padding-left: 15px; padding-right: 200px;">_________________________________</span><span style="padding-right: 15px; padding-left: 230px;">_________________________________</span></p>
+        <span style="padding-left: 55px; padding-right: 200px;">Financial Secretary</span>
+        <span style="padding-right: 15px; padding-left: 380px;">President</span>
+      </div>
+    </div>
+  </div>
+<!--  <center><button id="print" type="button" onclick="print()">Print</button></center> -->
+</body>
+</html>
+
+  <script src="../scripts/jquery-3.4.0.min.js"></script>
+<!--   <script src="../scripts/pdf_make.min.js"></script>
+  <script src="../scripts/html2canvas.js"></script> -->
+
+</body>
+</html>
+<script>
+  $(document).ready(function(){
+    window.print();
+    window.onafterprint = function(){
+        setTimeout(function () { window.close(); }, 20000);
+    }
+  });
+</script>

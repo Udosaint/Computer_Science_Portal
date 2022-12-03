@@ -1,0 +1,123 @@
+<?php
+include 'header.php';
+if (!isset($_GET['post_id'])) {
+	header("Location: ./viewposts");
+}
+
+$post_id = filter_var(htmlentities($_GET['post_id']),FILTER_SANITIZE_STRING);
+
+$admin = new Admin();
+
+// get the particular post
+$getPost = $admin->GetPost($post_id);
+
+// edit the post
+$editPost = $admin->EditPost(); 
+
+// get all the category
+$viewCat = $admin->View_Category();
+
+?>
+
+
+<title>Edit <?php echo str_replace('-', ' ', $getPost['title']); ?></title>
+
+<?php include "sidenav.php"; ?>
+    <div class="col-md-9">
+      	<div class="card card-cascade narrower">
+        	<!-- Card header -->
+        	<div class="view view-cascade gradient-card-header success-color">
+          		<!-- Title -->
+          		<h3 class="card-header-title"><i class="fas fa-edit"></i> Edit: <?php echo str_replace('-', ' ', $getPost['title']); ?></h3>
+        	</div>
+        	<div class="card-body card-body-cascade">
+	          	<div class="container">
+	            	<form class="container md-form" method="POST" enctype="multipart/form-data">
+			            <div class="form-group" align="center">
+			            	<p class="alert alert-success" id="errorshow"></p>
+			            </div>
+		              	<div class="file-field">
+					        <div class="btn btn-primary btn-sm float-left">
+					            <span>Choose file</span>
+					            <input type="file" id="post_img" name="post_img" >
+					        </div>
+					        <div class="file-path-wrapper">
+					            <input class="file-path validate" type="text" placeholder="Upload your file">
+					        </div>
+					    </div>
+			            <div class="md-form">
+			                <i class="fas fa-newspaper prefix"></i>
+			                    <input type="text" id="post_title" name="post_title" value="<?php echo str_replace('-', ' ', $getPost['title']); ?>" class="form-control">
+			                    <input type="hidden" id="post_id" name="post_id" value="<?php echo $post_id; ?>">
+			                    <label for="post_title">Post Title</label>
+			            </div>
+		              	<div class="md-form form-group form-inline-lg">
+		                  	<span class='mr-3 fas fa-cube prefix'></span>
+		                  	<select style="width: 85%;" class="ml-5 mdb-select dropdown-success darken-4 colorful-select initialized md-form" name="post_category" id="post_category" required="">
+		                  		<option disabled selected>--Select Category--</option>
+		                  		<?php foreach ($viewCat as $cat): ?>
+						  		<option <?php if($cat['cat_name'] == $getPost['category']) echo "selected"; ?> value="<?php echo $cat['cat_name']; ?>"><?php echo $cat['cat_name']; ?></option>
+						  		<?php endforeach; ?>
+		                	</select>
+		              	</div>
+		              <div class="md-form form-group form-inline-lg">
+		                  <span class='mr-3 fas fa-edit prefix'></span>
+		                  <textarea class="form-control md-textarea" name="post_content" rows="6" id="post_content"><?php echo htmlspecialchars($getPost['body']); ?></textarea>
+		                  <label for="post_content">Content...</label>
+		              </div>
+		                <center><div class="text-center align-items-center justify-content-center col-md-5 mb-3">
+		                    <button type="submit" name="edit_publish" class="btn btn-md btn-block blue-gradient btn-rounded z-depth-1a">Edit Post</button>
+		                </div></center>
+		            </form>
+	      		</div>
+    		</div>
+  		</div>
+  	</div>
+  </div>
+  </div>
+</main>
+
+<?php include "footer.php"; ?>
+
+<script>
+	$(document).ready(function() {
+	    $('.mdb-select').material_select();
+	});
+
+	$(document).ready(function(){
+    	$("#errorshow").hide();
+    });
+
+    $("form#editpost").submit(function(e) {
+	    e.preventDefault();    
+	    var formData = new FormData(this);
+	    $.ajax({
+	        url: '../auth/editpost.php',
+	        type: 'POST',
+	        data: formData,
+	        beforeSend:function(){
+				$('#btnPublish').html("Editing Post <span class='fa fa-1x fa-cog fa-spin'></span>");
+			},
+			success: function (data) {
+				if (data == "done") {
+				    $('#btnPublish').html("Successful!");
+				    $("#errorshow").show();
+				    $("#errorshow").html("Post has been edited! Redirecting... <span class='fa fa-1x fa-cog fa-spin'></span>");
+				    setTimeout(' window.location.href = "./viewposts"; ', 4000);
+				}else{
+					$("#errorshow").show();
+					$("#errorshow").html(data);
+				    $('#btnPublish').html("Edit Post");
+				}   
+			},
+			cache: false,
+			error:function(){
+			  	$("#errorshow").show();
+				$('#errorshow').html("An error has occured!!");
+				$('#btnPublish').html("Edit Post");
+			},
+	        contentType: false,
+	        processData: false
+	    });
+	});
+</script>

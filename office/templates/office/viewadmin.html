@@ -1,0 +1,128 @@
+<?php 
+
+include "header.php"; 
+
+if ($_SESSION['adminrole'] != 'Superadmin') {
+	echo "<script>
+		Swal.fire({
+			icon: 'info',
+			title: 'Fail',
+			text: 'You dont have access to this page.',
+			confirmButtonText: 'Ok',
+			confirmButtonColor: 'green',
+			}).then((result) => {
+			if (result.isConfirmed) {
+				location.href='home.php';
+			}
+		})
+	</script>";
+	exit();
+}
+
+
+$database = new Db();
+$db = $database->db();
+?>
+
+<title>Admin List</title>
+
+<?php include "sidenav.php"; ?>
+		<div class="col-md-9">
+			<div class="card card-cascade narrower">
+				<!-- Card header -->
+				<div class="view view-cascade gradient-card-header success-color">
+					<!-- Title -->
+					<h3 class="card-header-title"><i class="fas fa-list"></i> Admin list</h3>
+				</div>
+				<div class="card-body card-body-cascade">
+					<div class="table-wrapper table-responsive">
+						<div class="form-group" align="center">
+							<p class="alert alert-success" id="errorshow"></p>
+						</div>
+						<table class="table align-middle table-responsive-lg text-nowrap table-striped table-hover" id="students">
+							<thead class="table-dark">
+								<tr>
+									<th scope="col">S/N</th>
+									<th scope="col">Username</th>
+									<th scope="col">Email</th>
+									<th scope="col">Phone No.</th>
+									<th scope="col">Role</th>
+									<th scope="col">Action</th>
+									<th scope="col">Action</th>
+								</tr>
+							</thead>
+							<?php
+				                $accStatus = 1;
+			                    $sql = $db->prepare("SELECT * FROM admin");
+			                    $sql->execute();
+				                $b = 1;
+				                $level = "";
+			                ?>
+							<tbody>
+								<div class="text-center" align="center"><?php if ($sql->rowCount() < 1) { echo "<td class='text-center'>No data available</td>"; }else{
+									while ($row = $sql->fetch(PDO::FETCH_ASSOC)):
+									?></div>
+								<tr>
+									<td class="text-left"><?php echo $b; ?></td>
+			                        <td class="text-left"><?php echo $row['username']; ?></td>
+			                        <td class="text-left"><?php echo $row['email']; ?></td>
+			                        <td class="text-left"><?php echo $row['phone']; ?></td>
+			                        <td class="text-left"><?php echo $row['role']; ?></td>
+			                        <td class="text-left"><a class='btn btn-rounded btn-success btn-sm' href='editadmin.php?admin_id=<?php echo $row["id"]; ?>'> Edit</a></td>
+			                        <td class="text-left"><button type="button" class='btn btn-rounded btn-danger btn-sm' id='btnApprove_<?php echo $row['id']; ?>'> Delete</button></td>
+<!-- ================================================================================================================================================ -->
+			                        <script>
+							        	function delete_<?php echo $row['id']; ?>(){
+										    var admin_id = "<?php echo $row['id']; ?>";
+										    $.ajax({
+										    type:'POST',
+										    url:'deleteadmin.php',
+										    data:{'id':admin_id},
+										    beforeSend:function(){
+										    $('#btnApprove_<?php echo $row['id']; ?>').html("Deleting <span class='fa fa-cog fa-spin'></span>");
+										    },
+										    success:function(data){
+										    if (data == "Done") {
+										    	$("#errorshow").show();
+										    	$("#errorshow").html("Successful");
+										      	setTimeout(' window.location.href = "./viewadmin.php"; ',3000);
+										        $('#btnApprove_<?php echo $row['id']; ?>').html("Done <span class='fa fa-check'></span>");
+										    }else{
+										    	$("#errorshow").show();
+										    	$("#errorshow").html(data);
+										        $('#btnApprove_<?php echo $row['id']; ?>').html("Delete");
+										    }
+										    },
+										    error:function(){
+										    	$("#errorshow").show();
+										    	$("#errorshow").html("An error occured. <br> Try again.");
+										    	$('#btnApprove_<?php echo $row['id']; ?>').html("Delete");
+										    }
+										    });
+									  	}
+										 
+										$('#btnApprove_<?php echo $row['id']; ?>').click(function(){
+										   delete_<?php echo $row['id']; ?>();
+										});
+										//End Revoke
+							        </script>
+
+									<?php  $b++; endwhile; } ?>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Second Colomn End -->
+		</div>
+	</div>
+</main>
+
+<?php include "footer.php"; ?>
+<script>
+	$(document).ready(function(){
+    	$("#errorshow").hide();
+    });
+</script>

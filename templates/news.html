@@ -1,0 +1,81 @@
+{% extends 'main.html' %}
+{% load static %}
+
+{% block content %}
+<title>News - NACOS FPNO</title>
+
+</header>
+	<div class="container col-md-9 mb-4">
+			<div class="card card-cascade narrower">
+				<!-- Card header -->
+				<div class="view view-cascade gradient-card-header success-color">
+					<!-- Title -->
+					<h3 class="card-header-title"><i class="fas fa-newspaper-o"></i><span class="fa fa-newspaper-o"></span> Recent Posts</h3>
+				</div>
+				<div class="card-body card-body-cascade">
+					<h5 class="font-weight-bold text-center"><i class="fas fa-bullhorn"></i> All Recent Announcements</h5>
+					<hr>
+					<?php
+						$record_count = $db->prepare("SELECT * FROM blog_posts");
+						$record_count->execute();
+						$count = $record_count->rowCount();
+						$per_page = 10;
+						$pages = ceil($count/$per_page);
+						if (isset($_GET['p']) && is_numeric($_GET['p'])) {
+							$page = $_GET['p'];
+						}else{
+							$page = 1;
+						} 
+						if ($page <= 0) {
+							$start = 0;
+						}else{
+							$start = $page * $per_page - $per_page;
+						}
+						$prev = $page - 1;
+						$next = $page + 1;
+
+						$fetchallpost = $db->prepare("SELECT title, LEFT(body, 200) AS post, post_id, author, post_img, date, views, category FROM blog_posts ORDER BY date DESC LIMIT $start, $per_page");
+						$fetchallpost->execute();
+						while($rows = $fetchallpost->fetch(PDO::FETCH_ASSOC)):
+							$lastspace = strrpos($rows['post'], ' ');
+					?>
+					<div class="row">
+						<div class="col-lg-5 col-xl-4 mt-4 mb-2">
+				      		<!-- Featured image -->
+				      		<div class="view overlay rounded z-depth-1-half mb-lg-0 mb-4">
+				        		<img class="img-responsive img-fluid" style="width: 100%; height: 100%;" src="<?php echo $path; ?>images/post_images/<?php if($rows['post_img'] == null){echo 'default.jpg';}else{ echo $rows['post_img']; } ?>" alt="<?php echo str_replace('-', ' ', $rows['title']); ?>">
+					        	<a href="post?post_id=<?php echo $rows['post_id']; ?>">
+					          		<div class="mask rgba-white-slight"></div>
+					        	</a>
+				      		</div>
+
+				    	</div>
+				    	<!-- Grid column -->
+
+				   		<!-- Grid column -->
+				    	<div class="col-lg-7 col-xl-8">
+				      		<!-- Post title -->
+				      		<h2 class="font-weight-bold mb-3"><strong><?php echo str_replace('-', ' ', $rows['title']); ?></strong></h2>
+				      		<!-- Excerpt -->
+				      		<p class="dark-grey-text"><?php echo substr($rows['post'], 0., $lastspace).".<a class='btn btn-sm btn-info z-depth-2 waves-effect waves-light' href='post.php?post_id=".$rows['post_id']."'>Read More...</a>"?></p>
+				      		<!-- Post data -->
+				      		<p>By <a class="font-weight-bold"><font size="4" style="text-transform: uppercase;"><?php echo $rows['author'];?></font></a><br><a class="fas fa-calendar-alt"></a> Date: <?php echo $rows['date'];?><br><span class=""><i class="fa fa-cubes"></i> Category: <?php echo $rows['category']; ?></span><br><span><i class="fa fa-eye"></i> Views: <?php echo $rows['views']; ?></span>
+				      		</p>
+				    	</div>
+					</div>
+					<hr>
+					<?php endwhile; ?>
+				</div>
+			</div>
+		</div>
+	</div>
+	<?php
+	if ($prev > 0) {
+		echo "<a class='btn z-depth-2 btn-sm btn-primary' href='index?p=$prev'><< Prev </a>";
+	}
+	if ($page < $pages) {
+		echo "<a class='btn z-depth-2  btn-sm btn-info' href='index?p=$next'>Next >></a>";
+	}
+	?>
+</main>
+{% endblock content %}

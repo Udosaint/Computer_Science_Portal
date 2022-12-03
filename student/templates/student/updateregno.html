@@ -1,0 +1,65 @@
+{% extends 'student/main.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<title> {{ student }} || Update RegNo</title>
+
+<main class="my-5">
+	<section class="container col-md-6">
+		<div class="card card-cascade narrower">
+			<!-- Card header -->
+			<div class="view view-cascade gradient-card-header success-color">
+				<!-- Title -->
+				<h3 class="card-header-title"><i class="fas fa-file"></i> Update Reg-No</h3>
+			</div>
+			<div class="card-body card-body-cascade">
+				
+				<form class="container" method="POST" action="">
+					{% csrf_token %}
+	              	<!-- Row 1 starts -->
+	        		<div class="col-md-12">
+						<div class="md-form">
+							<i class="fas fa-graduation-cap prefix text-left"></i>
+							{{ form.reg_no }}
+							{% comment %} <input type="text" disabled id="mat_no" required name="mat_no" value="" class="form-control"> {% endcomment %}
+							<label for="mat_no">Reg number</label>
+						</div>
+					</div>
+		
+					<center>
+						<div class="text-center align-items-center justify-content-center col-md-6 mt-4 mb-3">
+					        <button type="submit" name="submit_id" class="btn btn-md btn-block peach-gradient btn-rounded z-depth-2">Update Now</button>
+					    </div>
+					</center>
+				</form>
+			<?php endif ?>
+			</div>
+		</div>
+	</section>
+</main>
+
+<script>
+	$(document).ready(function() {
+		$('.mdb-select').materialSelect();
+	});
+
+
+    function readURL(input) {
+	    if (input.files && input.files[0]) {
+	        var reader = new FileReader();
+	        reader.onload = function(e) {
+	            $('#imagePreview').css('background-image', 'url('+e.target.result +')');
+	            $('#imagePreview').hide();
+	            $('#imagePreview').fadeIn(650);
+	        }
+	        reader.readAsDataURL(input.files[0]);
+	    }
+	}
+	$("#passport").change(function() {
+	    readURL(this);
+	});
+</script>
+
+{% endblock content %}

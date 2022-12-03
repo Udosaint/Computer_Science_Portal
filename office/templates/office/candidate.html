@@ -1,0 +1,910 @@
+<?php 
+
+include "header.php"; 
+
+if (isset($_GET['action'])) {
+	$action = $_GET['action'];
+}
+
+$database = new Db();
+$db = $database->db();
+?>
+
+<?php include "sidenav.php"; ?>
+<?php switch ($action) { case 'view': ?>
+<title>View Candidates List</title>
+<div class="col-md-9">
+	<div class="card card-cascade narrower">
+		<!-- Card header -->
+		<div class="view view-cascade gradient-card-header success-color">
+		<!-- Title -->
+			<h3 class="card-header-title"><i class="fas fa-list"></i> Candidates list</h3>
+		</div>
+		<div class="card-body card-body-cascade">
+			<div class="table-wrapper table-responsive">
+				<table class="table align-middle table-responsive-lg text-nowrap table-striped table-hover" id="cand">
+					<thead class="table-dark">
+						<tr>
+							<th scope="col">S/N</th>
+							<th scope="col">Full Name</th>
+							<th scope="col">Matric No.</th>
+							<th scope="col">Level</th>
+							<th scope="col">Position</th>
+							<th scope="col">Votes</th>
+							<th scope="col">Actions</th>
+						</tr>
+					</thead>
+					<?php
+			            $sql = $db->prepare("SELECT * FROM candidate");
+			            $sql->execute();
+				        $b = 1;
+			        ?>
+					<tbody>
+						<div class="text-center" align="center"><?php if ($sql->rowCount() < 1) { echo "<td class='text-center'>No data available</td>"; }else{
+								while ($row = $sql->fetch(PDO::FETCH_ASSOC)): ?></div>
+						<tr>
+							<td class="text-left"><?php echo $b; ?></td>
+							<td class="text-left"><?php echo $row['fullname']; ?></td>
+			                <td class="text-left"><?php echo $row['mat_no']; ?></td>
+			                <td class="text-left"><?php echo $row['level']; ?></td>
+			                <td class="text-left"><?php echo $row['position']; ?></td>
+			                <td class="text-left"><?php echo $row['votes']; ?></td>
+			                <td class="text-left"><a class='btn btn-primary btn-rounded btn-sm' href='candetails.php?mat_no=<?php echo $row["mat_no"]; ?>'> View</a></td>
+							<?php  $b++; endwhile; } ?>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+        </div>
+	</div>
+</div>
+	<!-- Second Colomn End -->
+		</div>
+	</div>
+</main>
+
+
+<?php include "footer.php"; ?>
+ <script>
+	$(document).ready(function () {
+      $('#cand').DataTable({
+        "pagingType": 'simple_numbers',
+          "lengthChange": true,
+          "lengthMenu": [[10, 25, 50, -1],[10, 15, 25, "All"]],
+          dom: 'Bfrtip',
+          buttons: [
+              {
+                  extend: 'csv',
+                  className: 'btn btn-rounded btn-success btn-sm',
+                  text: 'Save to CSV',
+                  title: 'Candidate List'
+              },
+              {
+                  extend: 'excel',
+                  className: 'btn btn-rounded btn-elegant btn-sm',
+                  text: 'Save to Excel',
+                  title: 'Candidate List'
+              },
+              {
+                  extend: 'print',
+                  className: 'btn btn-rounded btn-info btn-sm',
+                  text: 'Print Table',
+                  title: 'Candidate List'
+              },
+              {
+                  extend: 'pdf',
+                  className: 'btn btn-rounded btn-primary btn-sm',
+                  text: 'Save to PDF',
+                  orientation: 'landscape',
+                  pageSize: 'A4',
+                  title: 'Candidate List'
+              }
+          ]
+      });
+
+      $('#cand_wrapper').find('label').each(function () {
+          $(this).parent().append($(this).children());
+      });
+
+      $('#cand_wrapper .dataTables_filter').find('input').each(function () {
+          $('input').attr("placeholder", "Search");
+          $('input').removeClass('form-control-sm');
+          $('input').addClass('form-control');
+      });
+
+      $('#cand_wrapper .students_length').addClass('d-flex flex-row');
+    	$('#cand_wrapper .dataTables_filter').addClass('md-form');
+      $('#cand_wrapper .dataTables_filter').find('label').remove();
+  });
+</script>
+
+<?php break; ?>
+
+<?php case 'viewelections': ?>
+<title>View Election Session List</title>
+<div class="col-md-9">
+	<div class="card card-cascade narrower">
+		<div id="del_msg"></div>
+		<!-- Card header -->
+		<div class="view view-cascade gradient-card-header success-color">
+		<!-- Title -->
+			<h3 class="card-header-title"><i class="fas fa-list"></i> Election Session list</h3>
+		</div>
+		<div class="card-body card-body-cascade">
+			<div class="table-wrapper table-responsive">
+				<table class="table align-middle table-responsive-lg text-nowrap table-striped table-hover" id="cand">
+					<thead class="table-dark">
+						<tr>
+							<th scope="col">S/N</th>
+							<th scope="col">Session</th>
+							<th scope="col">Programme</th>
+							<th scope="col">Status</th>
+							<th scope="col">Actions</th>
+						</tr>
+					</thead>
+					<?php
+			            $sql = $db->prepare("SELECT * FROM election_session");
+			            $sql->execute();
+				        $b = 1;
+			        ?>
+					<tbody>
+						<div class="text-center" align="center"><?php if ($sql->rowCount() < 1) { echo "<td class='text-center'>No data available</td>"; }else{
+								while ($row = $sql->fetch(PDO::FETCH_ASSOC)): ?></div>
+						<tr>
+							<td class="text-left"><?php echo $b; ?></td>
+							<td class="text-left"><?php echo $row['session']; ?></td>
+			                <td class="text-left"><?php echo $row['programme']; ?></td>
+			                <td class="text-left">
+			                	<?php if ($row['status'] == 1): ?>
+			                	<p class="badge badge-success">Active</p>
+			                	<?php elseif ($row['status'] == 0): ?>
+			                	<p class="badge badge-success">Completed</p>
+			                	<?php endif ?>
+			                		
+			                	</td>
+			                <td class="text-left">
+			                	<?php if ($row['status'] == 1): ?>
+			                	<button class='btn btn-primary btn-rounded btn-sm' election_id='<?php echo $row["id"]; ?>' id="deactivate"> Deactivate</button>
+			                	<?php elseif ($row['status'] == 0): ?>
+			                	<i class="fas fa-check"></i>
+			                	<?php endif ?>
+			                </td>
+							<?php  $b++; endwhile; } ?>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+        </div>
+	</div>
+</div>
+	<!-- Second Colomn End -->
+		</div>
+	</div>
+</main>
+
+
+<?php include "footer.php"; ?>
+<script>
+	$(document).ready(function () {
+
+		$("#deactivate").click(function () {
+			if (confirm("Are you sure you want to Deactivate this Eletion")) {
+				var election_id = $(this).attr('election_id');
+        $.ajax({
+            url :   "../ajax_auth/action.php",
+            method  :   "POST",
+            data    :   {deactivate:1,rid:election_id},
+            success :   function(data){
+                $("#del_msg").html(data);//data here means the success msg that will echo from php 
+            }
+        })
+			}
+		})
+
+
+
+
+
+
+
+      $('#cand').DataTable({
+        "pagingType": 'simple_numbers',
+          "lengthChange": true,
+          "lengthMenu": [[10, 25, 50, -1],[10, 15, 25, "All"]],
+          dom: 'Bfrtip',
+          buttons: [
+              {
+                  extend: 'csv',
+                  className: 'btn btn-rounded btn-success btn-sm',
+                  text: 'Save to CSV',
+                  title: 'Candidate List'
+              },
+              {
+                  extend: 'excel',
+                  className: 'btn btn-rounded btn-elegant btn-sm',
+                  text: 'Save to Excel',
+                  title: 'Candidate List'
+              },
+              {
+                  extend: 'print',
+                  className: 'btn btn-rounded btn-info btn-sm',
+                  text: 'Print Table',
+                  title: 'Candidate List'
+              },
+              {
+                  extend: 'pdf',
+                  className: 'btn btn-rounded btn-primary btn-sm',
+                  text: 'Save to PDF',
+                  orientation: 'landscape',
+                  pageSize: 'A4',
+                  title: 'Candidate List'
+              }
+          ]
+      });
+
+      $('#cand_wrapper').find('label').each(function () {
+          $(this).parent().append($(this).children());
+      });
+
+      $('#cand_wrapper .dataTables_filter').find('input').each(function () {
+          $('input').attr("placeholder", "Search");
+          $('input').removeClass('form-control-sm');
+          $('input').addClass('form-control');
+      });
+
+      $('#cand_wrapper .students_length').addClass('d-flex flex-row');
+    	$('#cand_wrapper .dataTables_filter').addClass('md-form');
+      $('#cand_wrapper .dataTables_filter').find('label').remove();
+  });
+</script>
+
+<?php break; ?>
+
+<?php case 'viewCandidate': ?>
+<title>Select Election Session</title>
+<div class="col-md-9">
+	<div class="card card-cascade narrower">
+		<!-- Card header -->
+		<div class="view view-cascade gradient-card-header success-color">
+		<!-- Title -->
+			<h3 class="card-header-title"><i class="fas fa-list"></i> Edit Candidate list</h3>
+		</div>
+		<div class="card-body card-body-cascade">
+			<div class="form-group" align="center">
+				<p class="alert alert-success" id="errorshow"></p>
+			</div>
+			<div class="md-form form-group">
+		   		<span class='mr-3 fas fa-pen-alt prefix'></span>
+		    	<select class="ml-5 mdb-select dropdown-default darken-4 colorful-select initialized md-form" name="session" id="session" required="">
+					<option disabled selected>--Select Session--</option>
+					<?php for($i = date('Y') - 4; $i <= date('Y') +5 ; $i++): ?>
+					<option value="<?php echo $i; ?>/<?php echo $i + 1; ?>"><?php echo $i; ?>/<?php echo $i + 1; ?> </option>
+					<?php endfor; ?>
+				</select>
+		   	</div>
+       	<center><div class="text-center align-items-center justify-content-center col-md-4 mb-3">
+           	<button type="button" id="btnGenerate" name="btnGenerate" class="btn btn-md btn-block peach-gradient btn-rounded z-depth-1a">Search</button>
+       	</div>
+       </center>
+        </div>
+	</div>
+</div>
+	<!-- Second Colomn End -->
+		</div>
+	</div>
+</main>
+
+
+<?php include "footer.php"; ?>
+<script>
+	$(document).ready(function() {
+		$('.mdb-select').materialSelect();
+	});
+
+	$(document).ready(function(){
+    	$("#errorshow").hide();
+    });
+
+	function getStudents(){
+		var session = document.getElementById("session").value;
+
+		$("#errorshow").show();
+		$("#errorshow").html("Generating Candidate List <span class='fas fa-1x fa-cog fa-spin'></span>");
+		console.log(setTimeout(' window.location.href = "./viewcandidate.php?session=' + session +'"; ', 4000));
+	}
+
+
+	$('#btnGenerate').click(function(){
+	    getStudents();
+	});
+</script>
+
+<?php break; ?>
+
+
+<?php case 'getSession': ?>
+<title>Select Election Session</title>
+<div class="col-md-9">
+	<div class="card card-cascade narrower">
+		<!-- Card header -->
+		<div class="view view-cascade gradient-card-header success-color">
+		<!-- Title -->
+			<h3 class="card-header-title"><i class="fas fa-list"></i>Election Session</h3>
+		</div>
+		<div class="card-body card-body-cascade">
+			<div class="form-group" align="center">
+				<p class="alert alert-success" id="errorshow"></p>
+			</div>
+			<div class="md-form form-group">
+		   		<span class='mr-3 fas fa-pen-alt prefix'></span>
+		    	<select class="ml-5 mdb-select dropdown-default darken-4 colorful-select initialized md-form" name="session" id="session" required="">
+					<option disabled selected>--Select Session--</option>
+					<?php for($i = date('Y') - 5; $i <= date('Y') +5 ; $i++): ?>
+					<option value="<?php echo $i; ?>/<?php echo $i + 1; ?>"><?php echo $i; ?>/<?php echo $i + 1; ?> </option>
+					<?php endfor; ?>
+				</select>
+		   	</div>
+       	<center><div class="text-center align-items-center justify-content-center col-md-4 mb-3">
+           	<button type="button" id="btnGenerate" name="btnGenerate" class="btn btn-md btn-block peach-gradient btn-rounded z-depth-1a">Search</button>
+       	</div>
+       </center>
+        </div>
+	</div>
+</div>
+	<!-- Second Colomn End -->
+		</div>
+	</div>
+</main>
+
+
+<?php include "footer.php"; ?>
+<script>
+	$(document).ready(function() {
+		$('.mdb-select').materialSelect();
+	});
+
+	$(document).ready(function(){
+    	$("#errorshow").hide();
+    });
+
+	function getStudents(){
+		var session = document.getElementById("session").value;
+
+		$("#errorshow").show();
+		$("#errorshow").html("Generating Candidate List <span class='fas fa-1x fa-cog fa-spin'></span>");
+		console.log(setTimeout(' window.location.href = "candidate.php?action=screened&session=' + session + '"; ', 1000));
+	}
+
+
+	$('#btnGenerate').click(function(){
+	    getStudents();
+	});
+</script>
+
+<?php break; ?>
+
+
+
+<?php case 'screened': ?>
+<title>Screened Candidate</title>
+<div class="col-md-9">
+	<div class="card card-cascade narrower">
+		<!-- Card header -->
+		<div class="view view-cascade gradient-card-header success-color">
+		<!-- Title -->
+			<h3 class="card-header-title"><i class="fas fa-list"></i> Screened Candidate list</h3>
+		</div>
+		<div class="card-body card-body-cascade">
+			<div class="table-wrapper table-responsive">
+				<table class="table align-middle table-responsive-lg text-nowrap table-striped table-hover" id="cand">
+					<thead class="table-dark">
+						<tr>
+							<th scope="col">S/N</th>
+							<th scope="col">Full Name</th>
+							<th scope="col">Matric No.</th>
+							<th scope="col">Level</th>
+							<th scope="col">Position</th>
+							<th scope="col">Votes</th>
+							<th scope="col">Actions</th>
+						</tr>
+					</thead>
+					<?php
+					$database = new Db();
+					$db = $database->db();
+					$session = $_GET['session'];
+			            $sql = $db->prepare("SELECT * FROM candidate WHERE session = ? AND screened = ?");
+			            $sql->execute([$session, 1]);
+				        $b = 1;
+			        ?>
+					<tbody>
+						<div class="form-group" align="center">
+							<p class="alert alert-warning" id="errorshow"></p>
+						</div>
+						<div class="text-center" align="center"><?php if ($sql->rowCount() < 1) { echo "<td class='text-center'>No data available</td>"; }else{
+								while ($row = $sql->fetch(PDO::FETCH_ASSOC)): ?></div>
+						<tr>
+							<td class="text-left"><?php echo $b; ?></td>
+							<td class="text-left"><?php echo $row['fullname']; ?></td>
+			                <td class="text-left"><?php echo $row['mat_no']; ?></td>
+			                <td class="text-left"><?php echo $row['level']; ?></td>
+			                <td class="text-left"><?php echo $row['position']; ?></td>
+			                <td class="text-left"><?php echo $row['votes']; ?></td>
+			                <td class="text-left"><button style="cursor: pointer;" class='btn btn-danger btn-rounded btn-sm' id='btnDelete_<?php echo $row["mat_no"]; ?>'> Delete</button></td>
+<!-- ============================================================================================================================================= -->
+			            <script>
+							        	function delete_<?php echo $row['mat_no']; ?>(){
+										    var cand_id = "<?php echo $row['mat_no']; ?>";
+										    $.ajax({
+										    type:'POST',
+										    url:'../ajax_auth/delete.php',
+										    data:{'cand_id':cand_id},
+										    beforeSend:function(){
+										    $('#btnDelete_<?php echo $row['mat_no']; ?>').html("Deleting Candidate <span class='fa fa-cog fa-spin'></span>");
+										    },
+										    success:function(data){
+										    if (data == "Done") {
+										    	$("#errorshow").show();
+										    	$("#errorshow").html("Successful");
+										      	setTimeout(' window.location.href = "delete"; ',3000);
+										        $('#btnDelete_<?php echo $row['mat_no']; ?>').html("Successful <span class='fa fa-check'></span>");
+										    }else{
+										    	$("#errorshow").show();
+										    	$("#errorshow").html(data);
+										        $('#btnDelete_<?php echo $row['mat_no']; ?>').html("Delete");
+										    }
+										    },
+										    error:function(){
+										    	$("#errorshow").show();
+										    	$("#errorshow").html("An error occured. <br> Try again.");
+										    	$('#btnDelete_<?php echo $row['mat_no']; ?>').html("Delete");
+										    }
+										    });
+									  	}
+										 
+										$('#btnDelete_<?php echo $row['mat_no']; ?>').click(function(){
+										   delete_<?php echo $row['mat_no']; ?>();
+										});
+							   </script>
+							<?php  $b++; endwhile; } ?>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+        </div>
+	</div>
+</div>
+	<!-- Second Colomn End -->
+		</div>
+	</div>
+</main>
+
+<script>
+	$(document).ready(function(){
+        $("#errorshow").hide();
+    });
+</script>
+
+<?php include "footer.php"; ?>
+ <script>
+	$(document).ready(function () {
+      $('#cand').DataTable({
+        "pagingType": 'simple_numbers',
+          "lengthChange": true,
+          "lengthMenu": [[10, 25, 50, -1],[10, 15, 25, "All"]],
+          dom: 'Bfrtip',
+          buttons: [
+              {
+                  extend: 'csv',
+                  className: 'btn btn-rounded btn-success btn-sm',
+                  text: 'Save to CSV',
+                  title: 'Candidate List'
+              },
+              {
+                  extend: 'excel',
+                  className: 'btn btn-rounded btn-elegant btn-sm',
+                  text: 'Save to Excel',
+                  title: 'Candidate List'
+              },
+              {
+                  extend: 'print',
+                  className: 'btn btn-rounded btn-info btn-sm',
+                  text: 'Print Table',
+                  title: 'Candidate List'
+              },
+              {
+                  extend: 'pdf',
+                  className: 'btn btn-rounded btn-primary btn-sm',
+                  text: 'Save to PDF',
+                  orientation: 'landscape',
+                  pageSize: 'A4',
+                  title: 'Candidate List'
+              }
+          ]
+      });
+
+      $('#cand_wrapper').find('label').each(function () {
+          $(this).parent().append($(this).children());
+      });
+
+      $('#cand_wrapper .dataTables_filter').find('input').each(function () {
+          $('input').attr("placeholder", "Search");
+          $('input').removeClass('form-control-sm');
+          $('input').addClass('form-control');
+      });
+
+      $('#cand_wrapper .students_length').addClass('d-flex flex-row');
+    	$('#cand_wrapper .dataTables_filter').addClass('md-form');
+      $('#cand_wrapper .dataTables_filter').find('label').remove();
+  });
+</script>
+
+<?php break; ?>
+
+<?php case 'add': ?>
+<style>
+	.avatar-upload{
+		position:relative;
+		max-width:205px;
+		margin:50px auto;
+	}
+	.avatar-upload .avatar-edit{
+		position:absolute;
+		right:12px;
+		z-index:1;
+		top:10px;
+	}
+	.avatar-upload .avatar-edit input{
+		display:none;
+	}.avatar-upload .avatar-edit input+label{
+		display:inline-block;
+		width:34px;
+		height:34px;
+		margin-bottom:0;
+		border-radius:100%;
+		background:#FFF;
+		border:1px solid transparent;
+		box-shadow:0 2px 4px 0 rgba(0,0,0,.12);
+		cursor:pointer;
+		font-weight:400;
+		transition:all .2s ease-in-out;
+	}
+	.avatar-upload .avatar-edit input+label:hover{
+		background:#f1f1f1;
+		border-color:#d6d6d6;
+	}
+	.avatar-upload .avatar-edit input+label:after{
+		content:"\f041";
+		font-family:FontAwesome;
+		color:#757575;
+		position:absolute;
+		top:10px;
+		left:0;
+		right:0;
+		text-align:center;
+		margin:auto;
+	}
+	.avatar-upload .avatar-preview{
+		width:170px;
+		height:180px;
+		position:relative;
+		border-radius:8%;
+		border:6px solid #cdcdcd;
+		box-shadow:0 2px 4px 0 rgba(0,0,0,.1);
+	}
+	.avatar-upload .avatar-preview>div{
+		width:100%;
+		height:100%;
+		border-radius:8%;
+		background-size:cover;
+		background-repeat:no-repeat;
+		background-position:center;
+		background-color: #f7f5ef;
+	}
+/* -- //Responsive code -- */
+</style>
+<div class="col-md-9">
+	<title>Add New Candidate</title>
+	<div class="card card-cascade narrower">
+		<!-- Card header -->
+		<div class="view view-cascade gradient-card-header success-color">
+		<!-- Title -->
+			<h3 class="card-header-title"><i class="fas fa-list"></i> Add New Candidate</h3>
+		</div>
+		<div class="card-body card-body-cascade">
+			<div class="container">
+				<form class="container md-form" id="newcandidate" enctype="multipart/form-data">
+					<div class="avatar-upload">
+						<div class="avatar-edit">
+	                      	<input type='file' id="passport" name="passport" accept=".png, .jpg, .jpeg" />
+	                      	<label for="passport"></label>
+	                  	</div>
+	                  	<div class="avatar-preview">
+	                      	<div id="imagePreview" style="background-image: url(../images/user-male.png);">
+	                      	</div>
+	                  	</div>
+	              	</div>
+
+
+					<div class="md-form">
+						<i class="fas fa-user prefix"></i>
+						<input type="hidden" name="session" value="<?php echo implode($current_session); ?>" id="session">
+						<input type="text" id="fullname" name="fullname" class="form-control">
+						<label for="fullname">Candidate's Fullname</label>
+					</div>
+					<div class="md-form">
+						<i class="fas fa-user prefix"></i>
+						<input type="text" id="mat_no" name="mat_no" class="form-control">
+						<label for="mat_no">Reg Number</label>
+					</div>
+					<div class="md-form form-group form-inline-lg">
+						<span class='mr-3 fas fa-cubes prefix'></span>
+						<select style="width: 85%;" class="ml-5 mdb-select dropdown-success darken-4 colorful-select initialized md-form" name="level" id="level" required="">
+							<option disabled selected>--Level--</option>
+							<option value="ND II">ND II</option>
+							<option value="HND II">HND II</option>
+						</select>
+					</div>
+					<div class="md-form">
+						<i class="fas fa-user prefix"></i>
+						<input type="text" id="hobby" name="hobby" class="form-control">
+						<label for="hobby">Hobbies</label>
+					</div>
+					<div class="md-form form-group form-inline-lg">
+			    		<span class='mr-3 fas fa-cubes prefix'></span>
+			    		<select style="width: 85%;" class="ml-5 mdb-select dropdown-success darken-4 colorful-select initialized md-form" name="position" id="position" required>
+							<option disabled selected>--Select Position--</option>
+						    <option value="President">President</option>
+						    <option value="Vice President">Vice President</option>
+						    <option value="Secretary General">Secretary General</option>
+						    <option value="Financial Secretary">Financial Secretary</option>
+						    <option value="Treasurer">Treasurer</option>
+						    <option value="Provost">Provost</option>
+						    <option value="P.R.O">P.R.O</option>
+						    <option value="Welfare Director">Welfare Director</option>
+						    <option value="Social Director">Social Director</option>
+						    <option value="Sports Director">Sports Director</option>
+						</select>
+			    	</div>
+					<div class="form-group" align="center">
+						<p class="alert alert-success" id="errorshow"></p>
+					</div>
+			    	<center>
+			    		<div class="text-center align-items-center justify-content-center col-md-5 mb-3">
+						    <button type="submit" id="btnSave" class="btn btn-md btn-block peach-gradient btn-rounded z-depth-1a">Save Candidate</button>
+						</div>
+					</center>
+				</form>
+			</div>
+        </div>
+	</div>
+</div>
+	<!-- Second Colomn End -->
+		</div>
+	</div>
+</main>
+
+
+<?php include "footer.php"; ?>
+ <script>
+	$(document).ready(function() {
+		$('.mdb-select').materialSelect();
+	});
+
+
+	$(document).ready(function(){
+    	$("#errorshow").hide();
+    });
+
+
+    function readURL(input) {
+	    if (input.files && input.files[0]) {
+	        var reader = new FileReader();
+	        reader.onload = function(e) {
+	            $('#imagePreview').css('background-image', 'url('+e.target.result +')');
+	            $('#imagePreview').hide();
+	            $('#imagePreview').fadeIn(650);
+	        }
+	        reader.readAsDataURL(input.files[0]);
+	    }
+	}
+
+	$("#passport").change(function() {
+	    readURL(this);
+	});
+
+	$("form#newcandidate").submit(function(e) {
+	    e.preventDefault();    
+	    var formData = new FormData(this);
+	    $.ajax({
+		    url: '../ajax_auth/newcandidate.php',
+		    type: 'POST',
+		    data: formData,
+		    beforeSend:function(){
+				$('#btnSave').html("Adding Candidate <span class='fas fa-1x fa-cog fa-spin'></span>");
+			},
+			success: function (data) {
+				if (data == "done") {
+				    $("#errorshow").show();
+				    $("#errorshow").html("New Candidate Added Successfully <br> Please wait. <span class='fas fa-1x fa-cog fa-spin'></span>");
+				    $('#btnSave').html("Done!!");
+				    setTimeout(' window.location.href = "./candidate.php?action=view"; ', 3000);
+				}else{
+					$("#errorshow").show();
+					$("#errorshow").html(data);
+				    $('#btnSave').html("Save Candidate");
+				}   
+			},
+			cache: false,
+			error:function(){
+			  	$("#errorshow").show();
+				$('#errorshow').html("An error has occured!!");
+				$('#btnSave').html("Save Candidate");
+			},
+			contentType: false,
+			processData: false
+		});
+	});
+</script>
+
+<?php break; ?>
+
+<?php case 'add_election_session': ?>
+<style>
+	.avatar-upload{
+		position:relative;
+		max-width:205px;
+		margin:50px auto;
+	}
+	.avatar-upload .avatar-edit{
+		position:absolute;
+		right:12px;
+		z-index:1;
+		top:10px;
+	}
+	.avatar-upload .avatar-edit input{
+		display:none;
+	}.avatar-upload .avatar-edit input+label{
+		display:inline-block;
+		width:34px;
+		height:34px;
+		margin-bottom:0;
+		border-radius:100%;
+		background:#FFF;
+		border:1px solid transparent;
+		box-shadow:0 2px 4px 0 rgba(0,0,0,.12);
+		cursor:pointer;
+		font-weight:400;
+		transition:all .2s ease-in-out;
+	}
+	.avatar-upload .avatar-edit input+label:hover{
+		background:#f1f1f1;
+		border-color:#d6d6d6;
+	}
+	.avatar-upload .avatar-edit input+label:after{
+		content:"\f041";
+		font-family:FontAwesome;
+		color:#757575;
+		position:absolute;
+		top:10px;
+		left:0;
+		right:0;
+		text-align:center;
+		margin:auto;
+	}
+	.avatar-upload .avatar-preview{
+		width:170px;
+		height:180px;
+		position:relative;
+		border-radius:8%;
+		border:6px solid #cdcdcd;
+		box-shadow:0 2px 4px 0 rgba(0,0,0,.1);
+	}
+	.avatar-upload .avatar-preview>div{
+		width:100%;
+		height:100%;
+		border-radius:8%;
+		background-size:cover;
+		background-repeat:no-repeat;
+		background-position:center;
+		background-color: #f7f5ef;
+	}
+/* -- //Responsive code -- */
+</style>
+<div class="col-md-9">
+	<title>Add Election Session</title>
+	<div class="card card-cascade narrower">
+		<!-- Card header -->
+		<div class="view view-cascade gradient-card-header success-color">
+		<!-- Title -->
+			<h3 class="card-header-title"><i class="fas fa-list"></i> Add Election Session</h3>
+		</div>
+		<div class="card-body card-body-cascade">
+			<div class="container">
+				<form class="container md-form" id="newelection">
+			<div class="md-form form-group">
+		   		<span class='mr-3 fas fa-pen-alt prefix'></span>
+		    	<select class="ml-5 mdb-select dropdown-default darken-4 colorful-select initialized md-form" name="session" id="session" required="">
+					<option disabled selected>--Select Session--</option>
+					<?php for($i = date('Y') - 4; $i <= date('Y') +5 ; $i++): ?>
+					<option value="<?php echo $i; ?>/<?php echo $i + 1; ?>"><?php echo $i; ?>/<?php echo $i + 1; ?> </option>
+					<?php endfor; ?>
+				</select>
+		   	</div>
+					<div class="md-form form-group form-inline-lg">
+						<span class='mr-3 fas fa-cubes prefix'></span>
+						<select style="width: 85%;" class="ml-5 mdb-select dropdown-success darken-4 colorful-select initialized md-form" name="programme" id="programme" required="">
+							<option disabled selected>--Programme--</option>
+							<option value="MORNING">MORNING</option>
+							<option value="EVENING">EVENING</option>
+							<option value="WEEKEND">WEEKEND</option>
+						</select>
+					</div>
+					<div class="form-group" align="center">
+						<p class="alert alert-success" id="errorshow"></p>
+					</div>
+			    	<center>
+			    		<div class="text-center align-items-center justify-content-center col-md-5 mb-3">
+						    <button type="submit" id="btnSave" class="btn btn-md btn-block peach-gradient btn-rounded z-depth-1a">Activate Now</button>
+						</div>
+					</center>
+				</form>
+			</div>
+        </div>
+	</div>
+</div>
+	<!-- Second Colomn End -->
+		</div>
+	</div>
+</main>
+
+
+<?php include "footer.php"; ?>
+<script>
+	$(document).ready(function() {
+		$('.mdb-select').materialSelect();
+	});
+
+
+	$(document).ready(function(){
+    	$("#errorshow").hide();
+    });
+
+
+	$("form#newelection").submit(function(e) {
+	    e.preventDefault();    
+	    var formData = new FormData(this);
+	    $.ajax({
+		    url: '../ajax_auth/newelection.php',
+		    type: 'POST',
+		    data: formData,
+		    beforeSend:function(){
+				$('#btnSave').html("Adding Election <span class='fas fa-1x fa-cog fa-spin'></span>");
+			},
+			success: function (data) {
+				if (data == "done") {
+				    $("#errorshow").show();
+				    $("#errorshow").html("New Election Added Successfully <br> Please wait. <span class='fas fa-1x fa-cog fa-spin'></span>");
+				    $('#btnSave').html("Done!!");
+				    setTimeout(' window.location.href = "./candidate.php?action=viewelections"; ', 3000);
+				}else{
+					$("#errorshow").show();
+					$("#errorshow").html(data);
+				    $('#btnSave').html("Activate Now");
+				}   
+			},
+			cache: false,
+			error:function(){
+			  	$("#errorshow").show();
+				$('#errorshow').html("An error has occured!!");
+				$('#btnSave').html("Activate Now");
+			},
+			contentType: false,
+			processData: false
+		});
+	});
+</script>
+
+<?php break; ?>
+<?php default: header("Location: ./home") ?>
+	
+<?php break; } ?>

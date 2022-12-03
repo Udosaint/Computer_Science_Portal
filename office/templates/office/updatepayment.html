@@ -1,0 +1,151 @@
+<?php 
+
+include "header.php"; 
+
+$database = new Db();
+$db = $database->db(); 
+
+if ($_SESSION['adminrole'] != 'Superadmin') {
+	echo "<script>
+		Swal.fire({
+			icon: 'info',
+			title: 'Fail',
+			text: 'You dont have access to this page.',
+			confirmButtonText: 'Ok',
+			confirmButtonColor: 'green',
+			}).then((result) => {
+			if (result.isConfirmed) {
+				location.href='home.php';
+			}
+		})
+	</script>";
+	exit();
+}
+
+if (isset($_GET['message'])) {
+	$message = $_GET['message'];
+	header("refresh:8;url=home");
+}
+?>
+
+<title>Pending Payments</title>
+
+<?php include "sidenav.php"; ?>
+		<div class="col-md-9">
+			<div class="card card-cascade narrower">
+				<!-- Card header -->
+				<div class="view view-cascade gradient-card-header success-color">
+					<!-- Title -->
+					<h3 class="card-header-title"><i class="fas fa-list"></i> Student Pending Payment list</h3>
+				</div>
+				<div class="card-body card-body-cascade">
+					<?php if(isset($_GET['message'])){ ?><div class="form-group" align="center"> <p class="alert alert-info"><?php echo $message."</p></div>"; } ?>
+					<div class="table-wrapper table-responsive">
+						<table class="table align-middle table-responsive-lg text-nowrap table-striped table-hover" id="payments">
+							<thead class="table-dark">
+								<tr>
+									<th scope="col">S/N</th>
+									<th scope="col">Payment ID</th>
+									<th scope="col">Full Name</th>
+									<th scope="col">Matric No.</th>
+									<th scope="col">Level</th>
+									<th scope="col">Session</th>
+									<th scope="col">Payment Type</th>
+									<th scope="col">Payment Method</th>
+									<th scope="col">Amount</th>
+									<th scope="col">Reference No.</th>
+									<th scope="col">Payment Date</th>
+									<th scope="col">Action</th>
+								</tr>
+							</thead>
+							<?php
+				                $status = 0;
+			                    $sql = $db->prepare("SELECT * FROM payments INNER JOIN students ON students.app_no = payments.app_no WHERE payments.status = :status  ORDER BY payments.date DESC");
+			                    $sql->bindParam(':status', $status, PDO::PARAM_STR);
+			                    $sql->execute();
+				                $b = 1;
+			                ?>
+							<tbody>
+								<div class="text-center" align="center"><?php if ($sql->rowCount() < 1) { echo "<td class='text-center'>No data available</td>"; }else{ $i = 1;
+									while ($row = $sql->fetch(PDO::FETCH_ASSOC)): ?></div>
+								<tr>
+									<td class="text-left"><?php echo $i++?></td>
+									<td class="text-left"><?php echo $row['app_no']; ?></td>
+									<td class="text-left"><?php echo $row['mat_no']; ?></td>
+									<td class="text-left"><?php echo $row['surname']." ".$row['firstname'].' '.$row['othername']; ?></td>
+			                        <td class="text-left"><?php echo $row['level']; ?></td>
+			                        <td class="text-left"><?php echo $row['session']; ?></td>
+			                        <td class="text-left"><?php echo $row['payment_type']; ?></td>
+			                        <td class="text-left"><?php echo $row['payment_method']; ?></td>
+			                        <td class="text-left"><?php echo $row['amount']; ?></td>
+			                        <td class="text-left"><?php echo $row['trx_ref']; ?></td>
+			                        <td class="text-left"><?php echo $row['date']; ?></td>
+			                        <td class="text-left"><?php if($row['status'] == 0){ echo "<a class='btn btn-rounded btn-sm btn-unique' href='update_deposit.php?pay_id=".$row['trx_ref']."'>Update</a>"; }?></td>
+									<?php  $b++; endwhile; } ?>
+								</tr>
+							</tbody>
+									
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Second Colomn End -->
+		</div>
+	</div>
+</main>
+
+<?php include "footer.php"; ?>
+ <script>
+  $(document).ready(function () {
+      $('#payments').DataTable({
+        "pagingType": 'simple_numbers',
+          "lengthChange": true,
+          "lengthMenu": [[10, 25, 50, -1],[10, 15, 25, "All"]],
+          dom: 'Bfrtip',
+          buttons: [
+              {
+                  extend: 'csv',
+                  className: 'btn btn-rounded btn-success btn-sm',
+                  text: 'Save to CSV',
+                  title: 'Students Payment List'
+              },
+              {
+                  extend: 'excel',
+                  className: 'btn btn-rounded btn-elegant btn-sm',
+                  text: 'Save to Excel',
+                  title: 'Student Payment List'
+              },
+              {
+                  extend: 'print',
+                  className: 'btn btn-rounded btn-info btn-sm',
+                  text: 'Print Table',
+                  title: 'Student Payment List'
+              },
+              {
+                  extend: 'pdf',
+                  className: 'btn btn-rounded btn-primary btn-sm',
+                  text: 'Save to PDF',
+                  orientation: 'landscape',
+                  pageSize: 'A4',
+                  title: 'Student Payment List'
+              }
+          ]
+      });
+
+      $('#payments_wrapper').find('label').each(function () {
+          $(this).parent().append($(this).children());
+      });
+
+      $('#payments_wrapper .dataTables_filter').find('input').each(function () {
+          $('input').attr("placeholder", "Search");
+          $('input').removeClass('form-control-sm');
+          $('input').addClass('form-control');
+      });
+
+      $('#payments_wrapper .payments_length').addClass('d-flex flex-row');
+    	$('#payments_wrapper .dataTables_filter').addClass('md-form');
+      $('#payments_wrapper .dataTables_filter').find('label').remove();
+  });
+
+</script>

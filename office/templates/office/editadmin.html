@@ -1,0 +1,124 @@
+<?php include "header.php"; 
+
+if ($_SESSION['admlevel'] != 'superadmin') {
+	header("Location: ./home");
+	exit();
+}
+if (!isset($_GET['admin_id'])) {
+	header('Location: ./home');
+	exit();
+}else{
+	$user_id = $_GET['admin_id'];
+	$confirmUser = $db_conn->prepare("SELECT * FROM excos WHERE admin_id = :admin_id");
+	$confirmUser->bindParam(':admin_id', $user_id, PDO::PARAM_INT);
+	$confirmUser->execute();
+	$row = $confirmUser->fetch(PDO::FETCH_ASSOC);
+	if ($confirmUser->rowCount() < 1) {
+		header('Location: ./home');
+		exit();
+	}
+}
+
+?>
+
+<title>Edit Admin - NACOS</title>
+<style>
+.fas .fab .far {
+       font-size: 0.8rem;
+}
+</style>
+
+<?php include "sidenav.php"; ?>
+		<div class="col-md-9">
+			<div class="card card-cascade narrower">
+				<!-- Card header -->
+				<div class="view view-cascade gradient-card-header success-color">
+					<!-- Title -->
+					<h3 class="card-header-title"><i class="fas fa-edit"></i> Edit Admin Details</h3>
+				</div>
+				<div class="card-body card-body-cascade">
+					<div class="container">
+						<form class="container md-form" id="editadmin" enctype="multipart/form-data">
+							<div class="form-group" align="center">
+								<p class="alert alert-success" id="errorshow"></p>
+							</div>
+							<div class="md-form">
+								<i class="fas fa-user prefix"></i>
+						        <input type="text" id="username" value="<?php echo $row['username']; ?>" name="username" class="form-control">
+						        <input type="hidden" id="admin_id" value="<?php echo $row['admin_id']; ?>" name="admin_id">
+						        <label for="username">Username</label>
+						    </div>
+						    <div class="md-form">
+								<i class="fas fa-envelope prefix"></i>
+						        <input type="email" id="email" value="<?php echo $row['email']; ?>" name="email" class="form-control">
+						        <label for="email">Email Address</label>
+						    </div>
+						    <div class="md-form form-group form-inline-lg">
+			    				<span class='mr-3 fas fa-cubes prefix'></span>
+			    				<select style="width: 85%;" class="ml-5 mdb-select dropdown-success darken-4 colorful-select initialized md-form" name="level" id="level" required>
+									<option disabled selected>--Select Level--</option>
+						        	<option value="superadmin" <?php if($row['level'] == 'superadmin'){echo 'selected';} ?>>Super Admin</option>
+						        	<option value="finsec" <?php if($row['level'] == 'finsec'){echo 'selected';} ?>>Financial Secretary</option>
+						        	<option value="schoolsec" <?php if($row['level'] == 'schoolsec'){echo 'selected';} ?>>Secretary</option>
+								</select>
+			    			</div>
+			    			<div class="md-form">
+								<i class="fas fa-phone prefix"></i>
+						        <input type="text" id="phone" value="<?php echo $row['phone']; ?>" name="phone" class="form-control">
+						        <label for="phone">Phone Number</label>
+						    </div>
+						    <center><div class="text-center align-items-center justify-content-center col-md-5 mb-3">
+						        <button type="submit" id="btnUpload" class="btn btn-md btn-block peach-gradient btn-rounded z-depth-1a">Edit Details</button>
+						    </div></center>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</main>
+
+<?php include "footer.php"; ?>
+
+<script>
+	$(document).ready(function() {
+		$('.mdb-select').materialSelect();
+	});
+
+	$(document).ready(function(){
+    	$("#errorshow").hide();
+    });
+
+    $("form#editadmin").submit(function(e) {
+	    e.preventDefault();    
+	    var formData = new FormData(this);
+	    $.ajax({
+		    url: '../auth/editadminauth',
+		    type: 'POST',
+		    data: formData,
+		    beforeSend:function(){
+				$('#btnUpload').html("Editing Admin <span class='fas fa-1x fa-cog fa-spin'></span>");
+			},
+			success: function (data) {
+				if (data == "done") {
+				    $("#errorshow").show();
+				    $("#errorshow").html("Edited Successfully <br> Please wait. <span class='fas fa-1x fa-cog fa-spin'></span>");
+				    $('#btnUpload').html("Done!!");
+				    setTimeout(' window.location.href = "./home"; ', 3000);
+				}else{
+					$("#errorshow").show();
+					$("#errorshow").html(data);
+				    $('#btnUpload').html("Edit Details");
+				}   
+			},
+			cache: false,
+			error:function(){
+			  	$("#errorshow").show();
+				$('#errorshow').html("An error has occured!!");
+				$('#btnUpload').html("Edit Details");
+			},
+			contentType: false,
+			processData: false
+		});
+	});
+</script>

@@ -1,0 +1,236 @@
+<?php include "header.php";
+$database = new Db();
+$db = $database->db(); 
+
+if ($_SESSION['adminrole'] != 'Superadmin') {
+	echo "<script>
+		Swal.fire({
+			icon: 'info',
+			title: 'Fail',
+			text: 'You dont have access to this page.',
+			confirmButtonText: 'Ok',
+			confirmButtonColor: 'green',
+			}).then((result) => {
+			if (result.isConfirmed) {
+				location.href='home.php';
+			}
+		})
+	</script>";
+	exit();
+}
+
+
+if (isset($_GET['cand_id'])) {
+	$cand_id = $_GET['cand_id'];
+    $getuser = $db->prepare("SELECT * FROM candidate WHERE mat_no = :mat_no ");
+    $getuser->bindParam(":mat_no", $cand_id, PDO::PARAM_STR);
+    $getuser->execute();
+    $row = $getuser->fetch(PDO::FETCH_ASSOC);
+}
+?>
+
+<title>Edit Candidate Info (<?php echo $row['fullname']; ?>) - NACOS DSPZ</title>
+<style>
+.fas .fab .far {
+    font-size: 0.8rem;
+}
+
+h4{
+	font-size: 1.2rem;
+}
+	.avatar-upload{
+		position:relative;
+		max-width:205px;
+		margin:50px auto;
+	}
+	.avatar-upload .avatar-edit{
+		position:absolute;
+		right:12px;
+		z-index:1;
+		top:10px;
+	}
+	.avatar-upload .avatar-edit input{
+		display:none;
+	}.avatar-upload .avatar-edit input+label{
+		display:inline-block;
+		width:34px;
+		height:34px;
+		margin-bottom:0;
+		border-radius:100%;
+		background:#FFF;
+		border:1px solid transparent;
+		box-shadow:0 2px 4px 0 rgba(0,0,0,.12);
+		cursor:pointer;
+		font-weight:400;
+		transition:all .2s ease-in-out;
+	}
+	.avatar-upload .avatar-edit input+label:hover{
+		background:#f1f1f1;
+		border-color:#d6d6d6;
+	}
+	.avatar-upload .avatar-edit input+label:after{
+		content:"\f041";
+		font-family:FontAwesome;
+		color:#757575;
+		position:absolute;
+		top:10px;
+		left:0;
+		right:0;
+		text-align:center;
+		margin:auto;
+	}
+	.avatar-upload .avatar-preview{
+		width:170px;
+		height:180px;
+		position:relative;
+		border-radius:8%;
+		border:6px solid #cdcdcd;
+		box-shadow:0 2px 4px 0 rgba(0,0,0,.1);
+	}
+	.avatar-upload .avatar-preview>div{
+		width:100%;
+		height:100%;
+		border-radius:8%;
+		background-size:cover;
+		background-repeat:no-repeat;
+		background-position:center;
+		background-color: #f7f5ef;
+	}
+/* -- //Responsive code -- */
+</style>
+
+<?php include "sidenav.php"; ?>
+		<div class=" col-md-9">
+			<div class="container">
+				<div class="card card-cascade narrower">
+					<!-- Card header -->
+					<div class="view view-cascade gradient-card-header success-color">
+						<!-- Title -->
+						<h3 class="card-header-title"><i class="fas fa-edit"></i> <?php if (isset($_GET['action'])): ?>
+								View Data
+							<?php else: ?>
+								Edit Data	
+						<?php endif ?></h3>
+					</div>
+					<div class="card-body card-body-cascade">
+						<div class="container">
+							<form class="container md-form" id="edit" enctype="multipart/form-data">
+								<div class="avatar-upload">
+									<div class="avatar-edit">
+				                      	<input type='file' id="passport" name="passport" accept=".png, .jpg, .jpeg" />
+				                      	<label for="passport"></label>
+				                  	</div>
+				                  	<div class="avatar-preview">
+				                      	<div id="imagePreview" style="background-image: url(../images/candidates/<?php echo $row['photo']; ?>);">
+				                      	</div>
+				                  	</div>
+				              	</div>
+								<div class="md-form">
+									<i class="fas fa-user prefix"></i>
+									<input type="text" id="fullname" value="<?php echo $row['fullname']; ?>" name="fullname" class="form-control">
+									<label for="fullname">Candidate's Fullname</label>
+								</div>
+								<div class="md-form">
+									<i class="fas fa-user prefix"></i>
+									<input type="text" value="<?php echo $row['mat_no']; ?>" id="mat_no" name="mat_no" class="form-control">
+									<label for="mat_no">Matric Number</label>
+								</div>
+								<div class="md-form form-group form-inline-lg">
+									<span class='mr-3 fas fa-cubes prefix'></span>
+									<select style="width: 85%;" class="ml-5 mdb-select dropdown-success darken-4 colorful-select initialized md-form" name="level" id="level" required="">
+										<option disabled selected>--Level--</option>
+										<option <?php if($row['level'] == "ND II"){ echo "selected"; } ?>>ND II</option>
+										<option <?php if($row['level'] == "HND II"){ echo "selected"; } ?>>HND II</option>
+									</select>
+								</div>
+								<div class="md-form">
+									<i class="fas fa-user prefix"></i>
+									<input type="text" value="<?php echo $row['hobby']; ?>" id="hobby" name="hobby" class="form-control">
+									<input type="hidden" value="<?php echo $row['mat_no']; ?>" id="cand_id" name="cand_id" class="form-control">
+									<label for="hobby">Hobbies</label>
+								</div>
+								<div class="md-form form-group form-inline-lg">
+						    		<span class='mr-3 fas fa-cubes prefix'></span>
+						    		<select style="width: 85%;" class="ml-5 mdb-select dropdown-success darken-4 colorful-select initialized md-form" name="position" id="position" required>
+										<option disabled selected>--Select Position--</option>
+									    <option <?php if($row['position'] == "President"){ echo "selected"; } ?>>President</option>
+									    <option <?php if($row['position'] == "Vice President"){ echo "selected"; } ?>>Vice President</option>
+									    <option <?php if($row['position'] == "Secretary General"){ echo "selected"; } ?>>Secretary General</option>
+									    <option <?php if($row['position'] == "Financial Secretary"){ echo "selected"; } ?>>Financial Secretary</option>
+									    <option <?php if($row['position'] == "Treasurer"){ echo "selected"; } ?>>Treasurer</option>
+									    <option <?php if($row['position'] == "Provost"){ echo "selected"; } ?>>Provost</option>
+									    <option <?php if($row['position'] == "P.R.O"){ echo "selected"; } ?>>P.R.O</option>
+									    <option <?php if($row['position'] == "Software Director HND"){ echo "selected"; } ?>>Software Director HND</option>
+									    <option <?php if($row['position'] == "Software Director ND"){ echo "selected"; } ?>>Software Director ND</option>
+									    <option <?php if($row['position'] == "Welfare Director"){ echo "selected"; } ?>>Welfare Director</option>
+									    <option <?php if($row['position'] == "Social Director"){ echo "selected"; } ?>>Social Director</option>
+									    <option <?php if($row['position'] == "Sports Director"){ echo "selected"; } ?>>Sports Director</option>
+									</select>
+						    	</div>
+								<div class="form-group" align="center">
+									<p class="alert alert-success" id="errorshow"></p>
+								</div>
+								<?php if (isset($_GET['action'])): ?>
+								<?php else: ?>
+									<center>
+						    		<div class="text-center align-items-center justify-content-center col-md-5 mb-3">
+									    <button type="submit" id="btnSave" class="btn btn-md btn-block peach-gradient btn-rounded z-depth-1a">Save Candidate</button>
+									</div>
+								</center>
+								<?php endif ?>
+
+							</form>
+						</div>
+					</div>
+				</div>
+				
+			</div>
+		</div>
+	</section>
+</main>
+
+
+<?php include "footer.php"; ?>
+  <script>
+
+	$(document).ready(function() {
+		$('.mdb-select').materialSelect();
+	});
+
+    $(document).ready(function(){
+    	$("#errorshow").hide();
+    });
+        	
+	$("form#edit").submit(function(e) {
+	    e.preventDefault();    
+	    var formData = new FormData(this);
+	    $.ajax({
+		    url: '../electionauth/editinfoauth',
+		    type: 'POST',
+		    data: formData,
+		    beforeSend:function(){
+				$('#btnEdit').html("Editing Candidate <span class='fa fa-1x fa-cog fa-spin'></span>");
+			},
+			success: function (data) {
+				if (data == "edited") {
+				    $('#btnEdit').html("Successful!!");
+				    $("#errorshow").show();
+				    $("#errorshow").html("Candidate Data edited! Refreshing. <span class='fa fa-1x fa-cog fa-spin'></span>");
+				    setTimeout(' window.location.href = "./candidate?action=view"; ', 3000);
+				}else{
+					$("#errorshow").show();
+					$("#errorshow").html(data);
+				    $('#btnEdit').html("Save Candidate");
+				}   
+			},
+			cache: false,
+			error:function(){
+			  	$("#errorshow").show();
+				$('#errorshow').html("An error has occured!!");
+				$('#btnEdit').html("Save Candidate");
+			},
+			contentType: false,
+			processData: false
+		});
+	});
+  </script>

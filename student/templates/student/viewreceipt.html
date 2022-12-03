@@ -1,0 +1,339 @@
+{% comment %} {% extends 'student/main.html' %}  {% endcomment %}
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>NACOS PAYMENT RECEIPT</title>
+  <link rel="stylesheet" type="text/css" href="{% static 'stylesheet/receipt.css' %}">
+  <link href="../favicon.ico" rel="icon">
+  <link rel="stylesheet" type="text/css" href="{% static 'stylesheet/compiled-4.8.0.min.css' %}">
+  <style>
+            img#watermark{
+                margin-left:26%;
+            }
+        /* style sheet for "A4" printing */
+        @media print {
+
+          .print_page{
+            width: 100%;
+            border-style: none;
+            padding: 30px 0px 30px 0px;
+            margin: 0px;
+          }
+
+          .print_page .t1 {
+            font-size: 2.1rem !important;
+          }          
+          .print_page .t2 {
+            font-size: 1.5rem !important;
+          }          
+          .print_page .t3 {
+            font-size: 1.2rem !important;
+          }          
+          .print_page .t4 {
+            font-size: 1.3rem !important;
+          }          
+          .print_page .t5 {
+            padding-top: 90px !important;
+          }
+
+          .btn {
+            display: none;
+            visibility:hidden;
+          }
+
+          td{
+            padding-top: 25px !important;
+            padding-bottom: 25px !important;
+
+          }
+             @page {
+                size: A4
+                margin: 0cm;
+             }
+        }
+        
+        /* A4 Landscape*/
+
+  </style>
+
+  <style type="text/css">
+
+    .row{
+
+      margin-left:0px !important;
+
+      padding:10px 0px 0px 0px;
+
+    }
+
+            img#watermark{
+            position:absolute;
+            width: 700px;
+            background-size:cover;
+            margin-top:40%;
+            margin-left:1%;
+            background-repeat:no-repeat;
+            background-position:center;
+            opacity:0.2;
+            top:56px;
+            transform: rotate(-45deg);
+          }
+
+    thead{
+
+    }
+
+    #nceLink, degreeLink{
+
+      cursor:pointer;
+
+    }
+
+    .nav-tabs.bordered{
+
+      margin:0px 15px !important;
+
+    }
+
+    .tab-content{
+
+      padding:0px 15px !important;
+
+      border:none !important;
+
+    }
+
+    .foreign-form{
+
+      display:none;
+
+    }
+
+    .country-line{
+
+      padding:5px;
+
+      background:#DEDEDE;
+
+      margin:20px 0 0 10px;
+
+      border:1px solid #999999;
+
+      box-shadow:1px 1px 1px #DEDEDE;
+
+    }
+
+    .country-line span{
+
+      color:#CB4A18;
+
+      font-size:19px;
+
+      margin-left:10px;
+
+    }
+
+    .country-line h5{
+
+      margin:5px 0;
+
+    }
+  </style>
+
+</head>
+<body>
+
+  <div class="document cover " style="height:50%;">
+
+  <div class="content-row">
+
+
+    <div class="print_page">
+
+      <div class="col-md-12">
+
+        <div class="widget stacked">
+
+
+          <div class="widget-content" style="padding:10px 20px;">
+
+            <div class="col-md-12 receipt-head mb-5 mt-2">
+
+              <img src="{% static '/images/neklogo - Copy.png' %}" width="100" height="96" style="float: right; position: relative; z-index: 1;"> <img src="{% static '/images/logo2.png' %}" width="96" height="96" style="float: left; position: relative; z-index: 1;">
+              <h1 class="t1 text-uppercase pink-text text-center font-weight-bold" style="font-size: 1.6rem;">federal polytechnic nekede, owerri</h1>
+
+              <p class=" t2 text-uppercase green-text text-center font-weight-bold" style="font-size: 1.1rem;">nigeria association of computing student (nacos)</p>
+              <p class="t3 text-uppercase text-center font-weight-bold" style="font-size: 0.8rem;">school of information and communication technology</p>
+                  <p class="t4" style="font-size: 0.9rem;" class="text-uppercase"> {{transaction.level}}  - {{student.programme}} - {{transaction.payment_type}} - Payment Receipt</p>
+            </div>
+
+
+            </div>
+             <div><img id="watermark" src="{% static '/images/logo-email.png' %}"></div>
+
+            <div class="col-md-12">
+
+              <div class="col-md-12 no-p">
+
+                <h3>Personal Details</h3>
+
+                <hr>
+
+                <div class="col-md-10 print-table">
+
+                  <table class="table table-md table-bordered table-striped table-hover">
+
+                    <tbody>
+
+                      <tr style="padding: 0px 0px 0px;">
+
+                        <td><p>Portal ID</p></td>
+
+                        
+
+                        <td><p>{{transaction.app_no}}</p></td>
+
+                      </tr>
+
+                      <tr>
+
+                        <td><p>Payment ID</p></td>
+
+                        <td><p>{{transaction.payment_ref}}</p></td>
+
+                      </tr>
+
+                      <tr>
+
+                        <td><p>Full Name</p></td>
+
+                        <td><p>{{student}}</p></td>
+
+                      </tr>
+
+                      <tr>
+
+                        <td><p>Sex</p></td>
+
+                        <td><p>{{student.sex}}</p></td>
+
+                      </tr>
+
+                    </tbody>
+
+                  </table>
+
+                </div>
+
+                <div class="col-md-2 no-p">
+
+                  <div class="col-md-12 no-p receipt-image-div">
+
+                    <img src="{{request.user.avatar.url}}" width="150px" height="150px">
+                    Passport
+                  </div>
+
+                  </div>
+
+                </div>
+
+               
+
+                <div class="col-md-12 no-p" style="padding-top: 300px;">
+                  
+                  <h3 class="t5">Payment Details</h3>
+
+                  <hr>
+                  <div class="col-md-12 print-table">
+                    <table class="table table-md table-bordered table-striped table-hover">
+                      <tbody>
+                        <tr>
+                          <td><p>Amount Paid</p></td>
+                          <td><p>N {{transaction.payment_amount}}</p></td>
+                        </tr>
+                        <tr>
+                          <td><p>Purpose Of Payment</p></td>
+                          <td><p>{{transaction.payment_type}}</p></td>
+                        </tr>
+                        <tr>
+                          <td><p>Level</p></td>
+                          <td><p>{{transaction.level}}</p></td>
+                        </tr>
+                        <tr>
+                          <td><p>Session</p></td>
+                          <td><p>{{transaction.session}}</p></td>
+                        </tr>
+                          <tr><td><p>Date Of Payment</p></td>
+                          <td><p>{{transaction.payment_date}}</p></td>
+                        </tr>
+                        {% comment %} <tr>
+                          <td><p>Method Of Payment</p></td>
+                          <td><p><?= $print['payment_method'] ?></p></td>
+                        </tr> {% endcomment %}
+                      </tbody>
+                    </table>
+                  </div>
+
+                </div>
+
+                <div class="col-md-12 no-p">
+
+                  <table class="table">
+
+                    <tbody>
+
+                      <tr>
+
+                        <td>
+
+                          <div class="country-line">
+
+                            <h5><span class="fa  fa-lightbulb-o"></span> &nbsp; Thank you for choosing Nacos Federal Polytechnic Nekede</h5>
+
+                          </div>
+
+                        </td>
+
+                      </tr>
+
+                      <tr>
+
+                        <td>
+
+                          <p style="text-align:right;"><a class="btn btn-success btn-sm" href="javascript:print()">Print</a> | <a class="btn btn-danger btn-sm" href="{% url 'payment-list' %}">Close</a></p>
+
+                        </td>
+
+                      </tr>
+
+                    </tbody>
+                  </table>
+
+                </div>
+
+              </div>
+             <div><img id="watermark" src="{% static '/images/logo-email.png' %}"></div>
+
+            </div>
+
+          </div>
+
+        </div>
+    </div> 
+
+  </div>
+         
+        
+
+    
+
+
+</body>
+
+</html>
+
+  <script src="../scripts/jquery-3.4.0.min.js"></script>
+  <script src="../scripts/compiled.0.min.js"></script>
+

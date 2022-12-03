@@ -1,0 +1,95 @@
+<?php
+include "header.php"; 
+
+$database = new Db();
+$db = $database->db();
+
+//===============================================================================
+
+if (!isset($_GET['pay_id'])) {
+	header('Location: javascript://history.go(-1)');
+	exit();
+}
+
+$pay_id = filter_var(htmlentities($_GET['pay_id']),FILTER_SANITIZE_STRING);
+
+$check = $db->prepare('SELECT * FROM payments WHERE trx_ref = :pay_id');
+$check->bindParam(':pay_id', $pay_id, PDO::PARAM_STR);
+$check->execute();
+
+if ($check->rowCount() < 1) {
+	header('Location: javascript://history.go(-1)');
+	exit();
+}
+$row = $check->fetch(PDO::FETCH_ASSOC);
+$image = $row['deposit_proof'];
+$user_id = $row['app_no'];
+$status = 1;
+
+
+
+if (isset($_POST['confirm'])) {
+    $saveDetails = "UPDATE payments SET status = :status WHERE trx_ref = :pay_id";
+	$query_saveDetails = $db->prepare($saveDetails);
+	$query_saveDetails->bindParam(':status', $status, PDO::PARAM_INT);
+	$query_saveDetails->bindParam(':pay_id', $pay_id, PDO::PARAM_STR);
+	if ($query_saveDetails->execute()) {
+		echo "<script>
+			Swal.fire({
+				icon: 'success',
+				title: 'Updated',
+				text: 'Payment updated successful.',
+				confirmButtonText: 'Ok',
+				confirmButtonColor: 'green',
+				}).then((result) => {
+				if (result.isConfirmed) {
+					location.href='updatepayment.php';
+				}
+			})
+		</script>";
+	}else{
+		echo "<script>
+			Swal.fire({
+				icon: 'error',
+				title: 'Fail',
+				text: 'Payment update failed,.',
+				confirmButtonText: 'Ok',
+				confirmButtonColor: 'green',
+				}).then((result) => {
+				if (result.isConfirmed) {
+					location.href='updatepayment.php';
+				}
+			})
+		</script>";
+	}
+}
+
+
+?>
+
+		<div class="col-md-9 mx-auto mt-5 mb-5">
+			<div class="card card-cascade narrower">
+				<!-- Card header -->
+				<div class="view view-cascade gradient-card-header success-color">
+					<!-- Title -->
+					<h3 class="card-header-title"><i class="fas fa-list"></i> Student Pending Payment Proof</h3>
+				</div>
+				<div class="card-body card-body-cascade mx-auto">
+						<div class="col-lg-10 mb3 col-xl-12 mt-4 mb-2">
+				      		<!-- Featured image -->
+				      		<div class="view overlay rounded z-depth-1-half mb-lg-0 mb-4">
+				        		<img class="img-responsive img-fluid" style="width: 100%; height: 100%;" src="../images/payment_proof/<?=$image  ?>" alt="<?php echo str_replace('-', ' ', $row['payment_type']); ?>">
+
+				      		</div>
+				      	</div>
+				      		<form method="POST" action="">
+					        <center><div class="text-center align-items-center justify-content-center col-md-6 mb-1 mt-4">
+					            <button type="submit" name="confirm" id="" class="btn btn-md btn-block btn-success btn-rounded z-depth-1a">Confirm Payment</button>
+					        </div></center>
+					        </form>
+				    	
+				</div>
+			</div>
+		</div>
+
+<?php include 'footer.php'; ?>

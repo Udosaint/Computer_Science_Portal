@@ -1,0 +1,194 @@
+{% load static %}
+<html lang="en">
+  <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+   <link href="./favicon.ico" rel="icon">
+  <!-- Font Awesome -->
+  <link href="{% static 'stylesheet/compiled-4.8.0.min.css' %}" rel="stylesheet">
+  <link rel="stylesheet" href="../stylesheet/all.css">
+  <!-- Bootstrap core CSS -->
+  <!-- <link href="./stylesheet/bootstrap.min.css" rel="stylesheet"> -->
+  <!-- Material Design Bootstrap -->
+  <link rel="stylesheet" href="{% static 'stylesheet/datatables.min.css' %}">
+  <script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
+  <script src="{% static 'scripts/jquery-3.4.0.min.js' %}"></script>
+  <script src="{% static 'scripts/sweetalert2.all.min.js' %}"></script>
+  <style>
+  /* Required for full background image */
+
+  html,
+  body,
+  .view{
+    height: 100%;
+  }
+  nav a{
+  	color: #FFF;
+  	font-size: 18px;
+    font-weight: 550;
+  }
+
+  @media (max-width: 740px) {
+    html,
+    body
+    {
+      height: 100vh;
+    }
+  }
+
+  .top-nav-collapse {
+    background-color: rgba(76, 175, 80, 0.7) !important;
+    color: #FFF;
+  }
+
+  .navbar:not(.top-nav-collapse) {
+    background: #0000;
+  }
+
+  @media (max-width: 991px) {
+    .navbar:not(.top-nav-collapse) {
+      background: rgba(76, 175, 80, 0.7) !important;
+      color: #FFF;
+    }
+      nav a{
+	  	color: #FFF;
+	  	font-size: 15px;
+	  }
+  }
+
+  h1 {
+    letter-spacing: 2px;
+  }
+
+  h5 {
+    letter-spacing: 0px;
+  }
+
+  .hr-light {
+    border-top: 3px solid #fff;
+    width: 100px;
+  }
+
+#introCard {
+	height: 100vh;
+}
+@media (min-width: 992px) {
+	#introCard {
+      margin-top: -58.59px;
+    }
+    #introCard, {
+    	height: 30vh;
+    }
+  </style>
+</head>
+
+<body class="lightgrey">
+<header>
+  <!-- Navigation & Intro -->
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-md bg-success success-color navbar-dark scrolling-navbar top-nav-collapse">
+        <a class="navbar-brand font-weight-bold title white-text" href="/office"><img src="{% static 'images/logo.png' %}" style="height: 65px;" class="img-fluid img-responsive"> </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#toggler" aria-controls="toggler" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="toggler">
+          <ul class="navbar-nav mr-auto smooth-scroll">
+            <li class="nav-item">
+              <a class="nav-link title waves-effect waves-light" href="/office"><i class="fas fa-tachometer-alt"></i> Admin Dashboard
+                <span class="sr-only">(current)</span>
+              </a>
+            </li>
+          </ul>
+          <ul class="navbar-nav nav-flex-icons">
+            <li class="nav-item">
+              <a class="nav-link title waves-effect waves-light" href="javascript:history.back()"><i class="fas fa-arrow-left"></i> Go Back</a>
+            </li>
+          	<li class="nav-item">
+              	<a class="nav-link title waves-effect waves-light" href="logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </li>
+          </ul>
+        </div>
+    </nav>
+</header>
+
+{% include 'office/sidenav.html' %}
+{% block content %}
+
+
+
+{% endblock content %}
+
+  <!--Footer-->
+  <footer class="page-footer text-center text-md-left success-color-dark pt-0">
+
+    <div class="top-footer-color">
+      <div class="container">
+
+        <!--Grid row-->
+        <div class="row py-4 d-flex align-items-center">
+
+          <!--Grid column-->
+          <div class="col-md-6 col-lg-5 text-center text-md-left mb-2">
+            <img src="../images/logo.png" width="140" class="img-fluid img-responsive mb-1">
+            <h6 class="mb-0 white-text">Get connected with us on social networks!</h6>
+          </div>
+          <!--Grid column-->
+
+          <!--Grid column-->
+          <div class="col-md-6 col-lg-7 text-center text-md-right">
+            <!--Facebook-->
+            <a class="p-2 m-2 fa-lg fb-ic ml-0">
+              <i class="fab fa-facebook-f white-text mr-lg-4"> </i>
+            </a>
+            <!--Twitter-->
+            <a class="p-2 m-2 fa-lg tw-ic">
+              <i class="fab fa-twitter white-text mr-lg-4"> </i>
+            </a>
+            <!--Google +-->
+            <a class="p-2 m-2 fa-lg gplus-ic">
+              <i class="fab fa-google-plus-g white-text mr-lg-4"> </i>
+            </a>
+            <!--Linkedin-->
+            <a class="p-2 m-2 fa-lg li-ic">
+              <i class="fab fa-linkedin-in white-text mr-lg-4"> </i>
+            </a>
+            <!--Instagram-->
+            <a class="p-2 m-2 fa-lg ins-ic">
+              <i class="fab fa-instagram white-text mr-lg-4"> </i>
+            </a>
+          </div>
+          <!--Grid column-->
+
+        </div>
+        <!--Grid row-->
+      </div>
+    </div>
+
+    <!-- Copyright -->
+    <div class="footer-copyright py-3 text-center wow fadeIn" data-wow-delay="0.3s" style="visibility: visible; animation-name: fadeIn; animation-delay: 0.3s;">
+      <div class="container-fluid">
+        © <?php echo date("Y"); ?> Copyright: <a href="#"> NACOS DSPZ </a>
+      </div>
+    </div>
+    <!-- Copyright -->
+
+  </footer>
+  <!--/.Footer-->
+
+  <!-- JQuery -->
+  <!-- Bootstrap tooltips -->
+  <!-- <script src="./scripts/popper.min.js"></script> -->
+  <!-- Bootstrap core JavaScript -->
+  <!-- <script src="./scripts/bootstrap.min.js"></script> -->
+  <!-- MDB core JavaScript -->
+  <script src="{% static 'scripts/compiled.0.min.js' %}"></script>
+  <script src="{% static 'scripts/jquery.dataTables.min.js' %}"></script>
+  <script src="{% static 'scripts/dataTables.bootstrap.min.js' %}"></script>
+  <script src="{% static 'scripts/pdf_make.min.js' %}"></script>
+  <script src="{% static 'scripts/vs_fonts_pdf.j' %}"></script>
+  <div class="hiddendiv common"></div>
+
+</body>
+</html>

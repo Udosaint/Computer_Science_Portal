@@ -1,0 +1,159 @@
+{% extends 'main.html' %}
+
+{% load static %}
+{% block content %}
+<title>Home - NACOS FPNO</title>
+  <main>
+
+    <div class="container">
+
+      <!-- Section: About -->
+      <section id="about" class="about mt-5 mb-5 py-3 wow fadeIn" data-wow-delay="0.2s" style="visibility: visible; animation-name: fadeIn; animation-delay: 0.2s;">
+
+        <!-- Grid row -->
+        <div class="row pt-2 mt-5">
+
+          <!-- Grid column -->
+          <div class="col-lg-5 col-md-12 mb-3 wow fadeIn" data-wow-delay="0.4s" style="visibility: visible; animation-name: fadeIn; animation-delay: 0.4s;">
+            <!-- Image -->
+            <img src="{% static 'images/welcome.jpg' %}" class="img-fluid z-depth-1 rounded" alt="My photo">
+          </div>
+          <!-- Grid column -->
+
+          <!-- Grid column -->
+          <div class="col-lg-6 ml-auto col-md-12 wow fadeIn" data-wow-delay="0.4s" style="visibility: visible; animation-name: fadeIn; animation-delay: 0.4s;">
+            <!-- Secion heading -->
+            <h3 class="mb-5 dark-grey-text title font-weight-bold wow fadeIn" data-wow-delay="0.2s" style="visibility: visible; animation-name: fadeIn; animation-delay: 0.2s;">
+              <strong>Our Mission</strong>
+            </h3>
+
+            <!-- Description -->
+            <p align="justify" class="grey-text"><span class="fas fa-arrow-right"></span> To Become a network of committed Student IT Professionals determined to stimulate the technology, innovation and entrepreneurship scene in Nigeria.</p>
+            <p align="justify" class="grey-text"><span class="fas fa-arrow-right"></span> To develop a vibrant ecosystem that drives digital inclusion across all tertiary Institutions, Governments, Enterprises and Citizens for the advancement of information technology in Nigeria.</p>
+            <p align="justify" class="grey-text mb-5"><span class="fas fa-arrow-right"></span> To Become the most sort after Students Organization in terms of Information Technology and Entrepreneurship.</p>
+
+          </div>
+          <!-- Grid column -->
+
+        </div>
+        <!-- Grid row -->
+
+      </section>
+      <!-- Section: About -->
+
+      <hr>
+
+      <!-- Section: Features v.4 -->
+      <section id="features" class="mb-5 pb-4">
+
+        <!-- Section heading -->
+        <h3 class="text-center title my-5 dark-grey-text font-weight-bold wow fadeIn" data-wow-delay="0.2s" style="visibility: visible; animation-name: fadeIn; animation-delay: 0.2s;">
+          <strong>WHAT WE DO</strong>
+        </h3>
+
+        <!-- Grid row -->
+        <div class="row features-small wow fadeIn" data-wow-delay="0.4s" style="visibility: visible; animation-name: fadeIn; animation-delay: 0.4s;">
+          <div class="col-md-4 text-justify">
+            <center><img src="{% static 'images/02.png' %}" class="img-fluid img-responsive">
+            <h4>Help Current Students/Members</h4></center>
+            <p>NACOS helps its current students and members acquire the best of what the emerging technology entails.</p>
+          </div>
+          <div class="col-md-4 text-justify">
+            <center><img src="{% static 'images/04.png' %}" class="img-fluid img-responsive">
+            <h4>We Develop; We Build</h4></center>
+            <p>While helping our students and members to know more about emerging technology, we also ensure the development of their individual intellectual capability.</p>
+          </div>
+          <div class="col-md-4 text-justify">
+            <center><img src="{% static 'images/03.png' %}" class="img-fluid img-responsive">
+            <h4>Build our Community</h4></center>
+            <p>Building the NACOS Community is one of the association's utmost concern because of the association intention of creating a vibrant ecosystem which will aid the advance of Information Technology in Nigeria.</p>
+          </div>
+        </div>
+        <!-- Grid row -->
+
+      </section>
+      <!-- Section: Features v.4 -->
+
+    </div>
+
+    <div class="container">
+
+      <section class="mb-5 pt-1 pb-5">
+
+        <!-- Section heading -->
+        <h3 class="text-center title my-3 pt-4 pb-4 dark-grey-text font-weight-bold wow fadeIn" data-wow-delay="0.2s" style="visibility: visible; animation-name: fadeIn; animation-delay: 0.2s;">
+          <strong>Latest Announcements</strong>
+        </h3>
+
+
+
+      </section>
+
+      <hr class="mt-5">
+
+      <!-- Section: Contact v.2 -->
+      <section id="contact" class="mb-5 card">
+
+        <!-- Section heading -->
+        <h3 class="text-center title my-5 py-4 dark-grey-text font-weight-bold wow fadeIn" data-wow-delay="0.2s" style="visibility: visible; animation-name: fadeIn; animation-delay: 0.2s;">
+          <strong>Send us a Message/Suggestions</strong>
+        </h3>
+
+        <!-- Section sescription -->
+        <p class="text-center grey-text my-5 w-responsive mx-auto wow fadeIn" data-wow-delay="0.2s" style="visibility: visible; animation-name: fadeIn; animation-delay: 0.2s;">Send us a message, suggestions or complaints. We will reply you as soon as possible.</p>
+
+        <div class="row wow fadeIn" data-wow-delay="0.4s" style="visibility: visible; animation-name: fadeIn; animation-delay: 0.4s;">
+        <!--Body-->
+        <div class="modal-body col-md-8 mx-auto border mb-3">
+
+            <!-- Material input name -->
+            <div class="md-form form-sm">
+                <i class="fa fa-user prefix"></i>
+                <input type="text" id="contactName" class="form-control form-control-sm">
+                <label for="contactName">Your name</label>
+            </div>
+
+            <!-- Material input email -->
+            <div class="md-form form-sm">
+                <i class="fa fa-envelope prefix"></i>
+                <input type="password" id="contactEmail" class="form-control form-control-sm">
+                <label for="contactEmail">Your email</label>
+            </div>
+
+            <!-- Material input subject -->
+            <div class="md-form form-sm">
+                <i class="fa fa-tag prefix"></i>
+                <input type="text" id="contactSubject" class="form-control form-control-sm">
+                <label for="contactSubject">Subject</label>
+            </div>
+
+            <!-- Material textarea message -->
+            <div class="md-form form-sm">
+                <i class="fa fa-pencil prefix"></i>
+                <textarea type="text" id="contactMessage" class="md-textarea form-control"></textarea>
+                <label for="contactMessage">Your message</label>
+            </div>
+
+            {% comment %} <div class="md-form form-sm">
+                <div class="form-group" align="center">
+                  <p class="alert alert-success" id="errorshow2"></p>
+                </div>
+            </div> {% endcomment %}
+
+            <div class="text-center mt-4 mb-2">
+                <button class="btn btn-rounded waves-effect btn-success" id="btnSend">Send Message
+                    <i class="fa fa-paper-plane ml-2"></i>
+                </button>
+            </div>
+
+        </div>
+
+        </div>
+      </section>
+      <!-- Section: Contact v.2 -->
+
+    </div>
+
+  </main>
+
+  {% endblock content %}

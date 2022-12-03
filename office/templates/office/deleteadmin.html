@@ -1,0 +1,15 @@
+<?php
+ob_start();
+include "../includes/auto_load.php";
+
+$database = new Db();
+$db = $database->db();
+
+$admin_id = filter_var(htmlentities($_POST['id']),FILTER_SANITIZE_STRING);
+$sqlUpdate = $db->prepare("DELETE FROM admin WHERE id = :admin_id");
+$sqlUpdate->bindParam(":admin_id", $admin_id, PDO::PARAM_INT);
+if ($sqlUpdate->execute()) {
+	echo "Done";
+}else{
+	echo "An error occured!!";
+}

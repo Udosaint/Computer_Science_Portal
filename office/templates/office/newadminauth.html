@@ -1,0 +1,65 @@
+<?php
+ob_start();
+include "../includes/auto_load.php";
+
+$database = new Db();
+$db = $database->db();
+
+//===============================================================================
+$email = filter_var(htmlentities($_POST['email']),FILTER_SANITIZE_STRING);
+$phone = filter_var(htmlentities($_POST['phone']),FILTER_SANITIZE_STRING);
+$username = filter_var(htmlentities($_POST['username']),FILTER_SANITIZE_STRING);
+$password = filter_var(htmlentities($_POST['password']),FILTER_SANITIZE_STRING);
+$role = filter_var(htmlentities($_POST['level']),FILTER_SANITIZE_STRING);
+
+	$eunsql = "SELECT * FROM admin WHERE username=:username";
+    $exist_username = $db->prepare($eunsql);
+    $exist_username->bindParam(':username', $username, PDO::PARAM_STR);
+    $exist_username->execute();
+
+    $eemsql = "SELECT * FROM admin WHERE email=:email";
+    $exist_email = $db->prepare($eemsql);
+    $exist_email->bindParam(':email', $email, PDO::PARAM_STR);
+    $exist_email->execute();
+
+    $num_un_ex = $exist_username->rowCount();
+    $num_em_ex = $exist_email->rowCount();
+
+    if($email == null || $password == null || $username == null || $password == null || $phone == null || $role == null){
+    	echo " Please fill required fields.";
+    }elseif ($num_un_ex == 1) {
+           echo "Error! Username has already been taken";
+    }elseif($num_em_ex == 1){
+            echo "This email address already exists";
+    }elseif(strlen($password) < 6){
+        echo "Your password must be at least 6 characters long. Please try another</p>";
+    }elseif(strpos($username, ' ') !== false || preg_match('/[\'^£$%&*()}{@#~?><>,.|=+¬-]/', $username) || !preg_match('/[A-Za-z0-9]+/', $username)) {
+        echo "<b>Error in Username :</b><br><span class='fa fa-times'></span> Special characters not allowed.";
+    }elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        echo "Invalid email address.";
+    }else{
+    	$create = $db->prepare("INSERT INTO admin (username, email, phone, password, role) VALUES (:username, :email, :phone, :password, :role)");
+			$create->bindParam(':username', $username, PDO::PARAM_STR);
+			$create->bindParam(':email', $email, PDO::PARAM_STR);
+			$create->bindParam(':phone', $phone, PDO::PARAM_STR);
+			$create->bindParam(':password', $password, PDO::PARAM_STR);
+			$create->bindParam(':role', $role, PDO::PARAM_STR);
+
+    		if ($create->execute()) {
+                echo "<script>
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Congratulations',
+                        text: 'You dont created new Admin.',
+                        confirmButtonText: 'Ok',
+                        confirmButtonColor: 'green',
+                        }).then((result) => {
+                        if (result.isConfirmed) {
+                            location.href='viewadmin.php';
+                        }
+                    })
+                </script>";
+        	}else{
+        		echo "There was an error creating this admin. Try again!";
+        	}
+    }

@@ -1,0 +1,133 @@
+<?php 
+include "header.php";
+
+if (!isset($_GET['response'])){
+	if ($_GET['response'] != "success") {
+		if (!isset($_GET['reference']) OR !isset($_GET['user_id'])) {
+			header('Location: ./');
+			exit();
+		}
+	}
+}
+else{
+	$response = $_GET['response'];
+}
+?>
+
+<title>Payment Result</title>
+<style>
+	.card-body h5{
+		letter-spacing: 1px;
+	}
+</style>
+
+<div class="introCard mb-4" style="background-image: url(../images/background3.jpg); background-repeat: no-repeat; background-size: cover; background-position: center center; z-index: 0;">
+    <div class="mask rgba-black-strong d-flex justify-content-center align-items-center h-45">
+        <div class="container" style="padding-top: 10%; padding-bottom: 10%;">
+            <div class="col-md-12 mb-4 white-text text-center">
+              <h1 class="display-5 title mt-md-5 mt-lg-0 font-weight-bold wow fadeIn" data-wow-delay="0.3s" style="visibility: visible; animation-name: fadeIn; animation-delay: 0.3s;">
+                  <strong><?php echo $_SESSION['username']; ?> - NACOS ID FORM</strong>
+                </h1>
+              <hr class="hr-light my-4 wow fadeInDown" data-wow-delay="0.4s" style="visibility: visible; animation-name: fadeInDown; animation-delay: 0.4s;">
+              <h5 class="text-uppercase mb-4 white-text wow fadeInDown" data-wow-delay="0.4s" style="visibility: visible; animation-name: fadeInDown; animation-delay: 0.4s;"><strong class="font-weight-bold"><i>Towards Advanced Computing</i></strong></h5>
+            </div>
+        </div>
+    </div>
+</div>
+</header>
+<?php switch($response){
+	case 'success':
+	$reference = $_GET['reference'];
+	$user_id = $_GET['user_id'];
+?>
+	<main class="my-5">
+	    <section class="container-fluid col-md-12">
+	        <div class="card card-cascade narrower">
+	            <!-- Card header -->
+	            <div class="view view-cascade gradient-card-header success-color">
+	                <!-- Title -->
+	                <h3 class="card-header-title"><i class="fas fa-check"></i> Payment Summary</h3>
+	            </div>
+	            <div class="card-body card-body-cascade">
+	                <div class="form-group">
+	                    <h3 class="alert text-center m-4" id="errorshow"><span class="fas fa-thumbs-up"></span> Payment Successful</h3>
+	                </div>
+	                <?php 
+	                	  $session = $_SESSION['nacossession'];
+	                	  $getRef = $db_conn->prepare("SELECT * FROM payments, students WHERE (payments.reference = :reference) AND (payments.user_id = :user_id AND students.main_id = :suser_id)");
+	                	  $getRef->bindParam(':reference', $reference, PDO::PARAM_STR);
+	                	  $getRef->bindParam(':user_id', $user_id, PDO::PARAM_STR);
+	                	  $getRef->bindParam(':suser_id', $user_id, PDO::PARAM_STR);
+	                	  $getRef->execute();
+	                	  $row = $getRef->fetch(PDO::FETCH_ASSOC);
+	                	  $level = $row['p_level'];
+	                	  $amount = $row['amount'];
+	               	?>
+	                <h5><b>Matric Number:</b> <span class="text-small"><?php echo $row['mat_no']; ?></span></h5><hr>
+	                <h5><b>Full Name:</b> <span class="text-small"><?php echo $row['surname']." ".$row['lastname']; ?></h5><hr>
+	                <h5><b>Email Address:</b> <span class="text-small"><?php echo $row['email']; ?></span></h5><hr>
+	                <h5><b>Level:</b> <span class="text-small"><?php echo $row['p_level']; ?></span></h5><hr>
+	                <h5><b>Session:</b> <span class="text-small"><?php echo $row['session']; ?></span></h5><hr>  
+	                <h5><b>Amount:</b> <span class="text-small">(NGN)<?php echo $row['amount']; ?></span></h5><hr>                  
+	                <center>
+	                    <div class="text-center align-items-center justify-content-center mt-4 mb-3">
+	                    	<?php if($row['level'] == "ND I" || $row['level'] == "HND I"){?>
+	                        <a href="nacosid?user_id=<?php echo $row['main_id']; ?>&reference=<?php echo $row['reference']; ?>&level=<?php echo $row['p_level']; ?>&session=<?php echo $row['session']; ?>" class="btn btn-md btn-unique btn-rounded z-depth-2">Continue</a>
+	                    	<?php }elseif ($row['level'] == "ND II" || $row['level'] == "HND II") { ?>
+	                    		<a href="viewreceipt" class="btn btn-md btn-success btn-rounded z-depth-2">Continue</a>
+	                    	<?php } ?>
+	                    	<a href="./" class="btn btn-md btn-danger btn-rounded z-depth-2">Cancel</a>
+	                    </div>
+	                </center>
+	            </div>
+	        </div>
+	    </section>
+	</main>
+<?php break; ?>
+<!-- Success Payment -->
+
+<?php case 'cancelled':
+	header("Location: ./?message=Payment Cancelled");
+?>
+	
+<?php break; ?>
+<!-- Cancelled Payment -->
+
+<?php case 'successqueryneeded':
+	header("Location: ./?message=Payment Successful, but failed to update. <br> Please contact site admin to update your payment");
+?>
+	
+<?php break; ?>
+<!-- Query Needed -->
+
+<?php case 'fraud':
+	header("Location: ./?message=Fradulent Transaction Detected! Please contact the site administrator");
+?>
+	
+<?php break; ?>
+<!-- Fraud Payment -->
+
+<?php case 'failed':
+	header("Location: ./?message=Transacion failed! Please try again or contact the site administrator for assistance");
+?>
+	
+<?php break; ?>
+<!-- Failed Payment -->
+
+<?php default:
+	header("Location: ./?message=Nothing to show here");
+?>
+	
+<?php break; ?>
+<!-- Failed Payment -->
+
+<?php } ?>
+
+<?php include "footer.php"; ?>
+
+<script>
+    $(document).ready(function() {
+        $('.mdb-select').materialSelect();
+    });
+
+</script>

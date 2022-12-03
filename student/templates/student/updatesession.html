@@ -1,0 +1,137 @@
+{% extends 'student/main.html' %}
+{% load static %}
+{% block content %}
+<title> {{ student }} || Update {{ page }}</title>
+<style>
+	#edit .fas {
+		font-size: 1.2rem;
+	}
+</style>
+{% comment %} <div class="introCard mb-4" style="background-image: url(../images/background3.jpg); background-repeat: no-repeat; background-size: cover; background-position: center center; z-index: 0;">
+	<div class="mask rgba-black-strong d-flex justify-content-center align-items-center h-45">
+        <div class="container" style="padding-top: 10%; padding-bottom: 10%;">
+        	<div class="col-md-12 mb-4 white-text text-center">
+              <h1 class="display-5 title mt-md-5 mt-lg-0 font-weight-bold wow fadeIn" data-wow-delay="0.3s" style="visibility: visible; animation-name: fadeIn; animation-delay: 0.3s;">
+                  <strong><?php echo $student_details['surname'].' '. $student_details['firstname'].' '.$student_details['othername']; ?> - UPDATE LEVEL & SESSION</strong>
+                </h1>
+              <hr class="hr-light my-4 wow fadeInDown" data-wow-delay="0.4s" style="visibility: visible; animation-name: fadeInDown; animation-delay: 0.4s;">
+              <h5 class="text-uppercase mb-4 white-text wow fadeInDown" data-wow-delay="0.4s" style="visibility: visible; animation-name: fadeInDown; animation-delay: 0.4s;"><strong class="font-weight-bold"><i>Towards Advanced Computing</i></strong></h5>
+            </div>
+        </div>
+    </div>
+</div> {% endcomment %}
+</header>
+
+{% if page == "Session" %}
+<main class="my-4 container row col-md-8 mx-auto">
+	
+	<div class="container col-md-6">
+		<div class="my-5">
+			<div class="card card-cascade narrower">
+				<!-- Card header -->
+				<div class="view view-cascade gradient-card-header success-color">
+					<!-- Title -->
+					<h3 class="card-header-title"><i class="fas fa-edit"></i> Update Session</h3>
+				</div>
+				<div class="card-body card-body-cascade">
+					<form class="container" method="POST" action="{% url 'update-session' %}">
+						{% csrf_token %}					
+						<div class="md-form form-group form-inline-lg">
+							<span class='mr-3 fas fa-cubes prefix'></span>
+							{{ form.session }}
+							{% comment %} <select style="width: 85%;" class="ml-5 mdb-select dropdown-success darken-4 colorful-select initialized md-form" name="session" id="session" required="">
+								<option disabled selected>--Select Session--</option>
+								{% for session in sessions %}
+								<option value="{{ session.session }}">{{ session.session }}</option>
+								{% endfor %} {% endcomment %}
+							</select>
+						</div> 
+						<center><div class="text-center align-items-center justify-content-center col-md-8 mb-3">
+							<button type="submit" name="update_session" class="btn btn-md btn-block btn-success btn-rounded z-depth-1a">Update Session <i class="far fa-edit"></i></button>
+						</div></center>
+					</form>
+
+				</div>
+			</div>
+			
+		</div>
+	</div>
+</main>
+{% elif page == "Semester" %}
+<main class="my-4 container row col-md-8 mx-auto">
+	
+	<div class="container col-md-6">
+		<div class="my-5">
+			<div class="card card-cascade narrower">
+				<!-- Card header -->
+				<div class="view view-cascade gradient-card-header success-color">
+					<!-- Title -->
+					<h3 class="card-header-title"><i class="fas fa-edit"></i> Update Semester</h3>
+				</div>
+				<div class="card-body card-body-cascade">
+					<form class="container" method="POST" action="{% url 'update-semester' %}">
+						{% csrf_token %}					
+						<div class="md-form form-group form-inline-lg">
+							<span class='mr-3 fas fa-cubes prefix'></span>
+							{{ form.semester }}
+						</div>
+						<center><div class="text-center align-items-center justify-content-center col-md-6 mb-3">
+							<button type="submit" name="update_session_level" class="btn btn-md btn-block btn-success btn-rounded z-depth-1a">Save Edit <i class="far fa-edit"></i></button>
+						</div></center>
+					</form>
+
+				</div>
+			</div>
+			
+		</div>
+	</div>
+</main>
+
+{% else %}
+
+<main class="my-4 container row col-md-8 mx-auto">
+	
+	<div class="container col-md-6">
+		<div class="my-5">
+			<div class="card card-cascade narrower">
+				<!-- Card header -->
+				<div class="view view-cascade gradient-card-header success-color">
+					<!-- Title -->
+					<h3 class="card-header-title"><i class="fas fa-edit"></i> Update Level</h3>
+				</div>
+				<div class="card-body card-body-cascade">
+					<form class="container" method="POST" action="{% url 'update-level' %}">
+						{% csrf_token %}					
+						<div class="md-form form-group form-inline-lg">
+							<span class='mr-3 fas fa-cubes prefix'></span>
+							{{ form.level }}
+							{% comment %} <select style="width: 85%;" class="ml-5 mdb-select dropdown-success darken-4 colorful-select initialized md-form" name="level" id="level" required="">
+								<option disabled selected>--Select Level--</option>
+								<option value="ND I">ND I</option>
+								<option value="ND II">ND II</option>
+								<option value="HND I">HND I</option>
+								<option value="HND II">HND II</option>
+							</select> {% endcomment %}
+						</div>
+						<center><div class="text-center align-items-center justify-content-center col-md-6 mb-3">
+							<button type="submit" name="update_session_level" class="btn btn-md btn-block btn-success btn-rounded z-depth-1a">Save Edit <i class="far fa-edit"></i></button>
+						</div></center>
+					</form>
+
+				</div>
+			</div>
+			
+		</div>
+	</div>
+</main>
+
+{% endif %}
+
+  <script>
+
+	$(document).ready(function() {
+		$('.mdb-select').materialSelect();
+	});
+
+  </script>
+  {% endblock content %}

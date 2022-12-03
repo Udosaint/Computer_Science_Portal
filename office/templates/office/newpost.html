@@ -1,0 +1,110 @@
+<?php include "header.php"; 
+
+$admin = new Admin();
+
+//get categories
+$viewCat = $admin->View_Category();
+
+// add post
+$addPost = $admin->Add_Post($_SESSION['admin']);
+?>
+
+<title>Add New Post</title>
+
+<?php include "sidenav.php"; ?>
+    <div class="col-md-9">
+      <div class="card card-cascade narrower">
+        <!-- Card header -->
+        <div class="view view-cascade gradient-card-header success-color">
+          <!-- Title -->
+          <h3 class="card-header-title"><i class="fas fa-newspaper"></i> Add New Post</h3>
+        </div>
+        <div class="card-body card-body-cascade">
+          <div class="container">
+            <form class="container md-form" method="POST" enctype="multipart/form-data">
+
+              <div class="file-field">
+			        <div class="btn btn-primary btn-sm float-left">
+			            <span>Choose file</span>
+			            <input type="file" id="post_img" name="post_img" >
+			        </div>
+			        <div class="file-path-wrapper">
+			            <input class="file-path validate" type="text" placeholder="Upload your file">
+			        </div>
+			    </div>
+              <div class="md-form">
+                <i class="fas fa-newspaper prefix"></i>
+                    <input type="text" id="post_title" name="post_title" class="form-control">
+                    <label for="post_title">Post Title</label>
+              </div>
+              <div class="md-form form-group form-inline-lg">
+                  <span class='mr-3 fas fa-cube prefix'></span>
+                  <select style="width: 85%;" class="ml-5 mdb-select dropdown-success darken-4 colorful-select initialized md-form" name="post_category" id="post_category" required="">
+                  <option disabled selected>--Select Category--</option>
+                  <?php foreach ($viewCat as $cat): ?>
+				  <option value="<?php echo $cat['cat_name']; ?>"><?php echo $cat['cat_name']; ?></option>
+				  <?php endforeach; ?>
+                </select>
+              </div>
+              <div class="md-form form-group form-inline-lg">
+                  <span class='mr-3 fas fa-edit prefix'></span>
+                  <textarea class="form-control md-textarea" name="post_content"  rows="6" id="post_content"></textarea>
+                  <label for="post_content">Post Content...</label>
+              </div>
+                <center><div class="text-center align-items-center justify-content-center col-md-5 mb-3">
+                    <button type="submit" name="post_publish" class="btn btn-md btn-block blue-gradient btn-rounded z-depth-1a">Publish Post</button>
+                </div></center>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<?php include "footer.php"; ?>
+
+<script>
+	$(document).ready(function() {
+		$('.mdb-select').materialSelect();
+	});
+
+	$(document).ready(function(){
+    	$("#errorshow").hide();
+    });
+
+    $("form#newpost").submit(function(e) {
+	    e.preventDefault();    
+	    var formData = new FormData(this);
+
+	    $.ajax({
+	        url: '../auth/publish.php',
+	        type: 'POST',
+	        data: formData,
+	        beforeSend:function(){
+				$('#btnPublish').html("Publishing Post <span class='fa fa-1x fa-cog fa-spin'></span>");
+			},
+			success: function (data) {
+				if (data == "done") {
+				    $('#btnPublish').html("Successful!");
+				    $("#errorshow").show();
+				    $("#errorshow").html("New Post has been published! Redirecting... <span class='fa fa-1x fa-cog fa-spin'></span>");
+				    setTimeout(' window.location.href = "./viewposts"; ', 4000);
+				}else{
+					$("#errorshow").show();
+					$("#errorshow").html(data);
+				    $('#btnPublish').html("Publish Post");
+				}   
+			},
+			cache: false,
+			error:function(){
+			  	$("#errorshow").show();
+				$('#errorshow').html("An error has occured!!");
+				$('#btnPublish').html("Publish Post");
+			},
+	        contentType: false,
+	        processData: false
+	    });
+	});
+
+</script>

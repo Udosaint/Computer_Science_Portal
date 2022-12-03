@@ -1,0 +1,89 @@
+<?php include "header.php"; 
+
+$admin = new Admin();
+$addCat = $admin->Add_Category();
+
+?>
+
+<title>Add New Category</title>
+
+<?php include "sidenav.php"; ?>
+    <div class="col-md-9">
+      <div class="card card-cascade narrower">
+        <!-- Card header -->
+        <div class="view view-cascade gradient-card-header success-color">
+          <!-- Title -->
+          <h3 class="card-header-title"><i class="fas fa-cube"></i> Add New Category</h3>
+        </div>
+        <div class="card-body card-body-cascade">
+          <div class="container">
+            <form class="container md-form" method="POST" enctype="multipart/form-data">
+              <div class="form-group" align="center">
+                <p class="alert alert-success" id="errorshow"></p>
+              </div>
+              <div class="md-form">
+                <i class="fas fa-newspaper prefix"></i>
+                    <input type="text" id="cat_name" name="cat_name" class="form-control">
+                    <label for="cat_name">Category Name</label>
+              </div>
+              <div class="md-form form-group form-inline-lg">
+                  <span class='mr-3 fas fa-edit prefix'></span>
+                  <textarea class="form-control md-textarea" name="slug"  rows="5" id="slug"></textarea>
+                  <label for="slug">Description...</label>
+              </div>
+                <center><div class="text-center align-items-center justify-content-center col-md-5 mb-3">
+                    <button type="submit" name="add_category" class="btn btn-md btn-block blue-gradient btn-rounded z-depth-1a">Add Category</button>
+                </div></center>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<?php include "footer.php"; ?>
+
+<script>
+	$(document).ready(function() {
+		$('.mdb-select').materialSelect();
+	});
+
+	$(document).ready(function(){
+    	$("#errorshow").hide();
+    });
+
+    $("form#newcat").submit(function(e) {
+	    e.preventDefault();    
+	    var formData = new FormData(this);
+	    $.ajax({
+	        url: '../auth/add_cat.php',
+	        type: 'POST',
+	        data: formData,
+	        beforeSend:function(){
+				$('#btnCat').html("Adding Category <span class='fa fa-1x fa-cog fa-spin'></span>");
+			},
+			success: function (data) {
+				if (data == "done") {
+				    $('#btnCat').html("Successful!");
+				    $("#errorshow").show();
+				    $("#errorshow").html("New Category Added <span class='fa fa-1x fa-cog fa-spin'></span>");
+				    setTimeout(' window.location.href = "./viewposts"; ', 4000);
+				}else{
+					$("#errorshow").show();
+					$("#errorshow").html(data);
+				    $('#btnCat').html("Add Category");
+				}   
+			},
+			cache: false,
+			error:function(){
+			  	$("#errorshow").show();
+				$('#errorshow').html("An error has occured!!");
+				$('#btnCat').html("Add Category");
+			},
+	        contentType: false,
+	        processData: false
+	    });
+	});
+
+</script>

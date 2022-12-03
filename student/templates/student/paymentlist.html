@@ -1,0 +1,82 @@
+{% extends 'student/main.html' %}
+{% load static %}
+
+{% block content %}
+<title><?php echo $student_details['surname'].' '. $student_details['firstname']; ?> || View Nacos Receipt</title>
+
+<main class="my-5">
+	<section class="container col-md-11">
+		<div class="card card-cascade narrower">
+			<!-- Card header -->
+			<div class="view view-cascade gradient-card-header success-color">
+				<!-- Title -->
+				<h3 class="card-header-title"><i class="fas fa-print"></i> Print Nacos Receipt</h3>
+			</div>
+			<div class="card-body card-body-cascade">						
+				{% if transactions is not None %}
+
+				<table class="table table-bordered table-responsive table-striped">
+					<thead>
+						<tr>
+							<th class="font-weight-bold">#</th>
+							<th class="font-weight-bold">Application Number</th>
+							<th class="font-weight-bold">Reference Number</th>
+							<th class="font-weight-bold">Payment Type</th>
+							<th class="font-weight-bold">Amount</th>
+							<th class="font-weight-bold">Level</th>
+							<th class="font-weight-bold">Session</th>
+							<th class="font-weight-bold">Date</th>
+							<th class="font-weight-bold">Status</th>
+							<th class="font-weight-bold">Action</th>
+						</tr>
+					</thead>
+					<tbody>
+						
+						{% for t in transactions %}
+						
+						<tr>
+							<th class="font-weight-bold">{{forloop.counter}}</th>
+							<td>{{t.app_no}}</td>
+							<td>{{t.payment_ref}}</td>
+							<td>{{t.payment_type}}</td>							
+							<td>{{t.payment_amount}}</td>
+							<td>{{t.level}}</td>							
+							<td>{{t.session}}</td>
+							<td>{{t.payment_date}}</td>
+
+							{% if t.payment_status is True %}
+								<td><i class="fas fa-check green-text" style="font-size: 35px;"></i></td>
+							{% else %}
+								<td class="text-warning font-weight-bold">Pending <i class="fas fa-cog fa-spin"></i></td>
+							{% endif %}
+							
+							<td><a class="btn btn-sm btn-rounded btn-success" href="{% url 'payment-receipt' t.payment_ref %}">Print</a></td>
+						</tr>
+						{% endfor %}
+						
+	
+					</tbody>
+				</table>
+
+				{% else %}
+				<div class="text-center">
+					<h3 class="alert alert-warning">No Payment yet!</h3 class="alert alert-warning">
+					<a href="{% url 'payments' %}">Click here to make Payment</a>
+				</div> 
+				{% endif %}
+			</div>
+		</div>
+	</section>
+</main>
+
+
+
+<script>
+	$(document).ready(function() {
+		$('.mdb-select').materialSelect();
+	});
+
+
+</script>
+
+{% endblock content %}

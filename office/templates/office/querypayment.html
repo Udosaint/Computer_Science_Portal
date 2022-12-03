@@ -1,0 +1,27 @@
+<?php
+include '../includes/auto_load.php';
+ob_start();
+
+$database = new Db();
+$db = $database->db();
+    $ref = filter_var(htmlentities($_POST['ref']),FILTER_SANITIZE_STRING);
+    $level = filter_var(htmlentities($_POST['level']),FILTER_SANITIZE_STRING);
+    $session = filter_var(htmlentities($_POST['session']),FILTER_SANITIZE_STRING);
+    
+    if ($ref == null || $level == null || $session == null) {
+        echo "All fields are required";
+    }else{
+        $users = $db->prepare("SELECT * FROM payments WHERE trx_ref = :ref AND (level = :level AND session = :session)");
+        $users->bindParam(':ref', $ref, PDO::PARAM_INT);
+        $users->bindParam(':level', $level, PDO::PARAM_STR);
+        $users->bindParam(':session', $session, PDO::PARAM_STR);
+        $users->execute();
+        $row = $users->fetch(PDO::FETCH_ASSOC);
+        if ($users->rowCount() < 1) {
+        	echo "Reference Number does not exists on the database";
+        }else{
+        	echo "Payment with reference number exists on Database. ";
+        }
+    }
+        
+?>

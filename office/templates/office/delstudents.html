@@ -1,0 +1,190 @@
+<?php 
+
+include "header.php";
+
+if ($_SESSION['admlevel'] != 'superadmin') {
+	header("Location: ./home");
+	exit();
+}
+
+if (!isset($_GET['level']) AND !isset($_GET['session'])) {
+	header("Location: ./home");
+	exit();
+}else{
+	$level = $_GET['level'];
+	$session = $_GET['session'];
+	switch ($level) {
+		case 'nd1':
+			$level = "ND I";
+			break;
+		case 'nd2':
+			$level = "ND II";
+			break;
+		case 'hnd1':
+			$level = "HND I";
+			break;
+		case 'hnd2':
+			$level = "HND II";
+			break;		
+		default:
+			header("Location: ./home");
+			break;
+	}
+}
+?>
+
+<title><?php echo $level; ?> Students <?php echo $session; ?> Session</title>
+
+<?php include "sidenav.php"; ?>
+		<div class="col-md-9">
+			<div class="card card-cascade narrower">
+				<!-- Card header -->
+				<div class="view view-cascade gradient-card-header success-color">
+					<!-- Title -->
+					<h3 class="card-header-title"><i class="fas fa-file"></i> <?php echo $level; ?> Student list <?php echo $session; ?> Session</h3>
+				</div>
+				<div class="card-body card-body-cascade">
+		            <div class="form-group" align="center">
+		                <p class="alert alert-success" id="errorshow"></p>
+		            </div>
+					<div class="table-wrapper table-responsive">
+						<table class="table align-middle table-responsive-lg text-nowrap table-striped table-hover" id="students">
+							<thead class="table-dark">
+								<tr>
+									<th scope="col">S/N</th>
+									<th scope="col">Full Name</th>
+									<th scope="col">Username</th>
+									<th scope="col">Matric No.</th>
+									<th scope="col">Gender</th>
+									<th scope="col">Phone</th>
+									<th scope="col">Level</th>
+									<th scope="col">Regular</th>
+									<th scope="col">Action</th>
+								</tr>
+							</thead>
+							<?php
+				                $accStatus = 1;
+			                    $sql = $db_conn->prepare("SELECT * FROM students WHERE level = :level AND session = :session ORDER BY surname ASC");
+			                    $sql->bindParam(':level', $level, PDO::PARAM_STR);
+			                    $sql->bindParam(':session', $session, PDO::PARAM_STR);
+			                    $sql->execute();
+				                $b = 1;
+			                ?>
+							<tbody>
+								<div class="text-center" align="center"><?php if ($sql->rowCount() < 1) { echo "<td class='text-center'>No data available</td>"; }else{
+									while ($row = $sql->fetch(PDO::FETCH_ASSOC)): ?></div>
+								<tr>
+									<td class="text-left"><?php echo $b; ?></td>
+									<td class="text-left"><?php echo $row['surname']." ".$row['lastname']; ?></td>
+			                        <td class="text-left"><?php echo $row['username']; ?></td>
+			                        <td class="text-left"><?php echo $row['mat_no']; ?></td>
+			                        <td class="text-left"><?php echo $row['gender']; ?></td>
+			                        <td class="text-left"><?php echo $row['phone']; ?></td>
+			                        <td class="text-left"><?php echo $row['level']; ?></td>
+			                        <td class="text-left"><?php echo $row['regular']; ?></td>
+			                        <td class="text-left"><button class='btn btn-rounded btn-danger btn-sm' id='btnDel_<?php echo $row['main_id']; ?>'> Delete</button></td>
+<!-- ============================================================================================================================= -->
+									<script>
+							        	function Delete_<?php echo $row['main_id']; ?>(){
+										    var main_id = "<?php echo $row['main_id']; ?>";
+										    $.ajax({
+										    type:'POST',
+										    url:'../auth/deletestudents.php',
+										    data:{'main_id':main_id},
+										    beforeSend:function(){
+										    $('#btnDel_<?php echo $row['main_id']; ?>').html("Deleting <span class='fa fa-cog fa-spin'></span>");
+										    },
+										    success:function(data){
+										    if (data == "Done") {
+										    	$("#errorshow").show();
+										    	$("#errorshow").html("Student Data Deleted Successfully! Refreshing <span class='fas fa-2x fa-spinner fa-spin'></span>");
+										      	setTimeout(' window.location.href = "./students?action=delete"; ', 4000);
+										        $('#btnDel_<?php echo $row['main_id']; ?>').html("Done <span class='fa fa-check'></span>");
+										    }else{
+										    	$("#errorshow").show();
+										    	$("#errorshow").html(data);
+										        $('#btnDel_<?php echo $row['main_id']; ?>').html("Reset");
+										    }
+										    },
+										    error:function(){
+										    	$("#errorshow").show();
+										    	$("#errorshow").html("An error occured. <br> Try again.");
+										    	$('#btnDel_<?php echo $row['main_id']; ?>').html("Reset");
+										    }
+										    });
+									  	}
+										 
+										$('#btnDel_<?php echo $row['main_id']; ?>').click(function(){
+										   Delete_<?php echo $row['main_id']; ?>();
+										});
+										//End Revoke
+							        </script>
+									<?php  $b++; endwhile; } ?>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Second Colomn End -->
+		</div>
+	</div>
+</main>
+
+<?php include "footer.php"; ?>
+ <script>
+  $(document).ready(function () {
+  	$('#errorshow').hide();
+      $('#students').DataTable({
+        "pagingType": 'simple_numbers',
+          "lengthChange": true,
+          "lengthMenu": [[10, 25, 50, -1],[10, 15, 25, "All"]],
+          dom: 'Bfrtip',
+          buttons: [
+              {
+                  extend: 'csv',
+                  className: 'btn btn-rounded btn-success btn-sm',
+                  text: 'Save to CSV',
+                  title: '<?php echo $level; ?> Students List'
+              },
+              {
+                  extend: 'excel',
+                  className: 'btn btn-rounded btn-elegant btn-sm',
+                  text: 'Save to Excel',
+                  title: '<?php echo $level; ?> Student List'
+              },
+              {
+                  extend: 'print',
+                  className: 'btn btn-rounded btn-info btn-sm',
+                  text: 'Print Table',
+                  title: '<?php echo $level; ?> Student List'
+              },
+              {
+                  extend: 'pdf',
+                  className: 'btn btn-rounded btn-primary btn-sm',
+                  text: 'Save to PDF',
+                  orientation: 'landscape',
+                  pageSize: 'A4',
+                  title: '<?php echo $level; ?> Student List'
+              }
+          ]
+      });
+
+      $('#students_wrapper').find('label').each(function () {
+          $(this).parent().append($(this).children());
+      });
+
+      $('#students_wrapper .dataTables_filter').find('input').each(function () {
+          $('input').attr("placeholder", "Search");
+          $('input').removeClass('form-control-sm');
+          $('input').addClass('form-control');
+      });
+
+      $('#students_wrapper .students_length').addClass('d-flex flex-row');
+    	$('#students_wrapper .dataTables_filter').addClass('md-form');
+      $('#students_wrapper .dataTables_filter').find('label').remove();
+  });
+
+</script>
+

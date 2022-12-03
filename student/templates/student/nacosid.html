@@ -1,0 +1,138 @@
+{% extends 'student/main.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<title> {{ student }} || Nacos ID Form</title>
+
+<main class="my-5">
+	<section class="container col-md-7">
+		<div class="card card-cascade narrower">
+			<!-- Card header -->
+			<div class="view view-cascade gradient-card-header success-color">
+				<!-- Title -->
+				<h3 class="card-header-title"><i class="fas fa-file"></i> NACOS ID Form</h3>
+			</div>
+			<div class="card-body card-body-cascade">
+
+				
+					{% comment %} <div class="text-center">
+						<div class="col-md-4 col-7 text-center mx-auto" style="font-size: 10rem; border: 6px solid seagreen; border-radius: 100%;">	
+							<p class="fas fa-check green-text"></p>
+							
+					</div>
+					<h3 class="green-text mt-1">You have Already Applied for Nacos ID-Card</h3>
+					</div> {% endcomment %}
+
+				
+				<form class="container" method="POST" enctype="multipart/form-data" action="">
+					{% csrf_token %}
+					<div class="avatar-upload">
+						<div class="avatar-edit">
+							{{ form.passport }}
+	                      	{% comment %} <input type='file' id="passport" name="passport" accept=".png, .jpg, .jpeg" /> {% endcomment %}
+	                      	<label for="passport"></label>
+	                  	</div>
+	                  	<div class="avatar-preview">
+							{% if nacosId %}
+							{% for e in nacosId %}
+	                      	<div id="imagePreview" style="background-image: url({{ e.passport.url }});">
+							{% endfor %}
+							{% else %}
+							<div id="imagePreview" style="background-image: url({{ e.passport.url }});">
+							{% endif %}
+	                      	</div>
+	                </div>
+	        			</div>
+	              	<!-- Row 1 starts -->
+	        		<div class="col-md-12">
+						<div class="md-form">
+							<i class="fas fa-graduation-cap prefix text-left"></i>
+							{{ form.reg_no }}
+							{% comment %} <input type="text" disabled id="mat_no" required name="mat_no" value="" class="form-control"> {% endcomment %}
+							<label for="mat_no">Reg number</label>
+						</div>
+					</div>
+
+					<div class="col-md-12">
+						<div class="md-form form-group form-inline-lg">
+							<i class="fas fa-user-plus prefix"></i>
+							{{ form.fullname }}
+							{% comment %} <input type="text" disabled id="surname" name="surname" value="<?php echo($student_details['surname'].' '.$student_details['firstname'].' '.$student_details['othername']);?>" class="form-control"> {% endcomment %}
+							<label for="surname">Fullname</label>
+						</div>
+					</div>
+					
+					<div class="col-md-12">
+						<div class="md-form form-group form-inline-lg">
+			   				<span class='mr-3 fas fa-pen-alt prefix'></span>
+							{{ form.session }}
+						</div>
+			   		</div>
+
+					<div class="col-md-12">
+						<div class="md-form form-group form-inline-lg">
+		    				<span class='mr-3 fas fa-cubes prefix'></span>
+		    				{{ form.level }}
+		    			</div>
+					</div>
+
+					<div class="col-md-12">
+						<div class="md-form form-group form-inline-lg">
+		    				<span class='mr-3 fas fa-pen-alt prefix'></span>
+		    				{{ form.programme }}
+		    			</div>
+					</div>			
+					<center>
+						{% comment %} check if student has regno {% endcomment %}
+						{% if student.reg_no is None %}
+						<div class="alert alert-warning row mx-auto col-md-6 text-center justify-content-center">
+							<p class="fas fa-info fa-xl "> You do not have Reg No Yet</p>
+							<a href="{% url 'update-regno' %}"> Update Reg No Now</a>
+						</div>
+						{% elif nacosId %}
+						<div class="text-center align-items-center justify-content-center col-md-6 mt-4 mb-3">
+					        <button disabled class="btn btn-md btn-block peach-gradient btn-rounded z-depth-2">Already Apllied</button>
+					    </div>
+						{% else %}
+						<div class="text-center align-items-center justify-content-center col-md-6 mt-4 mb-3">
+					        <button type="submit" name="submit_id" class="btn btn-md btn-block peach-gradient btn-rounded z-depth-2">Save Details</button>
+					    </div>
+						{% endif %}
+					  <?php else: ?>
+					  	<div class="row mx-auto col-md-6 text-center justify-content-center">
+					  	<p class="fas fa-info fa-xl alert-warning"> You have not pay for NACOS ID-CARD</p>
+					  	<a href="nacosdue.php"> Click here to make Payment</a>
+					  </div>
+					  <?php endif ?>
+					</center>
+				</form>
+			</div>
+		</div>
+	</section>
+</main>
+
+<script>
+	$(document).ready(function() {
+		$('.mdb-select').materialSelect();
+	});
+
+
+    function readURL(input) {
+	    if (input.files && input.files[0]) {
+	        var reader = new FileReader();
+	        reader.onload = function(e) {
+	            $('#imagePreview').css('background-image', 'url('+e.target.result +')');
+	            $('#imagePreview').hide();
+	            $('#imagePreview').fadeIn(650);
+	        }
+	        reader.readAsDataURL(input.files[0]);
+	    }
+	}
+	$("#passport").change(function() {
+	    readURL(this);
+	});
+</script>
+
+{% endblock content %}

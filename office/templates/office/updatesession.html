@@ -1,0 +1,81 @@
+<?php include "header.php"; 
+
+
+if ($_SESSION['adminrole'] != 'Superadmin') {
+  echo "<script>
+    Swal.fire({
+      icon: 'info',
+      title: 'Fail',
+      text: 'You dont have access to this page.',
+      confirmButtonText: 'Ok',
+      confirmButtonColor: 'green',
+      }).then((result) => {
+      if (result.isConfirmed) {
+        location.href='home.php';
+      }
+    })
+  </script>";
+  exit();
+}
+
+
+$admin = new Admin();
+$session = $admin->Admin_update_Session();
+
+?>
+
+<title>Update Session - NACOS DSPZ</title>
+<style>
+.fas .fab .far {
+    font-size: 0.8rem;
+}
+
+h4{
+	font-size: 1.2rem;
+}
+</style>
+
+<?php include "sidenav.php"; ?>
+    <div class="col-md-9">
+      <div class="card card-cascade narrower">
+        <!-- Card header -->
+        <div class="view view-cascade gradient-card-header success-color">
+          <!-- Title -->
+          <h3 class="card-header-title"><i class="fas fa-shield-alt"></i> Update Session</h3>
+        </div>
+        <div class="card-body card-body-cascade">
+          <div class="container">
+            <form class="container md-form" method="POST" action="" enctype="multipart/form-data">
+              	<div class="alert alert-success" align="center">
+                	<p class="font-weight-bold"><span class="fas fa-times red-text"> Note: </span> Before you proceed make sure you that you have fully transited into a new session.</p>
+              	</div>
+              	<div class="md-form form-group">
+			    	<span class='mr-3 fas fa-pen-alt prefix'></span>
+			    	<select class="ml-5 mdb-select dropdown-default darken-4 colorful-select initialized md-form" name="session" id="session" required="">
+						<option disabled selected>--Select Session--</option>
+						<?php for($i = date('Y') - 1; $i <= date('Y') + 2; $i++): ?>
+						<option value="<?php echo $i; ?>/<?php echo $i + 1; ?>"><?php echo $i; ?>/<?php echo $i + 1; ?> </option>
+						<?php endfor; ?>
+					</select>
+			    </div>
+                <center><div class="text-center align-items-center justify-content-center col-md-5 mb-3">
+                    <button type="submit" name="update_session" class="btn btn-md btn-block peach-gradient btn-rounded z-depth-1a">Update Session</button>
+                </div></center>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<?php include "footer.php"; ?>
+
+<script>
+
+    $(document).ready(function() {
+		$('.mdb-select').materialSelect();
+	});
+
+    
+</script>

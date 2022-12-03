@@ -1,0 +1,104 @@
+<?php include "header.php"; 
+
+if (!isset($_SESSION['admin'])) {
+  header("Location: ./home");
+  exit();
+}
+
+?>
+
+<title>Query Payment Reference - NACOS</title>
+<style>
+.fas .fab .far {
+       font-size: 0.8rem;
+}
+</style>
+
+<?php include "sidenav.php"; ?>
+    <div class="col-md-9">
+      <div class="card card-cascade narrower">
+        <!-- Card header -->
+        <div class="view view-cascade gradient-card-header success-color">
+          <!-- Title -->
+          <h3 class="card-header-title"><i class="fas fa-shield"></i> Query Payment Reference</h3>
+        </div>
+        <div class="card-body card-body-cascade">
+          <div class="container">
+            <form class="container md-form" id="query" enctype="multipart/form-data">
+              <div class="form-group" align="center">
+                <p class="alert alert-success" id="errorshow"></p>
+              </div>
+              <div class="md-form">
+                <i class="fas fa-newspaper prefix"></i>
+                    <input type="text" id="ref" name="ref" class="form-control">
+                    <label for="ref">Reference Number</label>
+              </div>
+              <div class="md-form form-group form-inline-lg">
+                  <span class='mr-3 fas fa-cubes prefix'></span>
+                  <select style="width: 85%;" class="ml-5 mdb-select dropdown-success darken-4 colorful-select initialized md-form" name="level" id="level" required="">
+                  <option disabled selected>--Select Level--</option>
+                  <option>ND I</option>
+                  <option>ND II</option>
+                  <option>HND I</option>
+                  <option>HND II</option>
+                </select>
+              </div>
+              <div class="md-form form-group form-inline-lg">
+                  <span class='mr-3 fas fa-pen-alt prefix'></span>
+                  <select class="ml-5 mdb-select dropdown-default darken-4 colorful-select initialized md-form" name="session" id="session" required="">
+                  <option disabled selected>--Select Session--</option>
+                  <?php for($i = date('Y') - 3; $i <= date('Y') + 5; $i++): ?>
+                  <option value="<?php echo $i; ?>/<?php echo $i + 1; ?>"><?php echo $i; ?>/<?php echo $i + 1; ?> </option>
+                  <?php endfor; ?>
+                </select>
+                </div>
+                <center><div class="text-center align-items-center justify-content-center col-md-5 mb-3">
+                    <button type="submit" id="btnQuery" class="btn btn-md btn-block peach-gradient btn-rounded z-depth-1a">Query</button>
+                </div></center>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<?php include "footer.php"; ?>
+
+<script>
+  $(document).ready(function() {
+    $('.mdb-select').materialSelect();
+  });
+
+  $(document).ready(function(){
+      $("#errorshow").hide();
+    });
+
+
+    $("form#query").submit(function(e) {
+      e.preventDefault();    
+      var formData = new FormData(this);
+      $.ajax({
+        url: 'querypayment.php',
+        type: 'POST',
+        data: formData,
+        beforeSend:function(){
+        $('#btnQuery').html("Checking Reference <span class='fas fa-1x fa-cog fa-spin'></span>");
+      },
+      success: function (data) {
+            $("#errorshow").show();
+            $("#errorshow").html(data);
+            $('#btnQuery').html("Query");
+            // setTimeout(' window.location.href = "./queryreference"; ', 10000);   
+      },
+      cache: false,
+      error:function(){
+          $("#errorshow").show();
+          $('#errorshow').html("An error has occured!!");
+          $('#btnQuery').html("Create Admin");
+      },
+      contentType: false,
+      processData: false
+    });
+  });
+</script>

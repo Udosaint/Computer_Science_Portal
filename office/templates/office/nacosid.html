@@ -1,0 +1,117 @@
+<?php 
+include "header.php";
+
+$database = new Db();
+$db = $database->db(); 
+?>
+
+<title>Students ID Card Details</title>
+
+<?php include "sidenav.php"; ?>
+		<div class="col-md-9">
+			<div class="card card-cascade narrower">
+				<!-- Card header -->
+				<div class="view view-cascade gradient-card-header success-color">
+					<!-- Title -->
+					<h3 class="card-header-title"><i class="fas fa-money-check"></i> Student Id </h3>
+				</div>
+				<div class="card-body card-body-cascade">
+					<div class="table-wrapper table-responsive">
+						<table class="table align-middle table-responsive-lg text-nowrap table-striped table-hover" id="students">
+							<thead class="table-dark">
+								<tr>
+									<th scope="col">S/N</th>
+									<th scope="col">Full Name</th>
+									<th scope="col">Matric No.</th>
+									<th scope="col">Gender</th>
+									<th scope="col">Session</th>
+									<th scope="col">Level</th>
+									<th scope="col">Programme</th>
+								</tr>
+							</thead>
+							<?php
+				                $accStatus = 1;
+			                    $sql = $db->prepare("SELECT students.app_no AS app_no, students.surname AS surname, students.firstname AS firstname, students.othername AS othername, students.mat_no AS mat_no, students.gender AS gender, students.programme AS programme, id_card.session AS session, id_card.level AS level, id_card.avatar As passport FROM id_card INNER JOIN students ON id_card.mat_no = students.mat_no ORDER BY students.surname ASC");
+			                    $sql->bindParam(':level', $level, PDO::FETCH_ASSOC);
+			                    $sql->execute();
+				                $b = 1;
+			                ?>
+							<tbody>
+								<div class="text-center" align="center"><?php if ($sql->rowCount() < 1) { echo "<td class='text-center'>No data available</td>"; }else{
+									while ($row = $sql->fetch(PDO::FETCH_ASSOC)): ?></div>
+								<tr>
+									<td class="text-left"><?php echo $b; ?></td>
+									<td class="text-left"><?php echo $row['surname']." ".$row['firstname'].' '.$row['othername']; ?></td>
+			                        <td class="text-left"><?php echo $row['mat_no']; ?></td>
+			                        <td class="text-left"><?php echo $row['gender']; ?></td>
+			                        <td class="text-left"><?php echo $row['session']; ?></td>
+			                        <td class="text-left"><?php echo $row['level']; ?></td>
+			                        <td class="text-left"><?php echo $row['programme']; ?></td>
+									<?php  $b++; endwhile; } ?>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Second Colomn End -->
+		</div>
+	</div>
+</main>
+
+<?php include "footer.php"; ?>
+ <script>
+  $(document).ready(function () {
+      $('#students').DataTable({
+        "pagingType": 'simple_numbers',
+          "lengthChange": true,
+          "lengthMenu": [[10, 25, 50, -1],[10, 15, 25, "All"]],
+          dom: 'Bfrtip',
+          buttons: [
+              {
+                  extend: 'csv',
+                  className: 'btn btn-rounded btn-success btn-sm',
+                  text: 'Save to CSV',
+                  title: '<?php echo $level; ?> Students List'
+              },
+              {
+                  extend: 'excel',
+                  className: 'btn btn-rounded btn-elegant btn-sm',
+                  text: 'Save to Excel',
+                  title: '<?php echo $level; ?> Student List'
+              },
+              {
+                  extend: 'print',
+                  className: 'btn btn-rounded btn-info btn-sm',
+                  text: 'Print Table',
+                  title: '<?php echo $level; ?> Student List'
+              },
+              {
+                  extend: 'pdf',
+                  className: 'btn btn-rounded btn-primary btn-sm',
+                  text: 'Save to PDF',
+                  orientation: 'landscape',
+                  pageSize: 'A4',
+                  title: '<?php echo $level; ?> Student List'
+              }
+          ]
+      });
+
+      $('#students_wrapper').find('label').each(function () {
+          $(this).parent().append($(this).children());
+      });
+
+      $('#students_wrapper .dataTables_filter').find('input').each(function () {
+          $('input').attr("placeholder", "Search");
+          $('input').removeClass('form-control-sm');
+          $('input').addClass('form-control');
+      });
+
+      $('#students_wrapper .students_length').addClass('d-flex flex-row');
+    	$('#students_wrapper .dataTables_filter').addClass('md-form');
+      $('#students_wrapper .dataTables_filter').find('label').remove();
+  });
+
+</script>
+

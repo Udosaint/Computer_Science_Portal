@@ -1,0 +1,104 @@
+<?php include "header.php"; 
+$student = new Student();
+$student_details = $student->getStudent($_SESSION['app_no'], $_SESSION['mat_no']);
+
+$screen = $student->Candidate_Status($student_details['mat_no']);
+
+// get the current session
+$admin = new Admin();
+$current_session = $admin->current_Session();
+if ($current_session != true) {
+  		echo "<script>
+  			Swal.fire({
+					icon: 'error',
+					title: 'Invalid Session',
+					text: 'The Session is Invalid',
+					confirmButtonText: 'Ok',
+					confirmButtonColor: 'green',
+					}).then((result) => {
+					if (result.isConfirmed) {
+						location.href='index.php';
+					}
+				})
+			var timer = setTimeout(function(){
+         window.location='index.php'
+          }, 300);
+    </script>";	
+		exit();
+}
+
+$allcand = $student->AllCandidate(implode($current_session));
+
+
+?>
+
+<title><?php echo $student_details['surname'].' '. $student_details['firstname']; ?> || All Candidate</title>
+
+<div class="introCard mb-4" style="background-image: url(../images/background3.jpg); background-repeat: no-repeat; background-size: cover; background-position: center center; z-index: 0;">
+	<div class="mask rgba-black-strong d-flex justify-content-center align-items-center h-45">
+        <div class="container" style="padding-top: 10%; padding-bottom: 10%;">
+        	<div class="col-md-12 mb-4 white-text text-center">
+              <h1 class="display-5 title mt-md-5 mt-lg-0 font-weight-bold wow fadeIn" data-wow-delay="0.3s" style="visibility: visible; animation-name: fadeIn; animation-delay: 0.3s;">
+                  <strong><?php echo $student_details['surname'].' '. $student_details['firstname'].' '. $student_details['othername']; ?> - ALL CANDIDATE</strong>
+                </h1>
+              <hr class="hr-light my-4 wow fadeInDown" data-wow-delay="0.4s" style="visibility: visible; animation-name: fadeInDown; animation-delay: 0.4s;">
+              <h5 class="text-uppercase mb-4 white-text wow fadeInDown" data-wow-delay="0.4s" style="visibility: visible; animation-name: fadeInDown; animation-delay: 0.4s;"><strong class="font-weight-bold"><i>Towards Advanced Computing</i></strong></h5>
+              <?php if ($current_session == true): ?>
+								<h4 class="text-center"><span class="font-weight-bold">Session:</span> <span class="small-text"><?php echo implode($current_session); ?></span></h4>						
+							<?php else: ?>					
+							<h4 class="text-center text-danger"><span class="font-weight-bold">Session Not Set</span></h4>
+							<?php endif ?>
+            </div>
+        </div>
+    </div>
+</div>
+
+</header>
+
+<main class="my-5">
+	<section class="container col-md-7">
+		<?php if (!$allcand):?>
+
+
+			<div class="card-body card-body-cascade">
+
+					<div class="text-center">
+						<div class="col-md-4 col-7 text-center mx-auto" style="font-size: 10rem;">	
+							<p class="fas fa-cog fa-spin text-warning"></p>
+							
+					</div>
+					<h3 class="text-warning alert alert-warning mt-1">No Election Has Been Schedule for this Session</h3>
+					</div>
+				</div>
+				<?php else :?>	
+	</section>
+		<div class="container row mx-auto">	
+					<?php foreach ($allcand as $row): ?>
+						
+          <div class="col-md-2  card card z-depth-2 mr-4 mb-2">
+            <center>
+            	<img style="border-radius: 100; border: 2px solid seagreen; width: 150px; height: 150px;" 
+            	src="../images/candidates/<?= $row['photo'] ?>" class="img-fluid img-responsive rounded-circle mt-3">
+            	<hr>
+            <p><?= $row['fullname'] ?></p>
+            <hr>
+            <p class="font-weight-bold"><?= $row['position'] ?></p>
+          </center>
+          </div>
+					<?php endforeach ?>
+				<?php endif ?>
+			</div>
+		</div>
+		</div>
+</main>
+
+
+<?php include "footer.php"; ?>
+
+<script>
+	$(document).ready(function() {
+		$('.mdb-select').materialSelect();
+	});
+
+
+</script>
