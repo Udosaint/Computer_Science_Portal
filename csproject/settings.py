@@ -91,8 +91,8 @@ DATABASES = {
 
 
 # Paystack payment Details\
-PAYSTACK_SECRET_KEY = 'sk_test_cb65eba0bde93feed811e82547aa55ccb6cb995e'
-PAYSTACK_PUBLIC_KEY = 'pk_test_f7e94a4f89356085d8ca65477fd904525f602fec'
+PAYSTACK_SECRET_KEY = ''
+PAYSTACK_PUBLIC_KEY = ''
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
